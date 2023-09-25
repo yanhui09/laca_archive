@@ -1,0 +1,26 @@
+SampleID	sample	spike_in	ZymoBIOMICS (ng/ul)	Lambda-DNA molecules spiked 
+BRK01	1_1	no	5	0
+BRK02	1_2	no	5	0
+BRK03	1_3 (spike-in lambda)	yes	3.33	4781
+BRK04	1_4 (spike-in lambda)	yes	3.33	4781
+BRK05	2_1	no	0.5	0
+BRK06	2_2	no	0.5	0
+BRK07	2_3 (spike-in lambda)	yes	0.33	4781
+BRK08	2_4 (spike-in lambda)	yes	0.33	4781
+BRK09	3_1	no	0.25	0
+BRK10	3_2	no	0.25	0
+BRK11	3_3 (spike-in lambda)	yes	0.17	4781
+BRK12	3_4 (spike-in lambda)	yes	0.17	4781
+BRK13	4_1	no	0.13	0
+BRK14	4_2	no	0.13	0
+BRK15	4_3 (spike-in lambda)	yes	0.08	4781
+BRK16	4_4 (spike-in lambda)	yes	0.08	4781
+BRK17	5_1	no	0.05	0
+BRK18	5_2	no	0.05	0
+BRK19	5_3 (spike-in lambda)	yes	0.03	4781
+BRK20	5_4 (spike-in lambda)	yes	0.03	4781
+BRK21	6_1	no	0.03	0
+BRK22	6_2	no	0.03	0
+BRK23	6_3 (spike-in lambda)	yes	0.02	4781
+BRK24	6_4 (spike-in lambda)	yes	0.02	4781
+BRK25	NTC	no	0	0
