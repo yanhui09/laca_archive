@@ -735,8 +735,8 @@ df2 <- df %>%
   reframe(
     # take max hit identity per OTU
     pident = max(pident),
-    # take min cov per OTU
-    cov = min(gapopen / length * 100),
+    # gapopen% per OTU
+    cov = max((qend - qstart+1) / length * 100),
     min_pident = min(pident)) %>%
   left_join(df_tax, by = c("qseqid", "consensus", "subsample"))
 library(ggprism)
@@ -755,13 +755,12 @@ p_blast <- df2 %>%
         LCA, "Species", "Genus", "Order", "Class" #no Family
       )
     )) +
-  scale_color_distiller(palette = "Spectral") +
-  #scale_shape_manual(values = c(16,17,15,3)) +
+  scale_color_distiller(palette = "Spectral", direction = 1) +
   facet_grid(subsample ~ ., scales = "free", space = "free_x") +
   labs(
     x = "",
     y = "% of identical matches",
-    color = "% of gap openings",
+    color = "% of cover",
     shape = "Taxonomic hits"
   ) +
   theme_prism() +
@@ -770,25 +769,156 @@ p_blast <- df2 %>%
     axis.text.x = element_text(angle = 90),
   )
 
+##############################################
+# reload all otus
+ps_kmerCon <- ps_from_laca( # nolint
+  count_tsv = "data/zymock10000/kmerCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock10000/kmerCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock10000/kmerCon_out/tree.nwk",
+  rep_fasta = "data/zymock10000/kmerCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock10000/kmerCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_miniCon <- ps_from_laca( # nolint
+  count_tsv = "data/zymock10000/miniCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock10000/miniCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock10000/miniCon_out/tree.nwk",
+  rep_fasta = "data/zymock10000/miniCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock10000/miniCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_isoCon <- ps_from_laca( # nolint
+  count_tsv = "data/zymock10000/isoCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock10000/isoCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock10000/isoCon_out/tree.nwk",
+  rep_fasta = "data/zymock10000/isoCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock10000/isoCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+
+#sub100000
+ps_kmerCon_2 <- ps_from_laca( # nolint
+  count_tsv = "data/zymock100000/kmerCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock100000/kmerCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock100000/kmerCon_out/tree.nwk",
+  rep_fasta = "data/zymock100000/kmerCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock100000/kmerCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_miniCon_2 <- ps_from_laca( # nolint
+  count_tsv = "data/zymock100000/miniCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock100000/miniCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock100000/miniCon_out/tree.nwk",
+  rep_fasta = "data/zymock100000/miniCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock100000/miniCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_isoCon_2 <- ps_from_laca( # nolint
+  count_tsv = "data/zymock100000/isoCon_out/count_matrix.tsv",
+  meta_tsv = "data/meta_zymock.tsv",
+  tax_tsv = "data/zymock100000/isoCon_out/taxonomy.tsv",
+  tree_nwk = "data/zymock100000/isoCon_out/tree.nwk",
+  rep_fasta = "data/zymock100000/isoCon_out/rep_seqs.fasta",
+  hits_tsv = "data/zymock100000/isoCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+
+
+# figure min pidentity vs the total counts of every OTUs
+get_otus_count <- function(ps, con_c, subsample_c) {
+  otu_table <- as.data.frame(otu_table(ps))
+  otu_count <- data.frame(otu=rownames(otu_table), count=rowSums(otu_table)) %>%
+    mutate(consensus = con_c) %>%
+    mutate(subsample = subsample_c)
+  return(otu_count)
+ }
+
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon,
+  ps_kmerCon_2,
+  ps_miniCon_2,
+  ps_isoCon_2
+  )
+con_cv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon",
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+subsample_cv <- c(
+  rep("Subsample10000", 3),
+  rep("Subsample100000", 3)
+)
+
+merge_otus_count <- function(ps_list, con_cv, subsample_cv) {
+  otus_count_list <- lapply(seq_along(ps_list), function(i) {
+    get_otus_count(ps_list[[i]], con_c = con_cv[i], subsample_c = subsample_cv[i]) #nolint
+  })
+  otus_count_list <- do.call(rbind, otus_count_list)
+  return(otus_count_list)
+}
+
+otus_count <- merge_otus_count(ps_list, con_cv, subsample_cv)
+colnames(otus_count) <- c("qseqid", "count", "consensus", "subsample")
+df_otus_count <- otus_count %>%
+  left_join(df2, by = c("qseqid", "consensus", "subsample"))
+
+p_otus_count <- df_otus_count %>%
+  filter(tax != "Unassigned") %>%
+  ggplot(aes(
+    y = pident, 
+    x = count
+  )) +
+  geom_point(
+    aes(
+      color = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon"
+      )
+    )) +
+  #geom_vline(xintercept = 1000, linetype = "dashed") +
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
+  facet_grid(subsample ~ ., scales = "free", space = "free_x") +
+  labs(
+    x = "# of read counts per OTU",
+    y = "% of identical matches",
+    color = "Consensus mode",
+  ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  ) 
+#p_otus_count
+
 # table for pct of OTUs with min pidentity >= 97, 99, *
-pct_otu <- df2 %>%
+pct_otu <- df_otus_count %>%
   group_by(consensus, subsample) %>%
   summarise(
     n = n(),
-    unclassified = sum(tax == "Unassigned") / n * 100,
-    `min identity > 97%` = sum(min_pident >= 97) / n * 100,
-    `min identity > 99%` = sum(min_pident >= 99) / n * 100,
+    `% of unclassified OTUs` = sum(tax == "Unassigned") / n * 100,
+    `% of OTUs with min identity > 97%` = sum(min_pident >= 97) / n * 100,
+    `% of OTUs min identity > 99%` = sum(min_pident >= 99) / n * 100,
+    `sum of OTU counts` = sum(count),
+    `% of unclassified OTU in counts` = sum(count[tax == "Unassigned"]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
   )
 pct_otu
-
-# figure min pidentity vs the total counts of every OTUs
-
 ```
 
 ```{r, pngs}
 dir.create("figure/zymock", showWarnings = FALSE, recursive = TRUE)
-ps <- list(p_otus_sum, p_otus_sumb, p_taxa_flow, p_taxa_flow2, p_taxa_flow2g, p_blast) #nolint
-pnames <- c("p1_otus", "p1_otusb", "p3_bars_ab", "p4_bars", "p5_barg", "p6_blast") #nolint
+ps <- list(p_otus_len, p_otus_sum, p_otus_sumb, p_taxa_flow, p_taxa_flow2, p_taxa_flow2g, p_blast, p_otus_count) #nolint
+pnames <- c("p1_otus_len", "p1_otus", "p1_otusb", "p3_bars_ab", "p4_bars", "p5_barg", "p6_blast", "p6_otus_count") #nolint
 ggsave2 <- function(x, y) {
   ggsave(
     paste0("figure/zymock/", x, ".png"),
@@ -801,6 +931,6 @@ mapply(ggsave2, pnames, ps)
 ggsave("figure/zymock/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
 
 library(patchwork)
-p_merge <- p_otus_sum + p_otus_sumb + p_taxa_flow2 + p_blast + plot_layout(ncol = 2) + plot_annotation(tag_levels = "a")  #nolint
-ggsave("figure/zymock/p_merge.png", p_merge, height = 12, width = 18) #nolint
+p_merge <- p_otus_sum + p_otus_sumb + p_taxa_flow2 + p_blast + plot_layout(nrow = 2) + plot_annotation(tag_levels = "a")  #nolint
+ggsave("figure/zymock/p_merge.png", p_merge, height = 12, width = 14) #nolint
 ```
