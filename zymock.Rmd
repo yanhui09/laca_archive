@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 22/12/2022
+date: 02/10/2023
 output:
   html_document:
     toc: true
@@ -382,7 +382,7 @@ p_otus_sum <- dt_sum %>%
   geom_quasirandom(
     size = 3,
     aes(
-      shape = groups,
+      #shape = groups,
       color = as.factor(Zymo_con)
     )) +
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(9:7, 4:1)]) +
@@ -410,7 +410,7 @@ p_otus_sumb <- dt_sumb %>%
   geom_quasirandom(
     size = 3,
     aes(
-      shape = groups,
+      #shape = groups,
       color = as.factor(Zymo_con)
     )) +
   # # of SSU rRNA
@@ -751,9 +751,7 @@ p_blast <- df2 %>%
   geom_quasirandom(
     aes(
       color = cov,
-      shape = fct_relevel(
-        LCA, "Species", "Genus", "Order", "Class" #no Family
-      )
+      shape = fct_relevel(LCA, "Species", "Genus", "Order") # no family
     )) +
   scale_color_distiller(palette = "Spectral", direction = 1) +
   facet_grid(subsample ~ ., scales = "free", space = "free_x") +
@@ -872,6 +870,8 @@ colnames(otus_count) <- c("qseqid", "count", "consensus", "subsample")
 df_otus_count <- otus_count %>%
   left_join(df2, by = c("qseqid", "consensus", "subsample"))
 
+# avoid scientific notation
+options(scipen = 999)
 p_otus_count <- df_otus_count %>%
   filter(tax != "Unassigned") %>%
   ggplot(aes(
@@ -884,8 +884,17 @@ p_otus_count <- df_otus_count %>%
       consensus, "kmerCon", "miniCon", "isoCon"
       )
     )) +
-  #geom_vline(xintercept = 1000, linetype = "dashed") +
+  # add segment yline = 97, xline=50,500
+  geom_segment(data = data.frame(xs=0,xe=50,ys=97,ye=97,subsample="Subsample10000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=50,xe=50,ys=-Inf,ye=97,subsample="Subsample10000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=500,ys=97,ye=97,subsample="Subsample100000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=500,xe=500,ys=-Inf,ye=97,subsample="Subsample100000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
+  scale_y_continuous(breaks = c(95, 96, 97, 98, 99, 100)) +
+  scale_x_continuous(
+    trans = scales::log2_trans(),
+    breaks = c(10,50,100,500,1000,5000,10000,50000,100000),
+    ) +
   facet_grid(subsample ~ ., scales = "free", space = "free_x") +
   labs(
     x = "# of read counts per OTU",
@@ -912,7 +921,7 @@ pct_otu <- df_otus_count %>%
     `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
     `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
   )
-pct_otu
+#pct_otu
 ```
 
 ```{r, pngs}
@@ -923,8 +932,8 @@ ggsave2 <- function(x, y) {
   ggsave(
     paste0("figure/zymock/", x, ".png"),
     y,
-    height = 8,
-    width = 10,
+    height = 6,
+    width = 8,
     )
 }
 mapply(ggsave2, pnames, ps)

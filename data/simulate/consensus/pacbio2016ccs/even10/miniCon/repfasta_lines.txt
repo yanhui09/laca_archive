@@ -27,7 +27,7 @@
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9798/si9798800.fasta
       6 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si989910.fasta
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si9899100.fasta
-      8 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si989920.fasta
+      6 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si989920.fasta
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si9899200.fasta
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si989940.fasta
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si9899400.fasta
@@ -35,11 +35,11 @@
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si989980.fasta
      40 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si9899/si9899800.fasta
       4 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si9910010.fasta
-     12 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100100.fasta
+     16 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100100.fasta
       8 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si9910020.fasta
-     28 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100200.fasta
+     20 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100200.fasta
      12 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si9910040.fasta
      30 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100400.fasta
      12 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si9910060.fasta
      12 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si9910080.fasta
-     36 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100800.fasta
+     38 simulate/consensus/pacbio2016ccs/even10/miniCon/repseqs_split/si99100/si99100800.fasta
