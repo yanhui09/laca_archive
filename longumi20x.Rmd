@@ -151,7 +151,7 @@ df$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
   df$consensus == "umiCon" ~ 4,
   df$consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 20, # chimera
-  TRUE ~ 0.5
+  TRUE ~ 3
 )
 
 # overview stats

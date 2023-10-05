@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 04/10/2023
+date: 05/10/2023
 output:
   html_document:
     toc: true
@@ -15,7 +15,7 @@ csl: cell.csl
 
 ```{r, error profile, eval = FALSE}
 source("./scripts/validation_functions.R")
-dir.create("data/longumi", showWarnings = FALSE)
+dir.create("data/longumi1000000", showWarnings = FALSE)
 qc_complie <- function(
   qc_dir,
   consensus_prefix,
@@ -42,20 +42,20 @@ qc_complie <- function(
 
 # prepare a dataframe for loop
 fs <- list.files(
-  path = "/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub100000",
+  path = "/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub1000000",
   pattern = "*bin_map.txt", full.names = TRUE, recursive = TRUE)
 df <- data.frame(bin_map = fs)
 df$qc_dir <- dirname(df$bin_map)
-df$data <- gsub("^.*qc/sub100000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint
-df$consensus <- gsub("^.*qc/sub100000/(.*)/(.*)/qc$", "\\2", df$qc_dir) #nolint
+df$data <- gsub("^.*qc/sub1000000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint
+df$consensus <- gsub("^.*qc/sub1000000/(.*)/(.*)/qc$", "\\2", df$qc_dir) #nolint
 df$consensus_prefix <- case_when(
   df$consensus == "umiCon" | df$consensus == "umiConN" ~ "umiCon_trimmed",
   TRUE ~ df$consensus
 )
 df$read_data <- case_when(
-  df$data == "pb_ccs" ~ "ccs_sub100000_s11.fa",
-  df$data == "zymock_r9" ~ "ERR3336963_1sub100000_s123.fa",
-  df$data == "zymock_r10" ~ "ERR3813594_1sub100000_s123.fa"
+  df$data == "pb_ccs" ~ "ccs_sub1000000_s11.fa",
+  df$data == "zymock_r9" ~ "ERR3336963_1sub1000000_s123.fa",
+  df$data == "zymock_r10" ~ "ERR3813594_1sub1000000_s123.fa"
 )
 df$outprefix <- paste0("data/longumi/", df$data, "/", df$consensus)
 
@@ -72,7 +72,7 @@ for (i in seq_len(nrow(df))) {
 ```{r, size_cutoff}
 source("./scripts/validation_functions.R")
 rds <- list.files(
-  path = "./data/longumi",
+  path = "./data/longumi1000000",
   pattern = "*.Rdata", full.names = TRUE, recursive = TRUE)
 # qcs: *_qc.Rdata; eps: *_ep.Rdata
 qcs <- rds[grep("_qc.Rdata$", rds)]
@@ -142,7 +142,9 @@ dt_cutoff <- dt_qc_f %>%
   select(data, consensus) %>%
   distinct() %>%
   mutate(cutoff=case_when(
-    consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 15, #nobin
+    df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
+    df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
+    consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 150, #nobin
     TRUE ~ 4
   ), y= Inf) %>%
   mutate(x = case_when(
@@ -188,9 +190,9 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
 
 p_size_err <- stat_jitter_xy(dt_qc, column_y = "ref_error", column_x = "umi_cluster_size")
 p_size_err_f <- stat_jitter_xy(dt_qc_f, column_y = "ref_error", column_x = "umi_cluster_size")
-dir.create("./figure/longumi", showWarnings = FALSE, recursive = TRUE)
-ggsave("./figure/longumi/size_err.png", p_size_err, width = 12, height = 8) #nolint
-ggsave("./figure/longumi/size_err_f.png", p_size_err_f, width = 12, height = 8) #nolint
+dir.create("./figure/longumi1000000", showWarnings = FALSE, recursive = TRUE)
+ggsave("./figure/longumi1000000/size_err.png", p_size_err, width = 12, height = 8) #nolint
+ggsave("./figure/longumi1000000/size_err_f.png", p_size_err_f, width = 12, height = 8) #nolint
 ```
 
 ```{r, stats}
@@ -205,8 +207,9 @@ df <- data.frame(qc = qcs, ep = eps)
 df$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
 df$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
-  df$consensus == "umiCon" ~ 4,
-  df$consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 15, # chimera
+  df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
+  df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
+  df$consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 150, # chimera
   TRUE ~ 3
 )
 
@@ -539,16 +542,16 @@ dt_sum$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum$file) #n
 dt_sum_f <- rbindlist(mapply(function(x,y,z) errorsum_from_rds(x, y, filter = TRUE, size = z), df$qc, df$ep, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_sum_f$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_sum_f$file) #nolint
 dt_sum_f$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum_f$file) #nolint
-save(dt_sum, dt_sum_f, file = "./data/longumi_sumerr.Rdata")
+save(dt_sum, dt_sum_f, file = "./data/longumi1000000_sumerr.Rdata")
 ```
 
 ```{r, stat_sum}
 library(ggplot2)
 library(ggprism)
-load("./data/longumi_sumerr.Rdata")
+load("./data/longumi1000000_sumerr.Rdata")
 dir.create("./table/longumi", showWarnings = FALSE, recursive = TRUE)
-write.csv(dt_sum[, -1], "./table/longumi/umi_sumerr.csv", quote = FALSE, row.names = FALSE) #nolint
-write.csv(dt_sum_f[, -1], "./table/longumi/umi_sumerr_f.csv", quote = FALSE, row.names = FALSE) #nolint
+write.csv(dt_sum[, -1], "./table/longumi/umi1000000_sumerr.csv", quote = FALSE, row.names = FALSE) #nolint
+write.csv(dt_sum_f[, -1], "./table/longumi/umi1000000_sumerr_f.csv", quote = FALSE, row.names = FALSE) #nolint
 stat_col <- function(dt, column, y_lab, title, y_int=NULL) {
   p <- dt %>%
   ggplot(aes(
@@ -613,20 +616,20 @@ p_stat_err_f <- p_errall_f + p_errhp0_f + p_errhp1_f + plot_layout(guides = "col
 ```
 
 ```{r, ggsave}
-dir.create("./figure/longumi", showWarnings = FALSE)
-ggsave("./figure/longumi/stat_overview.png", p_stat_overview, width = 12, height = 4) #nolint
-ggsave("./figure/longumi/stat_overview_f.png", p_stat_overview_f, width = 12, height = 4) #nolint
-ggsave("./figure/longumi/stat_consensus.png", p_stat_consensus, width = 12, height = 4) #nolint
-ggsave("./figure/longumi/stat_consensus_f.png", p_stat_consensus_f, width = 12, height = 4) #nolint
-ggsave("./figure/longumi/stat_err.png", p_stat_err, width = 12, height = 4) #nolint
-ggsave("./figure/longumi/stat_err_f.png", p_stat_err_f, width = 12, height = 4) #nolint
+dir.create("./figure/longumi1000000", showWarnings = FALSE)
+ggsave("./figure/longumi1000000/stat_overview.png", p_stat_overview, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_overview_f.png", p_stat_overview_f, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_consensus.png", p_stat_consensus, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_consensus_f.png", p_stat_consensus_f, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_err.png", p_stat_err, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_err_f.png", p_stat_err_f, width = 12, height = 4) #nolint
 
 p_longumi <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layout(guides = "collect")) / #nolint
   (p_errall + labs(tag="b") + p_errhp0 + p_errhp1 + plot_layout(guides = "collect"))  #nolint
 p_longumi_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate_f + plot_layout(guides = "collect")) / #nolint
   (p_errall_f + labs(tag="b") + p_errhp0_f + p_errhp1_f + plot_layout(guides = "collect"))  #nolint
-ggsave("./figure/longumi/longumi.png", p_longumi, width = 12, height = 8) #nolint
-ggsave("./figure/longumi/longumi_f.png", p_longumi_f, width = 12, height = 8) #nolint
+ggsave("./figure/longumi1000000/longumi.png", p_longumi, width = 12, height = 8) #nolint
+ggsave("./figure/longumi1000000/longumi_f.png", p_longumi_f, width = 12, height = 8) #nolint
 
 # all 3
 p_longumi3 <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layout(guides = "collect")) / #nolint
@@ -635,6 +638,6 @@ p_longumi3 <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layou
 p_longumi3_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate_f + plot_layout(guides = "collect")) / #nolint
   (p_len_f + labs(tag="b") + p_cont_f + p_error_f + plot_layout(guides = "collect")) / #nolint
   (p_errall_f + labs(tag="c") + p_errhp0_f + p_errhp1_f + plot_layout(guides = "collect"))  #nolint
-ggsave("./figure/longumi/longumi3.png", p_longumi3, width = 12, height = 12) #nolint
-ggsave("./figure/longumi/longumi3_f.png", p_longumi3_f, width = 12, height = 12) #nolint
+ggsave("./figure/longumi1000000/longumi3.png", p_longumi3, width = 12, height = 12) #nolint
+ggsave("./figure/longumi1000000/longumi3_f.png", p_longumi3_f, width = 12, height = 12) #nolint
 ```
