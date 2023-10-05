@@ -282,9 +282,7 @@ p_otus_len <- otus_len %>%
       consensus, "kmerCon", "miniCon", "isoCon"
       )
   )) +
-  geom_quasirandom(
-    size = 3
-    ) +
+  geom_quasirandom() +
   facet_grid(subsample ~ ., scales = "free", space = "free_x") +
   labs(
     x = "",
