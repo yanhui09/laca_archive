@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 02/10/2023
+date: 06/10/2023
 output:
   html_document:
     toc: true
@@ -920,6 +920,7 @@ pct_otu <- df_otus_count %>%
     `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
   )
 #pct_otu
+write.csv(pct_otu, "table/pct_otu.csv", quote = FALSE, row.names = FALSE)
 ```
 
 ```{r, pngs}
