@@ -835,7 +835,6 @@ p1_cls <- df_comp %>%
   theme(
     legend.title = element_text(),
     axis.text.x.bottom = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 9), #nolint
-    strip.text = element_text(size = 8),
     )
 #p1_cls
 p1_cls_size_nmi <- df_comp %>%
@@ -1165,7 +1164,7 @@ p2_asm5 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10 & depth != 800) %>%
+  #filter(depth != 10 & depth != 800) %>%
   filter(asm == "asm5") %>%
   ggplot(
   aes(x = depth, y = tn, color = id, shape = profile)) + 
