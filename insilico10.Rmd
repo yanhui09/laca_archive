@@ -201,7 +201,7 @@ p1_cls <- df_comp %>%
 df_clust <- df_merge %>%
   group_by(benchmark, profile, id, depth) %>%
   mutate(nreads = length(unique(seqid))) %>%
-  filter(!is.na(cluster)) %>%
+  filter(! is.na(cluster)) %>%
   group_by(benchmark, profile, meshclust, id, depth, type) %>%
   reframe(pct = length(unique(seqid))/nreads * 100)  %>%
   # rm duplicate lines
@@ -245,6 +245,7 @@ p1_clust <- df_clust %>%
     )
 #p1_clust
 p1_clustid <- df_merge %>%
+  filter(! is.na(cluster)) %>%
   mutate(
     benchmark = factor(
       benchmark, 
@@ -625,6 +626,7 @@ p1_clust <- df_clust %>%
     ) 
 #p1_clust
 p1_clustid <- df_merge %>%
+  filter(! is.na(cluster)) %>%
   mutate(
     benchmark = factor(
       benchmark, 

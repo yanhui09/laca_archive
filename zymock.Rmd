@@ -99,7 +99,7 @@ ps_construct <- function(taxf, count, metadata, tree_nwk=NULL, rep_fasta=NULL, s
   return(ps)
 }
 
-filter_taxa <- function(tax_tsv, hits_tsv, min_id) {
+filter_taxa_laca <- function(tax_tsv, hits_tsv, min_id) {
   tax_table <- read.table(tax_tsv, header = FALSE, sep = "\t")
   hits_table <- read.table(hits_tsv, header = FALSE, sep = "\t")
   tax_mean_id <- hits_table %>%
@@ -117,7 +117,7 @@ ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits
   metadata <- read.table(meta_tsv, header = T, sep = "\t", row.names = 1)
   colnames(metadata) <- c("SampleID", "Spike_in", "Zymo_con", "Spike_con")
   metadata$Zymo_series <- gsub("_.+", "", metadata$Sample)
-  tax <- filter_taxa(tax_tsv, hits_tsv, min_id)
+  tax <- filter_taxa_laca(tax_tsv, hits_tsv, min_id)
   rownames(tax) <- tax$V1
   tax <- tax[, -1, drop = FALSE]
   colnames(tax) <- "taxonomy"
@@ -130,47 +130,6 @@ ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits
     sample_data(ps)$Spike_in)
   return(ps)
   }
-```
-
-```{r, taxa-bar, include=FALSE, message=FALSE}
-library(RColorBrewer)
-# include large palette
-qual_col_pals <- brewer.pal.info[brewer.pal.info$category == "qual", ]
-my_palette <- unlist(
-  mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-
-taxa_plot <- function(ps, taxon_l) {
-  ps_rel <- transform_sample_counts(ps, function(x) x / sum(x) * 100)
-  # agglomerate taxa
-  glom <- tax_glom(ps_rel, taxrank = taxon_l, NArm = FALSE)
-  ps_melt <- psmelt(glom)
-  # change to character for easy-adjusted level
-  taxon <- eval(substitute(get(taxon_l)), ps_melt)
-  ps_melt$taxon_l <- as.character(taxon)
-  ps_melt <- ps_melt %>%
-    group_by(Group, taxon_l) %>%
-    mutate(median = mean(Abundance))
-  # select grouped median > 1
-  keep <- unique(ps_melt$taxon_l[ps_melt$median > 0.1])
-  ps_melt$taxon_l[!(ps_melt$taxon_l %in% keep)] <- "< 0.1%"
-  # to get the same rows together
-  ps_melt_sum <- ps_melt %>%
-    group_by(selfID, Zymo_series, Spike_in, taxon_l) %>%
-    reframe(Abundance = sum(Abundance))
-  # build color palette
-  tax_n <- length(unique(ps_melt_sum$taxon_l))
-  my_palette_c <- colorRampPalette(my_palette[1:tax_n])(tax_n)
-  p_taxa <- ggplot(
-    ps_melt_sum,
-     aes(x = selfID, y = Abundance, fill = taxon_l)) +
-    geom_bar(stat = "summary", aes(fill = taxon_l), fun = "mean") +
-    labs(x = "", y = "%") +
-    facet_wrap(. ~ Spike_in, scales = "free_x", nrow = 1) +
-    scale_fill_manual(values = my_palette_c) +
-    theme_prism() +
-    theme(axis.text.x.bottom = element_text(angle = 90, size = 8))
-  return(p_taxa)
-}
 ```
 
 ```{r load_all_ps, include=FALSE, message=FALSE}
@@ -767,7 +726,7 @@ p_blast <- df2 %>%
 
 ##############################################
 # reload all otus
-ps_kmerCon <- ps_from_laca( # nolint
+ps_kmerCon0 <- ps_from_laca( # nolint
   count_tsv = "data/zymock10000/kmerCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock10000/kmerCon_out/taxonomy.tsv",
@@ -776,7 +735,7 @@ ps_kmerCon <- ps_from_laca( # nolint
   hits_tsv = "data/zymock10000/kmerCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 0
   )
-ps_miniCon <- ps_from_laca( # nolint
+ps_miniCon0 <- ps_from_laca( # nolint
   count_tsv = "data/zymock10000/miniCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock10000/miniCon_out/taxonomy.tsv",
@@ -785,7 +744,7 @@ ps_miniCon <- ps_from_laca( # nolint
   hits_tsv = "data/zymock10000/miniCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 0
   )
-ps_isoCon <- ps_from_laca( # nolint
+ps_isoCon0 <- ps_from_laca( # nolint
   count_tsv = "data/zymock10000/isoCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock10000/isoCon_out/taxonomy.tsv",
@@ -796,7 +755,7 @@ ps_isoCon <- ps_from_laca( # nolint
   )
 
 #sub100000
-ps_kmerCon_2 <- ps_from_laca( # nolint
+ps_kmerCon0_2 <- ps_from_laca( # nolint
   count_tsv = "data/zymock100000/kmerCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock100000/kmerCon_out/taxonomy.tsv",
@@ -805,7 +764,7 @@ ps_kmerCon_2 <- ps_from_laca( # nolint
   hits_tsv = "data/zymock100000/kmerCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 0
   )
-ps_miniCon_2 <- ps_from_laca( # nolint
+ps_miniCon0_2 <- ps_from_laca( # nolint
   count_tsv = "data/zymock100000/miniCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock100000/miniCon_out/taxonomy.tsv",
@@ -814,7 +773,7 @@ ps_miniCon_2 <- ps_from_laca( # nolint
   hits_tsv = "data/zymock100000/miniCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 0
   )
-ps_isoCon_2 <- ps_from_laca( # nolint
+ps_isoCon0_2 <- ps_from_laca( # nolint
   count_tsv = "data/zymock100000/isoCon_out/count_matrix.tsv",
   meta_tsv = "data/meta_zymock.tsv",
   tax_tsv = "data/zymock100000/isoCon_out/taxonomy.tsv",
@@ -835,12 +794,12 @@ get_otus_count <- function(ps, con_c, subsample_c) {
  }
 
 ps_list <- list(
-  ps_kmerCon,
-  ps_miniCon,
-  ps_isoCon,
-  ps_kmerCon_2,
-  ps_miniCon_2,
-  ps_isoCon_2
+  ps_kmerCon0,
+  ps_miniCon0,
+  ps_isoCon0,
+  ps_kmerCon0_2,
+  ps_miniCon0_2,
+  ps_isoCon0_2
   )
 con_cv <- c(
   "kmerCon",

@@ -1,0 +1,1033 @@
+---
+title: "real world data from emu: control vs vaginosis"
+author:
+  - name: Yan Hui
+    affiliation: Department of Food Science, University of Copenhagen
+    email: huiyan@food.ku.dk
+date: 23/07/2022
+output:
+  html_document:
+    toc: true
+link-citations: yes
+bibliography: ref.bib
+csl: cell.csl
+---
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+```
+
+```{r, phyloseq, include=FALSE, message=FALSE}
+library(tidyverse)
+library(phyloseq)
+library(Biostrings)
+
+ps_construct <- function(taxf, count, metadata, tree_nwk=NULL, rep_fasta=NULL, spe_=TRUE, rarefy_size=NULL) { # nolint
+  # rm otus without phylum assignment "Bacteria|Archaea"
+  # include "Unassigned"
+  index <- grepl("Bacteria|Archaea|Unassigned", taxf$taxonomy)
+  taxf <- taxf[index, , drop = FALSE]
+  # rm otus contains Mitochodira or Chloroplast or phage
+  index <- grepl("Mitochondria|Chloroplast|phage", taxf$taxonomy)
+  taxf <- taxf[!index, , drop = FALSE]
+  # rm otus with NA taxs
+  index <- which(!is.na(taxf$taxonomy))
+  taxf <- taxf[index, , drop = FALSE]
+  # clean taxa
+  taxf$taxonomy <- gsub("; ", ";", taxf$taxonomy)
+  taxf$taxonomy <- gsub(";s__.*_sp\\.$", "", taxf$taxonomy)
+  taxf$taxonomy <- gsub(";[sfg]__uncultured.*$", "", taxf$taxonomy)
+  taxf$taxonomy <- gsub(";s__.*_fecal$", "", taxf$taxonomy)
+  # clean the taxonomy, rm [, ], [a-z]__
+  taxf$taxonomy <- gsub("[a-z]__", "", taxf$taxonomy)
+  taxf_dt <- taxf %>%
+  select(taxonomy) %>%
+  separate(
+    taxonomy,
+    c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"),
+    ";") %>%
+  mutate_all(na_if, "") # non-value string to NA
+  
+  for (i in 1:nrow(taxf_dt)) {
+    if (is.na(taxf_dt[i, 1]) | taxf_dt[i, 1] == "Unassigned" | taxf_dt[i, 1] == "unassigned") { # nolint
+      taxf_dt[i, 1:7] <- "Unassigned"
+      } else if (!is.na(taxf_dt[i, 7]) & !is.na(taxf_dt[i, 6]) & !grepl(" ", taxf_dt[i, 7]) & !grepl("_", taxf_dt[i, 7])) { # nolint
+        # elif [i,7] and [i,6] is not NA and no space in [i,7], paste [i,7] and [i,6]
+        taxf_dt$Species[i] <- paste(taxf_dt$Genus[i], taxf_dt$Species[i], sep = " ") # nolint
+      } else if (is.na(taxf_dt[i, 2])) {
+        kingdom <- paste("Unclassified", taxf_dt[i, 1], sep = " ")
+        taxf_dt[i, 2:7] <- kingdom
+      } else if (is.na(taxf_dt[i, 3])) {
+        phylum <- paste("Unclassified", taxf_dt[i, 2], sep = " ")
+        taxf_dt[i, 3:7] <- phylum
+      } else if (is.na(taxf_dt[i, 4])) {
+        class <- paste("Unclassified", taxf_dt[i, 3], sep = " ")
+        taxf_dt[i, 4:7] <- class
+      } else if (is.na(taxf_dt[i, 5])) {
+        order <- paste("Unclassified", taxf_dt[i, 4], sep = " ")
+        taxf_dt[i, 5:7] <- order
+      } else if (is.na(taxf_dt[i, 6])) {
+        family <- paste("Unclassified", taxf_dt[i, 5], sep = " ")
+        taxf_dt[i, 6:7] <- family
+      } else if (is.na(taxf_dt[i, 7])) {
+        taxf_dt$Species[i] <- paste("Unclassified ", taxf_dt$Genus[i], sep = " ") #nolint
+      }
+    }
+  if (spe_) {
+    taxf_dt$Species <- gsub("_", " ", taxf_dt$Species)
+    # consistent with emu profiles
+    taxf_dt$Genus <- gsub("_", " ", taxf_dt$Genus)
+    taxf_dt$Family <- gsub("_", " ", taxf_dt$Family)
+  }
+
+  # assemble phyloseq object
+  otu <- otu_table(as.matrix(count), taxa_are_rows = TRUE)
+  tax <- tax_table(as.matrix(taxf_dt))
+  metadata <- sample_data(metadata)
+  if (is.null(tree_nwk)) {
+    ps <- phyloseq(otu, tax, metadata)
+  } else {
+    tree <- read_tree_greengenes(tree_nwk)
+    ps <- phyloseq(otu, tax, metadata, tree)
+  }
+  if (!is.null(rep_fasta)) {  
+    rep_seqs <- readDNAStringSet(rep_fasta)
+    ps <- merge_phyloseq(ps, rep_seqs)
+  }
+  if (!is.null(rarefy_size)) {
+    ps <- rarefy_even_depth(ps, rngseed = 1, sample.size = rarefy_size)
+  }
+  return(ps)
+}
+
+filter_taxa_laca <- function(tax_tsv, hits_tsv, min_id) {
+  tax_table <- read.table(tax_tsv, header = FALSE, sep = "\t")
+  hits_table <- read.table(hits_tsv, header = FALSE, sep = "\t")
+  tax_mean_id <- hits_table %>%
+    filter(V3 != "*") %>%
+    group_by(V1) %>%
+    summarise(mean_id = min(as.numeric(V3))) %>%
+    filter(mean_id >= min_id)
+  tax_table <- tax_table %>%
+    filter(V1 %in% tax_mean_id$V1)
+  return(tax_table)
+}
+
+ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits_tsv, min_id, spe_=TRUE, rarefy_size=NULL) { # nolint
+  count <- read.table(count_tsv, header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
+  metadata <- read.table(meta_tsv, header = T, sep = "\t", row.names = 1)
+  tax <- filter_taxa_laca(tax_tsv, hits_tsv, min_id)
+  rownames(tax) <- tax$V1
+  tax <- tax[, -1, drop = FALSE]
+  colnames(tax) <- "taxonomy"
+  ps <- ps_construct(tax, count, metadata, tree_nwk, rep_fasta, spe_, rarefy_size) # nolint
+  return(ps)
+  }
+```
+
+```{r load_all_ps, include=FALSE, message=FALSE}
+ps_kmerCon <- ps_from_laca( # nolint
+  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/kmerCon_out/tree.nwk",
+  rep_fasta = "data/emu/kmerCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/kmerCon_out/taxonomy/q2blas/hits.tsv",
+  min_id = 97
+  )
+ps_miniCon <- ps_from_laca( # nolint
+  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/miniCon_out/tree.nwk",
+  rep_fasta = "data/emu/miniCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/miniCon_out/taxonomy/q2blas/hits.tsv",
+  min_id = 97
+  )
+ps_isoCon <- ps_from_laca( # nolint
+  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/isoCon_out/tree.nwk",
+  rep_fasta = "data/emu/isoCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/isoCon_out/taxonomy/q2blas/hits.tsv",
+  min_id = 97
+  )
+
+# load emu profiles manually
+countab <- read.table("data/emu/emu_fastq_b0.tsv", header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
+metab <- read.table("data/emu/mapping.tsv", header = T, sep = "\t", row.names = 1) # nolint
+taxtab <- countab[,1, drop = FALSE] 
+countab <- countab[, -1]
+ps_emu <- ps_construct(taxtab, countab, metab, spe_ = TRUE)
+#ps_emu
+```
+
+```{r, otu-length, include=FALSE, message=FALSE}
+get_otus_len <- function(ps, con_c) {
+  ref_seqs <- refseq(ps)
+  otu_length <- data.frame(otu=names(ref_seqs), width=width(ref_seqs)) %>%
+    mutate(consensus = con_c)
+  return(otu_length)
+}
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon
+  )
+con_cv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+merge_otus_len <- function(ps_list, con_cv) {
+  otus_len_list <- lapply(seq_along(ps_list), function(i) {
+    get_otus_len(ps_list[[i]], con_c = con_cv[i])
+  })
+  otus_len_list <- do.call(rbind, otus_len_list)
+  return(otus_len_list)
+}
+otus_len <- merge_otus_len(ps_list, con_cv)
+
+library(ggplot2)
+library(ggbeeswarm)
+library(ggprism)
+library(forcats)
+library(RColorBrewer)
+p_otus_len <- otus_len %>%
+  ggplot(aes(
+    y = width, 
+    x = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon"
+      )
+  )) +
+  geom_quasirandom() +
+  labs(
+    x = "",
+    y = "OTU length (bp)",
+    ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  )
+```
+
+```{r, yield, include=FALSE, message=FALSE}
+get_otus_sum <- function(ps, n = 0, taxal = "Species", binary = FALSE,
+ con_c, bin_c) {
+  # prune otus
+  ps <- prune_taxa(taxa_sums(ps) > n, ps)
+  taxa <- as.data.frame(tax_table(ps))[taxal]
+  # split into Assigned and Unassigned
+  taxa$groups <- case_when(
+    grepl("Unassigned", taxa[, taxal]) ~ "Unassigned", TRUE ~ "Assigned"
+    )
+  # colsums group_by
+  otus <- as.data.frame(otu_table(ps))
+  # if binary, convert to binary
+  if (binary) {
+    otus[otus > 0] <- 1
+  }
+  otus$groups <- taxa$groups
+  otus_sum <- otus %>%
+  # rowname to coloum
+  group_by(groups) %>%
+  summarise_all(sum) %>%
+  # to long format
+  gather(vars, vals, -groups) %>%
+  mutate(consensus = con_c) %>%
+  mutate(bin = bin_c)
+return(otus_sum)
+}
+
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon,
+  ps_emu
+  )
+con_cv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon",
+  "emu"
+  )
+bin_cv <- c(
+  rep("LACA", 3),
+  "Emu"
+)
+
+merge_otus_sum <- function(ps_list, n = 0, taxal = "Species", binary = FALSE,
+ con_cv, bin_cv) {
+  otus_sum_list <- lapply(seq_along(ps_list), function(i) {
+    get_otus_sum(ps_list[[i]], n = n, taxal = taxal, binary = binary,
+    con_c = con_cv[i], bin_c = bin_cv[i])
+  })
+  otus_sum_list <- do.call(rbind, otus_sum_list)
+  return(otus_sum_list)
+}
+
+otus_sum <- merge_otus_sum(ps_list, n = 0, taxal = "Species", binary = FALSE,
+ con_cv, bin_cv)
+otus_sumb <- merge_otus_sum(ps_list, n = 0, taxal = "Species", binary = TRUE,
+ con_cv, bin_cv)
+
+# merge for plot
+metas <- data.frame(sample_data(ps_kmerCon)) %>%
+  tibble::rownames_to_column("sample")
+dt_sum <- merge(otus_sum, metas, by.x = "vars", by.y = "sample")
+dt_sumb <- merge(otus_sumb, metas, by.x = "vars", by.y = "sample")
+
+library(ggplot2)
+library(ggprism)
+library(forcats)
+library(RColorBrewer)
+p_otus_sum <- dt_sum %>%
+  ggplot(aes(
+    y = vals, 
+    x = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon", "emu"
+      )
+  )) +
+  geom_jitter(
+    size = 3,
+    aes(
+      color = as.factor(Group)
+    )) +
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,9)]) +
+  facet_grid(.~ bin, scales = "free", space = "free_x") +
+  labs(
+    x = "",
+    y = "# of reads",
+    color = "Sample type"
+    ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  )
+p_otus_sumb <- dt_sumb %>%
+  ggplot(aes(
+    y = vals, 
+    x = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon", "emu"
+      )
+  )) +
+  geom_jitter(
+    size = 3,
+    aes(
+      color = as.factor(Group)
+    )) +
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(9:7, 4:1)]) +
+  facet_grid(.~bin, scales = "free", space = "free_x") +
+  labs(
+    x = "",
+    y = "# of Features",
+    color = "Sample type",
+    ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  )
+
+#p_otus_sum
+#p_otus_sumb
+```
+
+```{r, multi-betas, include=FALSE, message=FALSE, eval}
+library(vegan)
+library(ggprism)
+plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
+  # exclude "Unassigned" OTU at phylum level
+  ps <- subset_taxa(ps, Phylum != "Unassigned")
+  # rm shallow sequenced samples
+  if(!is.null(min_depth)) {
+    ps <- prune_samples(sample_sums(ps) >= min_depth, ps)
+  }
+  metadata <- data.frame(sample_data(ps))
+  # distance and pca
+  if(method_c == "jaccard") {
+    dist <- phyloseq::distance(ps, method = method_c, binary = TRUE)
+  }
+  else {
+    dist <- phyloseq::distance(ps, method = method_c)
+  } 
+  pcoa <- cmdscale(dist, k = 3, eig = T)
+  pcs <- as.data.frame(pcoa$points)
+  colnames(pcs) <- c("x", "y", "z")
+  eig <- pcoa$eig
+  points <- cbind.data.frame(pcs, metadata)
+  var_color <- eval(substitute(get(color_c)), points)
+  # adonis
+  myfor <- as.formula(paste0("dist ~ as.factor(", color_c, ")"))
+  adonis_sub <- adonis2(myfor, data = points, permutations = 999)
+  adonis_R2 <- adonis_sub$R2
+  adonis_p <- adonis_sub$`Pr(>F)`
+  p_ordi <- ggplot(
+    points, 
+    aes(x = x, y = y, color = as.factor(var_color))
+    ) +
+    geom_point(size = 3) +
+    scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,9)]) +
+    #scale_color_brewer(palette = "Spectral") +
+    # only 3 breaks
+    scale_x_continuous(n.breaks = 3) +
+    scale_y_continuous(n.breaks = 3) +
+    labs(
+      x = paste0("PCoA 1 (", round(100 * eig[1] / sum(eig), 1), " %)"),
+      y = paste0("PCoA 2 (", round(100 * eig[2] / sum(eig), 1), " %)"),
+      title = paste0(
+        title_cs, "\n",
+        method_c, "\nR2=", round(adonis_R2[1], 2),
+        ", P=", format(adonis_p[1], digits = 1)),
+      color = "Sample type"
+      ) +
+    theme_prism() +
+    theme(
+      legend.title = element_text(size = 10),
+      plot.title = element_text(size = 10),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
+    )
+  return(p_ordi)
+}
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon,
+  )
+title_csv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+
+get_multi_betas <- function(ps_list, title_csv, method_c, color_c, min_depth=5000) { #nolint
+  p_ordi_list <- lapply(
+    seq_along(ps_list), 
+    function(i) {
+      plot_sub_ordi2(ps_list[[i]], method_c, color_c, title_csv[i], min_depth)
+    }
+  )
+}
+
+multi_wunifrac <- get_multi_betas(ps_list, title_csv, "wunifrac", "Group") #nolint
+multi_bray <- get_multi_betas(append(ps_list, ps_emu), c(title_csv, "emu"), "bray", "Group") #nolint
+p_multi_betas <- patchwork::wrap_plots(c(multi_wunifrac, multi_bray), guides = "collect", nrow = 4) #nolint
+
+```
+
+```{r, multi-bins, include=FALSE, message=FALSE}
+get_melt_ps <- function(ps, taxon_l, con_c, bin_c) {
+  # agglomerate taxa
+  glom <- speedyseq::tax_glom(ps, taxrank = taxon_l, NArm = FALSE)
+  ps_melt <- speedyseq::psmelt(glom)
+  ps_melt$consensus <- con_c
+  ps_melt$bin <- bin_c
+  return(ps_melt)
+}
+
+get_multi_melt_ps <- function(ps_list, taxon_l, con_cv, bin_cv) {
+  ps_melt_list <- lapply(
+    seq_along(ps_list), 
+    function(i) {
+      get_melt_ps(ps_list[[i]], taxon_l, con_cv[i], bin_cv[i])
+    }
+  )
+  ps_melt_multi <- do.call(rbind, ps_melt_list)
+  return(ps_melt_multi)
+}
+
+library(RColorBrewer)
+# include large palette
+qual_col_pals <- brewer.pal.info[brewer.pal.info$category == "qual", ]
+my_palette <- unlist(
+  mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+plot_taxa_flow <- function(ps_melt, taxon_l, rel = FALSE, merge_unclassified = TRUE) { #nolint
+  # change to character for easy-adjusted level
+  taxon <- eval(substitute(get(taxon_l)), ps_melt)
+  ps_melt$taxon_l <- as.character(taxon)
+  ps_melt <- ps_melt %>%
+    group_by(Group, consensus, bin) %>%
+    mutate(sum = sum(Abundance)) %>%
+    group_by(Group, consensus, bin, taxon_l) %>%
+    mutate(mean = sum(Abundance)/sum * 100)
+  # select grouped mean > 1
+  keep <- unique(ps_melt$taxon_l[ps_melt$mean > 1])
+  ps_melt$taxon_l[!(ps_melt$taxon_l %in% keep)] <- "< 1%"
+  if (merge_unclassified == TRUE) {
+    # group "Unclassified xx" into one group
+    ps_melt$taxon_l <- gsub("^Unclassified.*", "Unclassified", ps_melt$taxon_l)
+  }
+  # to get the same rows together
+  if (rel == TRUE) {
+    ps_melt_sum <- ps_melt %>%
+      group_by(Sample, Group, consensus, bin) %>%
+      mutate(sum2 = sum(Abundance)) %>%
+      group_by(Sample, Group, consensus, bin, taxon_l) %>%
+      reframe(Abundance = Abundance/sum2 * 100)
+  } else {
+    ps_melt_sum <- ps_melt %>%
+      group_by(Sample, Group, consensus, bin, taxon_l) %>%
+      reframe(Abundance = Abundance)
+  }
+
+  ytitle <- ifelse(rel == TRUE, "%", "# of counts")
+  # build color palette
+  tax_n <- length(unique(ps_melt_sum$taxon_l))
+  my_palette_c <- colorRampPalette(my_palette[1:tax_n])(tax_n)
+  p_taxa <- ggplot(
+    ps_melt_sum,
+     aes(
+      x = fct_relevel(
+        consensus, "kmerCon", "isONclustCon",
+        "isONclustCon2", "isONcorCon", "emu"
+        ),
+      y = Abundance, fill = taxon_l)) +
+    geom_bar(stat = "summary", aes(fill = taxon_l), fun = "sum") +
+    labs(x = "", y = ytitle) +
+    facet_grid(Group + Sample ~ bin, scales = "free", space = "free_x") +
+    guides(fill = guide_legend(ncol = 1)) +
+    scale_fill_manual(values = my_palette_c) +
+    theme_prism() +
+    theme(axis.text.x.bottom = element_text(angle = 90))
+  return(p_taxa)
+}
+
+# run
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon,
+  ps_emu
+  )
+con_cv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon",
+  "emu"
+  )
+bin_cv <- c(
+  rep("LACA", 3),
+  "Emu"
+)
+# Species
+ps_melt_multi <- get_multi_melt_ps(
+  ps_list, "Species", con_cv, bin_cv
+  )
+p_taxa_flow <- plot_taxa_flow(ps_melt_multi, "Species", rel = FALSE, merge_unclassified = FALSE) #nolint
+p_taxa_flow2 <- plot_taxa_flow(ps_melt_multi, "Species", rel = TRUE, merge_unclassified = FALSE) #nolint
+# Genus
+ps_melt_multig <- get_multi_melt_ps(
+  ps_list, "Genus", con_cv, bin_cv
+  )
+p_taxa_flow2g <- plot_taxa_flow(ps_melt_multig, "Genus", rel = TRUE, merge_unclassified = FALSE) #nolint
+p_taxa_flow2g_abs <- plot_taxa_flow(ps_melt_multig, "Genus", rel = FALSE, merge_unclassified = FALSE) #nolint
+```
+
+```{r, q2blast, include=FALSE, message=FALSE}
+library(data.table)
+fs <- list.files(
+  path = "./data/emu",
+  pattern = "*hits.tsv", full.names = TRUE, recursive = TRUE)
+
+dt <- rbindlist(sapply(fs, function(x) fread(x, header=FALSE), simplify = FALSE), idcol = "file", use.names = FALSE) # nolint
+dt$consensus <- gsub("^.*emu/(.*)_out/taxonomy.*", "\\1", dt$file)
+dt <- dt[, !"file"]
+df <- as.data.frame(dt)
+colnames(df) <- c(
+  "qseqid", "sseqid", "pident", "length", "mismatch", "gapopen",
+  "qstart", "qend", "sstart", "ssend", "evalue", "bitscore", "consensus")
+
+fs2 <- list.files(
+  path = "./data/emu",
+  pattern = "*taxonomy.tsv", full.names = TRUE, recursive = TRUE)
+dtax <- rbindlist(sapply(fs2, function(x) fread(x, header=FALSE), simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
+dtax$consensus <- gsub("^.*emu/(.*)_out/taxonomy.*", "\\1", dtax$file)
+dtax <- dtax[, !"file"]
+df_tax <- as.data.frame(dtax)
+colnames(df_tax) <- c("qseqid", "tax", "consensus")
+df_tax$LCA <- case_when(
+  df_tax$tax == "Unassigned" ~ "Unassigned", 
+  str_count(df_tax$tax, ";") == 0 ~ "Kingdom",
+  str_count(df_tax$tax, ";") == 1 ~ "Phylum",
+  str_count(df_tax$tax, ";") == 2 ~ "Class",
+  str_count(df_tax$tax, ";") == 3 ~ "Order",
+  str_count(df_tax$tax, ";") == 4 ~ "Family",
+  str_count(df_tax$tax, ";") == 5 ~ "Genus",
+  str_count(df_tax$tax, ";") == 6 ~ "Species",
+)
+
+# show average identity per consensus in scatter plot
+library(tidyverse)
+
+df2 <- df %>%
+  group_by(qseqid, consensus) %>%
+  reframe(
+    # take max hit identity per OTU
+    pident = max(pident),
+    # gapopen% per OTU
+    cov = max((qend - qstart+1) / length * 100),
+    min_pident = min(pident)) %>%
+  left_join(df_tax, by = c("qseqid", "consensus"))
+library(ggprism)
+p_blast <- df2 %>%
+  filter(min_pident >= 97) %>%
+  ggplot(aes(
+    y = pident, 
+    x = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon"
+      )
+  )) +
+  geom_quasirandom(
+    aes(
+      color = cov,
+      shape = fct_relevel(LCA, "Species", "Genus", "Order") # no family
+    )) +
+  scale_color_distiller(palette = "Spectral", direction = 1) +
+  labs(
+    x = "",
+    y = "% of identical matches",
+    color = "% of cover",
+    shape = "Taxonomic hits"
+  ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  )
+
+##############################################
+# reload all otus
+ps_kmerCon0 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/kmerCon_out/tree.nwk",
+  rep_fasta = "data/emu/kmerCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/kmerCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_miniCon0 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/miniCon_out/tree.nwk",
+  rep_fasta = "data/emu/miniCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/miniCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+ps_isoCon0 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
+  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/isoCon_out/tree.nwk",
+  rep_fasta = "data/emu/isoCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/isoCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 0
+  )
+
+# figure min pidentity vs the total counts of every OTUs
+get_otus_count <- function(ps, con_c) {
+  otu_table <- as.data.frame(otu_table(ps))
+  otu_count <- data.frame(otu=rownames(otu_table), count=rowSums(otu_table)) %>%
+    mutate(consensus = con_c)
+  return(otu_count)
+ }
+
+ps_list <- list(
+  ps_kmerCon0,
+  ps_miniCon0,
+  ps_isoCon0
+  )
+con_cv <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+
+merge_otus_count <- function(ps_list, con_cv) {
+  otus_count_list <- lapply(seq_along(ps_list), function(i) {
+    get_otus_count(ps_list[[i]], con_c = con_cv[i])
+  })
+  otus_count_list <- do.call(rbind, otus_count_list)
+  return(otus_count_list)
+}
+
+otus_count <- merge_otus_count(ps_list, con_cv)
+colnames(otus_count) <- c("qseqid", "count", "consensus")
+df_otus_count <- otus_count %>%
+  left_join(df2, by = c("qseqid", "consensus"))
+
+# avoid scientific notation
+options(scipen = 999)
+p_otus_count <- df_otus_count %>%
+  filter(tax != "Unassigned") %>%
+  ggplot(aes(
+    y = pident, 
+    x = count
+  )) +
+  geom_point(
+    aes(
+      color = fct_relevel(
+      consensus, "kmerCon", "miniCon", "isoCon"
+      )
+    )) +
+  # add segment yline = 97, xline=50,500
+  geom_segment(data = data.frame(xs=0,xe=1500,ys=95,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=1500,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
+  scale_y_continuous(breaks = c(100, 97, 95, 90, 85)) +
+  scale_x_continuous(
+    trans = scales::log2_trans(),
+    breaks = c(10,50,100,500,1000,1500,5000,10000,50000,100000),
+    ) +
+  labs(
+    x = "# of read counts per OTU",
+    y = "% of identical matches",
+    color = "Consensus mode",
+  ) +
+  theme_prism() +
+  theme(
+    legend.title = element_text(),
+    axis.text.x = element_text(angle = 90),
+  ) 
+#p_otus_count
+
+# table for pct of OTUs with min pidentity >= 97, 99, *
+pct_otu <- df_otus_count %>%
+  group_by(consensus) %>%
+  summarise(
+    n = n(),
+    `% of unclassified OTUs` = sum(tax == "Unassigned") / n * 100,
+    `% of OTUs with min identity > 95%` = sum(min_pident >= 95) / n * 100,
+    `% of OTUs with min identity > 97%` = sum(min_pident >= 97) / n * 100,
+    `% of OTUs min identity > 99%` = sum(min_pident >= 99) / n * 100,
+    `sum of OTU counts` = sum(count),
+    `% of unclassified OTU in counts` = sum(count[tax == "Unassigned"]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 95% in counts` = sum(count[min_pident >= 95]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
+  )
+#pct_otu
+dir.create("table/emu", showWarnings = FALSE)
+write.csv(pct_otu, "table/emu/pct_otu.csv", quote = FALSE, row.names = FALSE) #nolint
+```
+
+```{r upset-taxa, include=FALSE, message=FALSE}
+library(ComplexUpset)
+# extract long taxa
+tax_extract <- function(ps, d_name, rarefy_size = NULL, min_abun_pct = NULL, taxa = NULL){ #nolint
+  if (!is.null(rarefy_size)) {
+  # rarefied to avoid depth bias
+    ps <- rarefy_even_depth(ps, sample.size = rarefy_size, rngseed = 123)
+  }
+  if (!is.null(min_abun_pct)) {
+    ps_pct <- transform_sample_counts(ps, function(x) x / sum(x) * 100)
+    ps <- phyloseq::filter_taxa(ps_pct, function(x) mean(x) > min_abun_pct, TRUE)
+  }
+  if (!is.null(taxa)) {
+    idx <- !grepl("Unclassified ", data.frame(tax_table(ps))[, taxa])
+    ps <- prune_taxa(idx, ps)
+  }
+  ps_f <- prune_taxa(rowSums(otu_table(ps)) > 0, ps)
+  # combine columns in tax_table, vectorize, end by taxa
+  if (!is.null(taxa)) {
+    taxdt <- data.frame(tax_table(ps_f))
+    # get column index
+    idx <- grep(taxa, colnames(taxdt))
+    taxon <- unique(apply(taxdt[, 1:idx], 1, paste, collapse = ";"))
+  } else {
+    taxon <- unique(apply(tax_table(ps_f), 1, paste, collapse = ";"))
+  }
+  tags <- data.frame(taxonomy = taxon, presence = 1)
+  colnames(tags) <- c("taxonomy", d_name)
+  return(tags)
+}
+
+# Species
+tag_kmerCon_s <- tax_extract(ps_kmerCon, "Species: kmerCon", taxa = "Species", min_abun_pct = 0.1) #nolint
+tag_miniCon_s <- tax_extract(ps_miniCon, "Species: miniCon", taxa = "Species", min_abun_pct = 0.1) #nolint
+tag_isoCon_s <- tax_extract(ps_isoCon, "Species: isoCon", taxa = "Species", min_abun_pct = 0.1) #nolint
+tag_emu_s <- tax_extract(ps_emu, "Species: emu", taxa = "Species", min_abun_pct = 0.1) #nolint
+
+# Genus
+tag_kmerCon_g <- tax_extract(ps_kmerCon, "Genus: kmerCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
+tag_miniCon_g <- tax_extract(ps_miniCon, "Genus: miniCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
+tag_isoCon_g <- tax_extract(ps_isoCon, "Genus: isoCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
+tag_emu_g <- tax_extract(ps_emu, "Genus: emu", taxa = "Genus", min_abun_pct = 0.1) #nolint
+
+tags <- list(tag_kmerCon_s, tag_miniCon_s, tag_isoCon_s, tag_emu_s, #nolint
+  tag_kmerCon_g, tag_miniCon_g, tag_isoCon_g, tag_emu_g) #nolint
+
+# outer-join multiple dataframes
+tag_merge <- Reduce(
+  function(x, y, ...) merge(x, y, all = TRUE, ...),
+  tags
+)
+# mv NAs to zeros to create a binary matrix
+tag_merge[is.na(tag_merge)] <- 0
+
+p_upset <- upset(tag_merge,
+ c("Species: kmerCon", "Species: miniCon", "Species: isoCon", "Species: emu", #nolint
+   "Genus: kmerCon", "Genus: miniCon", "Genus: isoCon", "Genus: emu"), #nolint
+  name="Profiles", width_ratio=0.1, wrap=TRUE)
+
+#p_upset
+tag_merge1 <- tag_merge[rowSums(tag_merge[,-1]) == 1,]
+tag_merge_emuonly <- tag_merge1[tag_merge1$`Species: emu`==1 | tag_merge1$`Genus: emu`==1,] #nolint
+dir.create("table/emu", showWarnings = FALSE)
+write.csv(tag_merge_emuonly, "table/emu/taxa_emuonly01.csv", quote=FALSE, row.names=FALSE) #nolint
+
+# get the reltive abundance in emu profiles
+get_taxa_abun <- function(ps, taxon_l, taxa, rel = TRUE) {
+  if (rel == TRUE) {
+    ps <- transform_sample_counts(ps, function(x) x / sum(x) * 100)
+  }
+  # agglomerate taxa
+  glom <- speedyseq::tax_glom(ps, taxrank = taxon_l, NArm = FALSE)
+  ps_melt <- speedyseq::psmelt(glom)
+  taxon <- eval(substitute(get(taxon_l)), ps_melt)
+  ps_melt$taxon_l <- as.character(taxon)
+  # the taxa after the last semicolon
+  taxa_last <- sapply(strsplit(taxa, ";"), tail, 1)
+  taxa_dt <- data.frame(taxonomy=taxa, taxa_last=taxa_last, stringsAsFactors = FALSE) # nolint
+  # get the relative abundance
+  table_wide <- ps_melt %>%
+    right_join(taxa_dt, by=c("taxon_l"="taxa_last")) %>%
+    # wide format
+    select(Sample, taxonomy, Abundance) %>%
+    spread(Sample, Abundance) %>%
+    # mean
+    mutate(mean = rowMeans(.[, -1])) %>%
+    arrange(desc(mean))
+  return(table_wide)
+}
+emu_abun_s <- get_taxa_abun(ps_emu, taxon_l = "Species", taxa = tag_merge_emuonly$taxonomy[tag_merge_emuonly$`Species: emu`==1])#nolint
+# no emu only genus with relative abundance > 0.1%
+#emu_abun_g <- get_taxa_abun(ps_emu, taxon_l = "Genus", taxa = tag_merge_emuonly$taxonomy[tag_merge_emuonly$`Genus: emu`==1]) #nolint
+#emu_abun <- rbind(emu_abun_g, emu_abun_s)
+emu_abun <- emu_abun_s
+write.csv(emu_abun, "table/emu/taxa_emuonly_abun01.csv", quote=FALSE, row.names=FALSE) #nolint
+```
+
+```{r, correlation, include=FALSE, message=FALSE}
+ps_melt_abundance <- function(ps, taxon_l, rel = TRUE) {
+  if (rel == TRUE) {
+    ps <- transform_sample_counts(ps, function(x) x / sum(x) * 100)
+  }
+  # agglomerate taxa
+  glom <- speedyseq::tax_glom(ps, taxrank = taxon_l, NArm = FALSE)
+  ps_melt <- speedyseq::psmelt(glom)
+  # remove "Unclassified xx" at the given taxon level 
+  idx <- !grepl("Unclassified ", ps_melt[, taxon_l])
+  ps_melt <- ps_melt[idx, ]
+  # combine taxonomy
+  tax_names <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species") #nolint
+  idx <- match(taxon_l, tax_names)
+  ps_melt$taxonomy <- apply(ps_melt[, tax_names[1:idx]], 1, function(x) paste(x, collapse = ";")) #nolint
+  # return wide
+  table_wide <- ps_melt %>%
+    select(Sample, taxonomy, Abundance) %>%
+    spread(Sample, Abundance)
+  return(table_wide)
+}
+
+#get cor and p values of shared taxa between two profiles
+dt_cor <- function(dt1, dt2, method="spearman", nzeros_pct = NULL) {
+  # only take non-zero rows > nzeros_pct
+  if (!is.null(nzeros_pct)) {
+    idx1 <- rowSums(dt1[, -1] > 0) > (ncol(dt1) - 1) * nzeros_pct
+    dt1 <- dt1[idx1, ]
+    idx2 <- rowSums(dt2[, -1] > 0) > (ncol(dt2) - 1) * nzeros_pct
+    dt2 <- dt2[idx2, ]
+  }
+  # only take intersection
+  idx <- intersect(dt1$taxonomy, dt2$taxonomy)
+  dt1 <- dt1[dt1$taxonomy %in% idx, ]
+  dt2 <- dt2[dt2$taxonomy %in% idx, ]
+  # dt2 ordered by dt1
+  dt2 <- dt2[match(dt2$taxonomy, dt1$taxonomy), colnames(dt1)]
+  # corelation of the same row in dt1 and dt2
+  # mean (precalculated pct) of each row in dt2
+  dt <- data.frame(taxonomy=dt1$taxonomy, mean=apply(dt2[, -1], 1, mean), stringsAsFactors = FALSE) #nolint
+  for (i in 1:nrow(dt1)) {
+    cor <- cor(t(dt1[i, -1]), t(dt2[i, -1]), method=method)
+    dt[i, "cor"] <- cor
+    p <- cor.test(t(dt1[i, -1]), t(dt2[i, -1]), method=method)$p.value
+    dt[i, "p"] <- p
+  }
+  return(dt)
+}
+
+ps_cor <- function(ps1, ps2, tag, taxon_l = "Species", rel = TRUE, nzeros_pct = 0.3) { #nolint
+  widetab1 <- ps_melt_abundance(ps1, taxon_l = taxon_l, rel = rel)
+  widetab2 <- ps_melt_abundance(ps2, taxon_l = taxon_l, rel = rel)
+  # pearson
+  cors_pearson <- dt_cor(widetab1, widetab2, method="pearson", nzeros_pct = nzeros_pct) #nolint
+  cors_pearson$method <- "pearson"
+  # spearman
+  cors_spearman <- dt_cor(widetab1, widetab2, method="spearman", nzeros_pct = nzeros_pct) #nolint
+  cors_spearman$method <- "spearman"
+  cors <- rbind(cors_pearson, cors_spearman)
+  cors$taxon_l <- taxon_l
+  cors$tag <- tag
+  return(cors)
+}
+
+ps_cor2 <- function(ps1, ps2, tag, taxon_l = c("Genus", "Species"), rel = TRUE, nzeros_pct = 0.3) { #nolint
+  cors <- data.frame()
+  for (taxon in taxon_l) {
+    cors_taxon <- ps_cor(ps1, ps2, tag, taxon_l = taxon, rel = rel, nzeros_pct = nzeros_pct) #nolint
+    cors <- rbind(cors, cors_taxon)
+  }
+  return(cors)
+}
+
+# relative to the emu profile
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon
+  )
+methods <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+cors <- data.frame()
+for (i in 1:length(ps_list)) {
+  ps <- ps_list[[i]]
+  tag <- methods[i]
+  cors_ps <- ps_cor2(ps, ps_emu, tag = tag)
+  cors <- rbind(cors, cors_ps)
+}
+# split cor and p by method into 4 columns, and keep other columns
+cors_pearson <- cors %>% filter(method == "pearson") %>% select(-method) %>% rename(cor_pearson = cor, p_pearson = p) #nolint
+cors_spearman <- cors %>% filter(method == "spearman") %>% select(-method) %>% rename(cor_spearman = cor, p_spearman = p) #nolint
+cors_wide <- cors_pearson %>% left_join(cors_spearman, by = c("taxonomy", "taxon_l", "tag", "mean")) #nolint
+write.table(cors_wide, file = "table/emu/cor.tsv", sep = "\t", quote = FALSE, row.names = FALSE) #nolint
+# pearson|spearman cor scatter plot
+# color: profile method
+# shape: taxon level, i.e., Genus, Species
+# size: abundance, i.e., < 0.1%, 0.1%-1%, > 1%
+p_cor <- cors_wide %>% 
+  mutate(abundance = case_when(
+    mean <= 0.1 ~ "< 0.1%",
+    mean <= 1 ~ "0.1%-1%",
+    TRUE ~ "> 1%"
+  )) %>%
+  mutate(abundance = factor(abundance, levels=c("< 0.1%", "0.1%-1%", "> 1%"))) %>% #nolint
+  #factorize tag
+  mutate(tag = factor(tag, levels=c("kmerCon", "miniCon", "isoCon"))) %>% #nolint
+  ggplot(aes(x=cor_pearson, y=cor_spearman, shape=taxon_l, color=abundance)) + #nolint
+  geom_jitter(size = 3) +
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,3,9)]) +
+  scale_x_continuous(limits=c(0,NA)) + scale_y_continuous(limits=c(0,NA)) +
+  labs(x="Pearson r", y="Spearman r", color = "Abundance", shape="Taxonomy") + #nolint
+  facet_wrap(. ~ tag, ncol=4, scale="free") +
+  theme_prism() + 
+  theme(
+    legend.title = element_text(),
+    axis.text = element_text(size=10),
+  )
+#p_cor
+
+# calculate summarize cor r for each profile, 25%, 50%, 75%
+#cors_wide %>%
+#  group_by(tag) %>%
+#  summarize(
+#    cor_pearson_25 = quantile(cor_pearson, 0.25),
+#    cor_pearson_50 = quantile(cor_pearson, 0.50),
+#    cor_pearson_75 = quantile(cor_pearson, 0.75),
+#    cor_pearson_mean = mean(cor_pearson),
+#    cor_spearman_25 = quantile(cor_spearman, 0.25),
+#    cor_spearman_50 = quantile(cor_spearman, 0.50),
+#    cor_spearman_75 = quantile(cor_spearman, 0.75),
+#    cor_spearman_mean = mean(cor_spearman)
+#  )
+
+# calculate the cor r is significantly different between two tag
+#library(rstatix)
+#cors_pearson_wilcox <- cors_wide %>%
+#  wilcox_test(cor_pearson ~ tag)
+#cors_spearman_wilcox <- cors_wide %>%
+#  wilcox_test(cor_spearman ~ tag)  
+
+```
+
+```{r, hitax, include=FALSE, message=FALSE}
+# expand df with silva taxonomy
+silva_tax <- fread('data/silva_taxonomy.tsv.gz', sep = "\t") #nolint
+# df in q2blast
+df_hitax <- df %>%
+  filter(sseqid != "*") %>%
+  left_join(silva_tax, by = c("sseqid" = "Feature ID"))
+# cleanup Taxon
+df_hitax$Taxon <- gsub("; ", ";", df_hitax$Taxon)
+df_hitax$Taxon <- gsub(";s__.*_sp\\.$", "", df_hitax$Taxon)
+df_hitax$Taxon <- gsub(";[sfg]__uncultured.*$", "", df_hitax$Taxon)
+df_hitax$Taxon <- gsub(";s__.*_fecal$", "", df_hitax$Taxon)
+# clean the taxonomy, rm [, ], [a-z]__
+df_hitax$Taxon <- gsub("[a-z]__", "", df_hitax$Taxon)
+# replace any "_"
+df_hitax$Taxon <- gsub("_", " ", df_hitax$Taxon) 
+write.csv(df_hitax, "table/emu/taxa_hitax.csv", quote = FALSE, row.names = FALSE) #nolint
+
+# load all emu only features
+emuonly <- fread("table/emu/taxa_emuonly.csv", sep = ",") #nolint
+# Prevotalla 7 to Prevotalla
+emuonly$taxonomy_hit <- gsub("Prevotella 7 ", "Prevotella ", emuonly$taxonomy)
+emuonly$taxonomy_hit <- gsub("Burkholderia-Caballeronia-Paraburkholderia ", "Paraburkholderia ", emuonly$taxonomy) #nolint
+
+emuonly_last <- gsub("^.*;", "", emuonly$taxonomy_hit)
+emuonly$hitin <- sapply(emuonly_last, function(x) any(grepl(x, unique(df_hitax$Taxon)))) #nolint
+#in hits species #FALSE 17, TRUE 49
+#in hits genus #FALSE 12, TRUE 6
+
+# get the relative abundance in emu profile
+emuonly_abund <- read.csv("table/emu/taxa_emuonly_abun.csv", header = TRUE, stringsAsFactors = FALSE) #nolint
+# add if covered in blast hit 
+idx <- match(emuonly_abund$taxonomy, emuonly$taxonomy)
+emuonly_abund$hit_cover <- emuonly$hitin[idx]
+emuonly$tax_level <- ifelse(emuonly$`Species: emu` == 1, "Species", "Genus")
+emuonly_abund$taxonomy_level <- emuonly$tax_level[idx]
+write.csv(emuonly_abund, "table/emu/taxa_emuonly_abun_hit.csv", quote = FALSE, row.names = FALSE) #nolint
+
+# >0.1%
+emuonly01 <- fread("table/emu/taxa_emuonly01.csv", sep = ",") #nolint
+emuonly01_last <- gsub("^.*;", "", emuonly01$taxonomy)
+#table(sapply(emuonly01_last, function(x) any(grepl(x, unique(df_hitax$Taxon))))) #all covered in blast hit
+```
+
+```{r, pngs}
+dir.create("figure/emu", showWarnings = FALSE, recursive = TRUE)
+ps <- list(p_otus_len, p_otus_sum, p_otus_sumb, p_blast, p_otus_count) #nolint
+pnames <- c("p1_otus_len", "p1_otus", "p1_otusb", "p6_blast", "p6_otus_count") #nolint
+ps_l <- list(p_taxa_flow, p_taxa_flow2, p_taxa_flow2g, p_taxa_flow2g_abs) #nolint
+pnames_l <- c("p3_bars_ab", "p4_bars", "p5_barg", "p5_barg_ab") #nolint
+ggsave2 <- function(x, y, h=8, w=10) {
+  ggsave(
+    paste0("figure/emu/", x, ".png"),
+    y,
+    height = h,
+    width = w,
+    )
+}
+mapply(ggsave2, pnames, ps)
+mapply(ggsave2, pnames_l, ps_l, h = 20, w = 12)
+ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
+png("figure/emu/p_upset01.png", height = 6, width = 12, units = "in", res = 300) #nolint
+p_upset
+dev.off()
+ggsave("figure/emu/p_cor.png", p_cor, height = 6, width = 12) #nolint
+
+# combine p_upset and p_cor
+library(patchwork)
+p_upset_cor <- (p_upset + theme_prism()) / p_cor + plot_layout(heights = c(2, 1)) + plot_annotation(tag_levels = "a") #nolint
+ggsave("figure/emu/p_upset_cor.png", p_upset_cor, height = 12, width = 12) #nolint
+```

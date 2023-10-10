@@ -1,0 +1,24 @@
+taxonomy,Species: kmerCon,Species: miniCon,Species: isoCon,Species: emu,Species: illumina,Genus: kmerCon,Genus: miniCon,Genus: isoCon,Genus: emu,Genus: illumina
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides,0,0,0,0,0,0,0,0,1,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Alloprevotella,0,0,0,0,0,0,0,0,1,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae UCG-001,0,0,0,0,0,0,0,0,1,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Tannerellaceae;Parabacteroides,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus crispatus,0,0,0,1,0,0,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus hyointestinalis,0,0,0,1,0,0,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;[Eubacterium] oxidoreducens group,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Anaerostipes,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Lachnoclostridium,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Lachnospiraceae NC2004 group,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Lachnospiraceae ND3007 group,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Marvinbryantia,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Oribacterium,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Shuttleworthia,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Monoglobales;Monoglobaceae;Monoglobus,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;Butyricicoccus,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;Colidextribacter,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;Oscillibacter,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;Family XIII AD3011 group,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Negativicutes;Acidaminococcales;Acidaminococcaceae;Phascolarctobacterium,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Anaerovibrio,0,0,0,0,0,0,0,0,1,0
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Mitsuokella;Mitsuokella multacida,0,0,0,1,0,0,0,0,0,0
+Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia-Shigella,0,0,0,0,0,0,0,0,1,0
