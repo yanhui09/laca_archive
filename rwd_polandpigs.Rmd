@@ -336,6 +336,7 @@ dt_sum <- merge(otus_sum, metas, by.x = "vars", by.y = "sample")
 dt_sumb <- merge(otus_sumb, metas, by.x = "vars", by.y = "sample")
 
 library(ggplot2)
+library(ggbeeswarm)
 library(ggprism)
 library(forcats)
 library(RColorBrewer)
@@ -347,7 +348,7 @@ p_otus_sum <- dt_sum %>%
       "isoCon", "emu", "illumina"
       )
   )) +
-  geom_jitter(
+  geom_quasirandom(
     size = 3,
     aes(
       color = as.factor(Group)
@@ -372,7 +373,7 @@ p_otus_sumb <- dt_sumb %>%
       "isoCon", "emu", "illumina"
       )
   )) +
-  geom_jitter(
+  geom_quasirandom(
     size = 3,
     aes(
       color = as.factor(Group)
@@ -475,7 +476,7 @@ multi_bray <- get_multi_betas(
   )
 p_multi_beatas <- patchwork::wrap_plots(
   c(multi_wunifrac, multi_bray),
-  guides = "collect", nrow = 4
+  guides = "collect", ncol = 3
   )
 #p_multi_beatas
 ```
@@ -1022,7 +1023,7 @@ ggsave2 <- function(x, y, h=8, w=10) {
 }
 mapply(ggsave2, pnames, ps)
 mapply(ggsave2, pnames_l, ps_l, h = 12, w = 12)
-ggsave("figure/polandpigs/p2_betas.png", p_multi_beatas, height = 12, width = 12) #nolint
+ggsave("figure/polandpigs/p2_betas.png", p_multi_beatas, height = 8, width = 12) #nolint
 png("figure/polandpigs/p_upset01.png", height = 8, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()

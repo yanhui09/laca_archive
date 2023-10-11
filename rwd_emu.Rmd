@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 23/07/2022
+date: 10/10/2022
 output:
   html_document:
     toc: true
@@ -126,35 +126,35 @@ ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits
 
 ```{r load_all_ps, include=FALSE, message=FALSE}
 ps_kmerCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/kmerCon_out/tree.nwk",
   rep_fasta = "data/emu/kmerCon_out/rep_seqs.fasta",
-  hits_tsv = "data/emu/kmerCon_out/taxonomy/q2blas/hits.tsv",
+  hits_tsv = "data/emu/kmerCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 97
   )
 ps_miniCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/miniCon_out/tree.nwk",
   rep_fasta = "data/emu/miniCon_out/rep_seqs.fasta",
-  hits_tsv = "data/emu/miniCon_out/taxonomy/q2blas/hits.tsv",
+  hits_tsv = "data/emu/miniCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 97
   )
 ps_isoCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/isoCon_out/tree.nwk",
   rep_fasta = "data/emu/isoCon_out/rep_seqs.fasta",
-  hits_tsv = "data/emu/isoCon_out/taxonomy/q2blas/hits.tsv",
+  hits_tsv = "data/emu/isoCon_out/taxonomy/q2blast/hits.tsv",
   min_id = 97
   )
 
 # load emu profiles manually
-countab <- read.table("data/emu/emu_fastq_b0.tsv", header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
+countab <- read.table("data/emu/emu_demultiplexed_b0.tsv", header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
 metab <- read.table("data/emu/mapping.tsv", header = T, sep = "\t", row.names = 1) # nolint
 taxtab <- countab[,1, drop = FALSE] 
 countab <- countab[, -1]
@@ -279,6 +279,7 @@ dt_sum <- merge(otus_sum, metas, by.x = "vars", by.y = "sample")
 dt_sumb <- merge(otus_sumb, metas, by.x = "vars", by.y = "sample")
 
 library(ggplot2)
+library(ggbeeswarm)
 library(ggprism)
 library(forcats)
 library(RColorBrewer)
@@ -289,7 +290,7 @@ p_otus_sum <- dt_sum %>%
       consensus, "kmerCon", "miniCon", "isoCon", "emu"
       )
   )) +
-  geom_jitter(
+  geom_quasirandom(
     size = 3,
     aes(
       color = as.factor(Group)
@@ -313,7 +314,7 @@ p_otus_sumb <- dt_sumb %>%
       consensus, "kmerCon", "miniCon", "isoCon", "emu"
       )
   )) +
-  geom_jitter(
+  geom_quasirandom(
     size = 3,
     aes(
       color = as.factor(Group)
@@ -395,7 +396,7 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
 ps_list <- list(
   ps_kmerCon,
   ps_miniCon,
-  ps_isoCon,
+  ps_isoCon
   )
 title_csv <- c(
   "kmerCon",
@@ -414,7 +415,7 @@ get_multi_betas <- function(ps_list, title_csv, method_c, color_c, min_depth=500
 
 multi_wunifrac <- get_multi_betas(ps_list, title_csv, "wunifrac", "Group") #nolint
 multi_bray <- get_multi_betas(append(ps_list, ps_emu), c(title_csv, "emu"), "bray", "Group") #nolint
-p_multi_betas <- patchwork::wrap_plots(c(multi_wunifrac, multi_bray), guides = "collect", nrow = 4) #nolint
+p_multi_betas <- patchwork::wrap_plots(c(multi_wunifrac, multi_bray), guides = "collect", ncol = 3) #nolint
 
 ```
 
@@ -482,8 +483,7 @@ plot_taxa_flow <- function(ps_melt, taxon_l, rel = FALSE, merge_unclassified = T
     ps_melt_sum,
      aes(
       x = fct_relevel(
-        consensus, "kmerCon", "isONclustCon",
-        "isONclustCon2", "isONcorCon", "emu"
+        consensus, "kmerCon", "miniCon", "isoCon", "emu"
         ),
       y = Abundance, fill = taxon_l)) +
     geom_bar(stat = "summary", aes(fill = taxon_l), fun = "sum") +
@@ -602,8 +602,8 @@ p_blast <- df2 %>%
 ##############################################
 # reload all otus
 ps_kmerCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
-  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/kmerCon_out/tree.nwk",
   rep_fasta = "data/emu/kmerCon_out/rep_seqs.fasta",
@@ -611,8 +611,8 @@ ps_kmerCon0 <- ps_from_laca( # nolint
   min_id = 0
   )
 ps_miniCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
-  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/miniCon_out/tree.nwk",
   rep_fasta = "data/emu/miniCon_out/rep_seqs.fasta",
@@ -620,8 +620,8 @@ ps_miniCon0 <- ps_from_laca( # nolint
   min_id = 0
   )
 ps_isoCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
-  meta_tsv = "data/emu/mapping_nanopore10000.tsv",
+  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/isoCon_out/tree.nwk",
   rep_fasta = "data/emu/isoCon_out/rep_seqs.fasta",
@@ -676,10 +676,10 @@ p_otus_count <- df_otus_count %>%
       )
     )) +
   # add segment yline = 97, xline=50,500
-  geom_segment(data = data.frame(xs=0,xe=1500,ys=95,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=0,xe=1500,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=5000,ys=95,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=5000,xe=5000,ys=-Inf,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=5000,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=5000,xe=5000,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
   scale_y_continuous(breaks = c(100, 97, 95, 90, 85)) +
   scale_x_continuous(
@@ -704,12 +704,10 @@ pct_otu <- df_otus_count %>%
   summarise(
     n = n(),
     `% of unclassified OTUs` = sum(tax == "Unassigned") / n * 100,
-    `% of OTUs with min identity > 95%` = sum(min_pident >= 95) / n * 100,
     `% of OTUs with min identity > 97%` = sum(min_pident >= 97) / n * 100,
     `% of OTUs min identity > 99%` = sum(min_pident >= 99) / n * 100,
     `sum of OTU counts` = sum(count),
     `% of unclassified OTU in counts` = sum(count[tax == "Unassigned"]) / sum(count) * 100, #nolint
-    `% of OTU with min identity > 95% in counts` = sum(count[min_pident >= 95]) / sum(count) * 100, #nolint
     `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
     `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
   )
@@ -750,16 +748,16 @@ tax_extract <- function(ps, d_name, rarefy_size = NULL, min_abun_pct = NULL, tax
 }
 
 # Species
-tag_kmerCon_s <- tax_extract(ps_kmerCon, "Species: kmerCon", taxa = "Species", min_abun_pct = 0.1) #nolint
-tag_miniCon_s <- tax_extract(ps_miniCon, "Species: miniCon", taxa = "Species", min_abun_pct = 0.1) #nolint
-tag_isoCon_s <- tax_extract(ps_isoCon, "Species: isoCon", taxa = "Species", min_abun_pct = 0.1) #nolint
-tag_emu_s <- tax_extract(ps_emu, "Species: emu", taxa = "Species", min_abun_pct = 0.1) #nolint
+tag_kmerCon_s <- tax_extract(ps_kmerCon, "Species: kmerCon", taxa = "Species") #nolint
+tag_miniCon_s <- tax_extract(ps_miniCon, "Species: miniCon", taxa = "Species") #nolint
+tag_isoCon_s <- tax_extract(ps_isoCon, "Species: isoCon", taxa = "Species") #nolint
+tag_emu_s <- tax_extract(ps_emu, "Species: emu", taxa = "Species") #nolint
 
 # Genus
-tag_kmerCon_g <- tax_extract(ps_kmerCon, "Genus: kmerCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
-tag_miniCon_g <- tax_extract(ps_miniCon, "Genus: miniCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
-tag_isoCon_g <- tax_extract(ps_isoCon, "Genus: isoCon", taxa = "Genus", min_abun_pct = 0.1) #nolint
-tag_emu_g <- tax_extract(ps_emu, "Genus: emu", taxa = "Genus", min_abun_pct = 0.1) #nolint
+tag_kmerCon_g <- tax_extract(ps_kmerCon, "Genus: kmerCon", taxa = "Genus") #nolint
+tag_miniCon_g <- tax_extract(ps_miniCon, "Genus: miniCon", taxa = "Genus") #nolint
+tag_isoCon_g <- tax_extract(ps_isoCon, "Genus: isoCon", taxa = "Genus") #nolint
+tag_emu_g <- tax_extract(ps_emu, "Genus: emu", taxa = "Genus") #nolint
 
 tags <- list(tag_kmerCon_s, tag_miniCon_s, tag_isoCon_s, tag_emu_s, #nolint
   tag_kmerCon_g, tag_miniCon_g, tag_isoCon_g, tag_emu_g) #nolint
@@ -781,7 +779,7 @@ p_upset <- upset(tag_merge,
 tag_merge1 <- tag_merge[rowSums(tag_merge[,-1]) == 1,]
 tag_merge_emuonly <- tag_merge1[tag_merge1$`Species: emu`==1 | tag_merge1$`Genus: emu`==1,] #nolint
 dir.create("table/emu", showWarnings = FALSE)
-write.csv(tag_merge_emuonly, "table/emu/taxa_emuonly01.csv", quote=FALSE, row.names=FALSE) #nolint
+write.csv(tag_merge_emuonly, "table/emu/taxa_emuonly.csv", quote=FALSE, row.names=FALSE) #nolint
 
 # get the reltive abundance in emu profiles
 get_taxa_abun <- function(ps, taxon_l, taxa, rel = TRUE) {
@@ -812,7 +810,7 @@ emu_abun_s <- get_taxa_abun(ps_emu, taxon_l = "Species", taxa = tag_merge_emuonl
 #emu_abun_g <- get_taxa_abun(ps_emu, taxon_l = "Genus", taxa = tag_merge_emuonly$taxonomy[tag_merge_emuonly$`Genus: emu`==1]) #nolint
 #emu_abun <- rbind(emu_abun_g, emu_abun_s)
 emu_abun <- emu_abun_s
-write.csv(emu_abun, "table/emu/taxa_emuonly_abun01.csv", quote=FALSE, row.names=FALSE) #nolint
+write.csv(emu_abun, "table/emu/taxa_emuonly_abun.csv", quote=FALSE, row.names=FALSE) #nolint
 ```
 
 ```{r, correlation, include=FALSE, message=FALSE}
@@ -907,8 +905,8 @@ for (i in 1:length(ps_list)) {
   cors <- rbind(cors, cors_ps)
 }
 # split cor and p by method into 4 columns, and keep other columns
-cors_pearson <- cors %>% filter(method == "pearson") %>% select(-method) %>% rename(cor_pearson = cor, p_pearson = p) #nolint
-cors_spearman <- cors %>% filter(method == "spearman") %>% select(-method) %>% rename(cor_spearman = cor, p_spearman = p) #nolint
+cors_pearson <- cors %>% filter(method == "pearson") %>% select(-method) %>% dplyr::rename(cor_pearson = cor, p_pearson = p) #nolint
+cors_spearman <- cors %>% filter(method == "spearman") %>% select(-method) %>% dplyr::rename(cor_spearman = cor, p_spearman = p) #nolint
 cors_wide <- cors_pearson %>% left_join(cors_spearman, by = c("taxonomy", "taxon_l", "tag", "mean")) #nolint
 write.table(cors_wide, file = "table/emu/cor.tsv", sep = "\t", quote = FALSE, row.names = FALSE) #nolint
 # pearson|spearman cor scatter plot
@@ -1020,7 +1018,7 @@ ggsave2 <- function(x, y, h=8, w=10) {
 }
 mapply(ggsave2, pnames, ps)
 mapply(ggsave2, pnames_l, ps_l, h = 20, w = 12)
-ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
+ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 8, width = 12) #nolint
 png("figure/emu/p_upset01.png", height = 6, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()

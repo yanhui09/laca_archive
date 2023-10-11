@@ -1,0 +1,4 @@
+consensus,n,% of unclassified OTUs,% of OTUs with min identity > 97%,% of OTUs min identity > 99%,sum of OTU counts,% of unclassified OTU in counts,% of OTU with min identity > 97% in counts,% of OTU with min identity > 99% in counts
+isoCon,111,0,97.2972972972973,89.1891891891892,2472825,0,99.6929018430338,97.9724404274463
+kmerCon,99,0,95.959595959596,92.9292929292929,2512498,0,99.6944873189949,99.1028052559644
+miniCon,99,0,95.959595959596,93.9393939393939,2508977,0,99.694855712109,99.6755251243834

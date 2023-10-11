@@ -1,0 +1,44 @@
+taxonomy	mean	cor_pearson	p_pearson	taxon_l	tag	cor_spearman	p_spearman
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium	0.380326787876384	0.919076911422831	0.0000238297519535505	Genus	kmerCon	0.930047610798718	0.0000117204667092744
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus	67.1440281527764	0.799900537339302	0.00178595485569312	Genus	kmerCon	0.86013986013986	0.000597084260510472
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus	0.00856058220026747	-0.00604303237868018	0.985129199091025	Genus	kmerCon	0.328676300489339	0.296896370648835
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus	0.0468733304830458	0.992765551507568	0.000000000154182119417316	Genus	kmerCon	0.788751953028479	0.00229539431760976
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus	0.548186813802882	0.331777422674065	0.292087613949435	Genus	kmerCon	0.876285991932802	0.000184768847083271
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia	0.691109243818583	0.893516318030124	0.0000899476218374783	Genus	kmerCon	0.900522289820981	0.0000647858664204433
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus	2.91790519317555	0.66055368876392	0.0193757177678298	Genus	kmerCon	0.693697483338893	0.01234344354274
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister	3.27185432456653	0.170749915210797	0.595707478908272	Genus	kmerCon	0.673874083336966	0.0162681524369559
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Aquabacterium	0.00919276999503058	0.162552709962242	0.613730575992552	Genus	kmerCon	0.175131617084587	0.586157732126183
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter	0.00224310871534104	0.519931086112124	0.0831486899349432	Genus	kmerCon	0.462620489776696	0.129929253646202
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus crispatus	36.7725774681502	0.968922748707397	0.0000002166880805062	Species	kmerCon	0.79020979020979	0.00361681438239293
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gasseri	8.13819047333539	0.996526659950688	0.0000000000039579593588837	Species	kmerCon	0.633976453846203	0.0268409444196137
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus jensenii	0.834474509632061	0.915609885759438	0.0000292162454122939	Species	kmerCon	0.937155733891234	0.00000694286177556402
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus epidermidis	0.0324133647190408	0.999376533611136	0.000000000000000741078914612304	Species	kmerCon	0.802968683473954	0.00166233105901709
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia;Finegoldia magna	0.691109243818583	0.893516318030124	0.0000899476218374783	Species	kmerCon	0.900522289820981	0.0000647858664204433
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium	0.380326787876384	0.919151225040086	0.0000237235666835348	Genus	miniCon	0.930047610798718	0.0000117204667092744
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus	67.1440281527764	0.800044200973104	0.00178001370141985	Genus	miniCon	0.86013986013986	0.000597084260510472
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus	0.00856058220026747	-0.00681424242138247	0.983231613474124	Genus	miniCon	0.328676300489339	0.296896370648835
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus	0.0468733304830458	0.992684250060627	0.000000000163020461088192	Genus	miniCon	0.795794381180519	0.00196228561624226
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus	0.548186813802882	0.324599555960431	0.303285145120552	Genus	miniCon	0.876285991932802	0.000184768847083271
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia	0.691109243818583	0.892068969283321	0.0000959873585058088	Genus	miniCon	0.900522289820981	0.0000647858664204433
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus	2.91790519317555	0.659164112866193	0.0197231785416773	Genus	miniCon	0.693697483338893	0.01234344354274
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister	3.27185432456653	0.169544350709725	0.598345371717872	Genus	miniCon	0.673874083336966	0.0162681524369559
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Aquabacterium	0.00919276999503058	0.158340119396319	0.623070463874953	Genus	miniCon	0.175131617084587	0.586157732126183
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter	0.00224310871534104	0.52585398912515	0.0790862601430186	Genus	miniCon	0.462620489776696	0.129929253646202
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus crispatus	36.7725774681502	0.968920651614253	0.000000216760434264898	Species	miniCon	0.79020979020979	0.00361681438239293
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gasseri	8.13819047333539	0.996501607466571	0.0000000000041026015519618	Species	miniCon	0.633976453846203	0.0268409444196137
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus jensenii	0.834474509632061	0.915585923830836	0.0000292565405545864	Species	miniCon	0.937155733891234	0.00000694286177556402
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia;Finegoldia magna	0.691109243818583	0.892068969283321	0.0000959873585058088	Species	miniCon	0.900522289820981	0.0000647858664204433
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium	0.380326787876384	0.915121102318226	0.0000300468990331807	Genus	isoCon	0.930047610798718	0.0000117204667092744
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus	67.1440281527764	0.803937134219958	0.00162470682783721	Genus	isoCon	0.867132867132867	0.000443302209472017
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus	0.00856058220026747	-0.00237144726218147	0.994164060263248	Genus	isoCon	0.245467110492038	0.441894638593307
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus	0.0468733304830458	0.992722475557062	0.000000000158815894405776	Genus	isoCon	0.788751953028479	0.00229539431760976
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus	0.548186813802882	0.187525752665953	0.559475643855159	Genus	isoCon	0.885759629332112	0.000126128440182035
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia	0.691109243818583	0.945753368686157	0.00000337628264503771	Genus	isoCon	0.900522289820981	0.0000647858664204433
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus	2.91790519317555	0.671420224073666	0.0168109505948832	Genus	isoCon	0.642175731265781	0.0243478842441366
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister	3.27185432456653	0.159904143099002	0.619596765631378	Genus	isoCon	0.673874083336966	0.0162681524369559
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Aquabacterium	0.00919276999503058	0.129728777821945	0.687801824120038	Genus	isoCon	0.168126352401203	0.601453777132892
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter	0.00224310871534104	0.523654879640467	0.080578437982341	Genus	isoCon	0.462620489776696	0.129929253646202
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus crispatus	36.7725774681502	0.96460146795734	0.000000412458630281505	Species	isoCon	0.797202797202797	0.00316125210939329
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gasseri	8.13819047333539	0.996900949446203	0.00000000000223949127011978	Species	isoCon	0.633976453846203	0.0268409444196137
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus epidermidis	0.0324133647190408	0.99549032826854	0.0000000000145783440565931	Species	isoCon	0.728080412476383	0.00725763452769295
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia;Finegoldia magna	0.691109243818583	0.945753368686157	0.00000337628264503771	Species	isoCon	0.900522289820981	0.0000647858664204433

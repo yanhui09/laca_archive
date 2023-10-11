@@ -1,0 +1,98 @@
+taxonomy,Species: kmerCon,Species: miniCon,Species: isoCon,Species: emu,Genus: kmerCon,Genus: miniCon,Genus: isoCon,Genus: emu
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinomyces,0,0,0,0,0,0,0,1
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinomyces;Actinomyces neuii,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinotignum;Actinotignum timonense,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Arcanobacterium,0,0,0,0,0,0,0,1
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Varibaculum,0,0,0,0,0,0,0,1
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Varibaculum;Varibaculum cambriense,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Actinobacteria;Corynebacteriales;Corynebacteriaceae;Corynebacterium,0,0,0,0,0,0,0,1
+Bacteria;Actinobacteriota;Actinobacteria;Corynebacteriales;Corynebacteriaceae;Corynebacterium;Corynebacterium sundsvallense,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Actinobacteria;Propionibacteriales;Propionibacteriaceae;Cutibacterium,0,0,0,0,0,0,0,1
+Bacteria;Actinobacteriota;Actinobacteria;Propionibacteriales;Propionibacteriaceae;Cutibacterium;Cutibacterium acnes,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium;Atopobium deltae,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium;Atopobium vaginae,0,0,0,1,0,0,0,0
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Eggerthellaceae;DNF00809,0,0,0,0,0,0,0,1
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas;Porphyromonas asaccharolytica,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas;Porphyromonas uenonis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,0,0,0,0,0,0,0,1
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella 7 melaninogenica,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella 7 veroralis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella amnii,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella bergensis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella bivia,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella buccalis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella colorans,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella corporis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella disiens,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella timonensis,0,0,0,1,0,0,0,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,0,0,0,0,0,0,0,1
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter,0,0,0,0,0,0,0,1
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter;Campylobacter ureolyticus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Bulleidia,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Bulleidia;Bulleidia extructa,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Aerococcus,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Aerococcus;Aerococcus christensenii,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia;Facklamia hominis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia;Facklamia ignava,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus amylovorus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gallinarum,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus helveticus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus iners,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus johnsonii,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus oralis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus parasanguinis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus sanguinis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Mycoplasma,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Gemellaceae;Gemella,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Gemellaceae;Gemella;Gemella asaccharolytica,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus aureus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus hominis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 1,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 7,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Howardella,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Moryella,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Hungateiclostridiaceae;Fastidiosipila;Fastidiosipila sanguinis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus;Peptococcus niger,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus hydrogenalis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus lactolyticus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus mediterraneensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus provencensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus tetradius,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus vaginalis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Fenollaria;Fenollaria massiliensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Helcococcus,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Helcococcus;Helcococcus sueciensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Murdochiella,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Murdochiella;Murdochiella asaccharolytica,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Parvimonas,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus asaccharolyticus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus coxii,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus duerdenii,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus grossensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus harei,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus koenoeneniae,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus lacrimalis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus obesi,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus urinimassiliensis,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;W5053,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Criibacterium,0,0,0,0,0,0,0,1
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Criibacterium;Criibacterium bergeronii,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Peptostreptococcus;Peptostreptococcus anaerobius,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister;Dialister micraerophilus,0,0,0,1,0,0,0,0
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera,0,0,0,0,0,0,0,1
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia,0,0,0,0,0,0,0,1
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia;Sneathia amnii,0,0,0,1,0,0,0,0
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia;Sneathia sanguinegens,0,0,0,1,0,0,0,0
+Bacteria;Proteobacteria;Alphaproteobacteria;Acetobacterales;Acetobacteraceae;Roseomonas,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhizobiales;Rhizobiaceae;Ochrobactrum,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhodobacterales;Rhodobacteraceae;Paracoccus,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhodobacterales;Rhodobacteraceae;Paracoccus;Paracoccus yeei,0,0,0,1,0,0,0,0
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Acidovorax,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Comamonas,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Neisseriaceae;Neisseria,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Neisseriaceae;Neisseria;Neisseria subflava,0,0,0,1,0,0,0,0
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Sutterellaceae;Sutterella,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter,0,0,0,0,0,0,0,1
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter;Acinetobacter junii,0,0,0,1,0,0,0,0
