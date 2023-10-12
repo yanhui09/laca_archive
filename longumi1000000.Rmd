@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 05/10/2023
+date: 12/10/2023
 output:
   html_document:
     toc: true
@@ -49,7 +49,7 @@ df$qc_dir <- dirname(df$bin_map)
 df$data <- gsub("^.*qc/sub1000000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint
 df$consensus <- gsub("^.*qc/sub1000000/(.*)/(.*)/qc$", "\\2", df$qc_dir) #nolint
 df$consensus_prefix <- case_when(
-  df$consensus == "umiCon" | df$consensus == "umiConN" ~ "umiCon_trimmed",
+  df$consensus == "umiCon" ~ "umiCon_trimmed",
   TRUE ~ df$consensus
 )
 df$read_data <- case_when(
@@ -57,9 +57,12 @@ df$read_data <- case_when(
   df$data == "zymock_r9" ~ "ERR3336963_1sub1000000_s123.fa",
   df$data == "zymock_r10" ~ "ERR3813594_1sub1000000_s123.fa"
 )
-df$outprefix <- paste0("data/longumi/", df$data, "/", df$consensus)
+df$outprefix <- paste0("data/longumi1000000/", df$data, "/", df$consensus)
 
 for (i in seq_len(nrow(df))) {
+  if (file.exists(paste0(df$outprefix[i], "_qc.Rdata")) & file.exists(paste0(df$outprefix[i], "_ep.Rdata"))) { #nolint
+    next
+  }
   qc_complie(
     qc_dir = df$qc_dir[i],
     consensus_prefix = df$consensus_prefix[i],
@@ -78,8 +81,8 @@ rds <- list.files(
 qcs <- rds[grep("_qc.Rdata$", rds)]
 eps <- rds[grep("_ep.Rdata$", rds)]
 df <- data.frame(qc = qcs, ep = eps)
-df$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
-df$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
+df$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
+df$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 # merge qcs into one
 qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
   load(rds)
@@ -89,8 +92,8 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -131,12 +134,12 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
 }
 library(data.table)
 dt_qc <- rbindlist(sapply(df$qc, qc_from_rds, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
-dt_qc$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
+dt_qc$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
+dt_qc$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
 
 dt_qc_f <- rbindlist(sapply(df$qc, qc_from_rds, filter = TRUE, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc_f$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
-dt_qc_f$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
+dt_qc_f$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
+dt_qc_f$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
 
 dt_cutoff <- dt_qc_f %>%
   select(data, consensus) %>%
@@ -144,13 +147,15 @@ dt_cutoff <- dt_qc_f %>%
   mutate(cutoff=case_when(
     df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
     df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
-    consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 150, #nobin
+    consensus == "kmerCon" ~ 80,
+    consensus == "miniCon" ~ 60,
+    consensus == "isoCon" ~ 20,
     TRUE ~ 4
   ), y= Inf) %>%
   mutate(x = case_when(
-    consensus == "kmerCon" ~ cutoff + 500,
-    consensus %in% c("miniCon", "isoCon") ~ cutoff + 200,
-    TRUE ~ cutoff + 0.5
+    consensus %in% c("kmerCon", "miniCon") ~ cutoff + 20,
+    consensus == "isoCon" ~ cutoff + 5,
+    TRUE ~ cutoff + 1
   ))
 dt_cutoff$label <- sapply(dt_cutoff$cutoff, function(x) paste0(x, "x"))
 
@@ -170,6 +175,10 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
       labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")
       ))) +
   scale_color_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
+  scale_x_continuous(
+    trans = scales::log2_trans(),
+    breaks = c(5, 25, 125, 500, 1000),
+    ) +
   facet_grid(
     factor(data, labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")) ~ #nolint 
     fct_relevel(consensus, "kmerCon", "miniCon", "isoCon", "umiCon"), scales = "free") + #nolint
@@ -188,8 +197,8 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
   return(p)
 }
 
-p_size_err <- stat_jitter_xy(dt_qc, column_y = "ref_error", column_x = "umi_cluster_size")
-p_size_err_f <- stat_jitter_xy(dt_qc_f, column_y = "ref_error", column_x = "umi_cluster_size")
+p_size_err <- stat_jitter_xy(dt_qc, column_y = "ref_error", column_x = "umi_cluster_size") #nolint
+p_size_err_f <- stat_jitter_xy(dt_qc_f, column_y = "ref_error", column_x = "umi_cluster_size") #nolint
 dir.create("./figure/longumi1000000", showWarnings = FALSE, recursive = TRUE)
 ggsave("./figure/longumi1000000/size_err.png", p_size_err, width = 12, height = 8) #nolint
 ggsave("./figure/longumi1000000/size_err_f.png", p_size_err_f, width = 12, height = 8) #nolint
@@ -198,19 +207,21 @@ ggsave("./figure/longumi1000000/size_err_f.png", p_size_err_f, width = 12, heigh
 ```{r, stats}
 source("./scripts/validation_functions.R")
 rds <- list.files(
-  path = "./data/longumi",
+  path = "./data/longumi1000000",
   pattern = "*.Rdata", full.names = TRUE, recursive = TRUE)
 # qcs: *_qc.Rdata; eps: *_ep.Rdata
 qcs <- rds[grep("_qc.Rdata$", rds)]
 eps <- rds[grep("_ep.Rdata$", rds)]
 df <- data.frame(qc = qcs, ep = eps)
-df$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
-df$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
+df$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
+df$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
   df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
   df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
-  df$consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 150, # chimera
-  TRUE ~ 3
+  df$consensus == "kmerCon" ~ 80,
+  df$consensus == "miniCon" ~ 60,
+  df$consensus == "isoCon" ~ 20,
+  TRUE ~ 4
 )
 
 # overview stats
@@ -222,8 +233,8 @@ nclusters_from_rds <- function(rds, filter=FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -265,8 +276,8 @@ nrefs_from_rds <- function(rds, filter=FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -301,6 +312,12 @@ nrefs_from_rds <- function(rds, filter=FALSE, size = NULL) {
   return(nrefs)
 }
 
+#rds <- "./data/longumi1000000/pb_ccs/umiCon_qc.Rdata"
+#load(rds)
+#table(qc$chimera == "Y")
+#breaks <- c(seq(1, 60, 3), Inf)
+#lu_artefact_plot(qc, breaks = breaks)
+
 chimera_from_rds <- function(rds, filter=TRUE, size = NULL) {
   load(rds)
   if (filter) {
@@ -309,8 +326,8 @@ chimera_from_rds <- function(rds, filter=TRUE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -387,7 +404,7 @@ stat_bar <- function(df, column, y_lab, y_int=NULL) {
       levels = c("pb_ccs", "zymock_r10", "zymock_r9"),
       labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")
       ))) +
-  {if(! is.null(y_int))geom_hline(yintercept = y_int, linetype = "dashed")} +
+  {if(! is.null(y_int))geom_hline(yintercept = y_int, linetype = "dashed")} + #nolint
   scale_fill_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
   labs(
     x = "",
@@ -423,8 +440,8 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -466,13 +483,13 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
 library(data.table)
 #dt_qc <- rbindlist(sapply(df$qc, qc_from_rds, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_qc <- rbindlist(mapply(function(x, y) qc_from_rds(x, filter = FALSE, size = y), df$qc, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
-dt_qc$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
+dt_qc$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
+dt_qc$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
 
 #dt_qc_f <- rbindlist(sapply(df$qc, qc_from_rds, filter = TRUE, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_qc_f <- rbindlist(mapply(function(x, y) qc_from_rds(x, filter = TRUE, size = y), df$qc, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc_f$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
-dt_qc_f$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
+dt_qc_f$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
+dt_qc_f$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
 
 stat_jitter <- function(dt, column, y_lab, y_int=NULL) {
   p <- dt %>%
@@ -536,13 +553,15 @@ ref_hp <- Biostrings::readDNAStringSet("/mnt/md0/UMI16S/cp2/latest/longumi/qc/su
   lu_ref_hp_pos()
 
 dt_sum <- rbindlist(mapply(function(x,y,z) errorsum_from_rds(x, y, filter = FALSE, size = z), df$qc, df$ep, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_sum$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_sum$file) #nolint
-dt_sum$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum$file) #nolint
+dt_sum$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_sum$file) #nolint
+dt_sum$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_sum$file) #nolint
 
 dt_sum_f <- rbindlist(mapply(function(x,y,z) errorsum_from_rds(x, y, filter = TRUE, size = z), df$qc, df$ep, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_sum_f$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_sum_f$file) #nolint
-dt_sum_f$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum_f$file) #nolint
-save(dt_sum, dt_sum_f, file = "./data/longumi1000000_sumerr.Rdata")
+dt_sum_f$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_sum_f$file) #nolint
+dt_sum_f$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_sum_f$file) #nolint
+if (!file.exists("./data/longumi1000000_sumerr.Rdata")) {
+  save(dt_sum, dt_sum_f, file = "./data/longumi1000000_sumerr.Rdata")
+}
 ```
 
 ```{r, stat_sum}

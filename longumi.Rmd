@@ -49,7 +49,7 @@ df$qc_dir <- dirname(df$bin_map)
 df$data <- gsub("^.*qc/sub100000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint
 df$consensus <- gsub("^.*qc/sub100000/(.*)/(.*)/qc$", "\\2", df$qc_dir) #nolint
 df$consensus_prefix <- case_when(
-  df$consensus == "umiCon" | df$consensus == "umiConN" ~ "umiCon_trimmed",
+  df$consensus == "umiCon" ~ "umiCon_trimmed",
   TRUE ~ df$consensus
 )
 df$read_data <- case_when(
@@ -60,6 +60,9 @@ df$read_data <- case_when(
 df$outprefix <- paste0("data/longumi/", df$data, "/", df$consensus)
 
 for (i in seq_len(nrow(df))) {
+  if (file.exists(paste0(df$outprefix[i], "_qc.Rdata")) & file.exists(paste0(df$outprefix[i], "_ep.Rdata"))) { #nolint
+    next
+  }
   qc_complie(
     qc_dir = df$qc_dir[i],
     consensus_prefix = df$consensus_prefix[i],
@@ -89,8 +92,8 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -146,9 +149,8 @@ dt_cutoff <- dt_qc_f %>%
     TRUE ~ 4
   ), y= Inf) %>%
   mutate(x = case_when(
-    consensus == "kmerCon" ~ cutoff + 500,
-    consensus %in% c("miniCon", "isoCon") ~ cutoff + 200,
-    TRUE ~ cutoff + 0.5
+    consensus %in% c("kmerCon", "miniCon", "isoCon") ~ cutoff + 5,
+    TRUE ~ cutoff + 0.3
   ))
 dt_cutoff$label <- sapply(dt_cutoff$cutoff, function(x) paste0(x, "x"))
 
@@ -168,6 +170,10 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
       labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")
       ))) +
   scale_color_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
+  scale_x_continuous(
+    trans = scales::log2_trans(),
+    breaks = c(5, 10, 25, 125, 500, 1000),
+    ) +
   facet_grid(
     factor(data, labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")) ~ #nolint 
     fct_relevel(consensus, "kmerCon", "miniCon", "isoCon", "umiCon"), scales = "free") + #nolint
@@ -219,8 +225,8 @@ nclusters_from_rds <- function(rds, filter=FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -262,8 +268,8 @@ nrefs_from_rds <- function(rds, filter=FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -307,7 +313,7 @@ chimera_from_rds <- function(rds, filter=TRUE, size = NULL) {
     )
 
     # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -420,8 +426,8 @@ qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
       !is.na(length) # remove umi bins not aligned to ref.
     )
 
-    # if rds not contains umiCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon", rds)) {
+    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+    if (grepl("umiCon|isoCon", rds)) {
       breaks <- c(seq(1, 60, 3), Inf)
     } else {
       breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
@@ -539,7 +545,9 @@ dt_sum$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum$file) #n
 dt_sum_f <- rbindlist(mapply(function(x,y,z) errorsum_from_rds(x, y, filter = TRUE, size = z), df$qc, df$ep, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_sum_f$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", dt_sum_f$file) #nolint
 dt_sum_f$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", dt_sum_f$file) #nolint
-save(dt_sum, dt_sum_f, file = "./data/longumi_sumerr.Rdata")
+if (!file.exists("./data/longumi_sumerr.Rdata")) {
+  save(dt_sum, dt_sum_f, file = "./data/longumi_sumerr.Rdata")
+}
 ```
 
 ```{r, stat_sum}

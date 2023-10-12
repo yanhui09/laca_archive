@@ -1018,7 +1018,7 @@ ggsave2 <- function(x, y, h=8, w=10) {
 }
 mapply(ggsave2, pnames, ps)
 mapply(ggsave2, pnames_l, ps_l, h = 20, w = 12)
-ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 8, width = 12) #nolint
+ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
 png("figure/emu/p_upset01.png", height = 6, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()
