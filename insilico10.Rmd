@@ -336,14 +336,12 @@ fs <- list.files(
   path = "./data/simulate/clust",
   pattern = "*.tsv", full.names = TRUE, recursive = TRUE)
 # grep meshclust_..
-fs1 <- grep(pattern = '.*(nanopore2020|nanopore2023)/.*meshclust_auto/meshclust/si.*', fs, value = TRUE) #nolint
-fs2 <- grep(pattern = '.*(nanopore2023duplex|pacbio2016ccs)/.*meshclust_95/meshclust/si.*', fs, value = TRUE) #nolint
-fs <- c(fs1, fs2)
+fs <- grep(pattern = '.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/.*meshclust_auto/meshclust/si.*', fs, value = TRUE) #nolint
 dt <- rbindlist(sapply(fs, function(x) fread(x, header=FALSE, sep="\t", blank.lines.skip = TRUE), simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt$benchmark <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\1", dt$file) #nolint
 dt$profile <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\2", dt$file) #nolint
-dt$clust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_(auto|95)/.*", "\\3", dt$file) #nolint
-dt$meshclust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_(auto|95)/.*", "\\4", dt$file) #nolint
+dt$clust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_auto/.*", "\\3", dt$file) #nolint
+dt$meshclust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_auto/.*", "\\4", dt$file) #nolint
 dt$id <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100).*", "\\1", dt$file)) #nolint
 dt$depth <- as.numeric(
   gsub("^.*/si(9095|9597|9798|9899|99100)([0-9]+).*", "\\2", dt$file)) #nolint
@@ -361,19 +359,19 @@ fs <- list.files(
   path = "./data/simulate/clust",
   pattern = "*.csv", full.names = TRUE, recursive = TRUE)
 # grep read2cluster 
-fs1 <- grep(pattern = '.*/isONclust_meshclust_.*/isONclust/read2cluster/si.*', fs, value = TRUE) #nolint
-fs2 <- grep(pattern = '.*/umapclust_meshclust_.*/umapclust/read2cluster/si.*', fs, value = TRUE) #nolint
-fs3 <- grep(pattern = '.*/isONclust_umapclust_meshclust_.*/umapclust/read2cluster/si.*', fs, value = TRUE) #nolint
+fs1 <- grep(pattern = '.*/isONclust_meshclust_auto/isONclust/read2cluster/si.*', fs, value = TRUE) #nolint
+fs2 <- grep(pattern = '.*/umapclust_meshclust_auto/umapclust/read2cluster/si.*', fs, value = TRUE) #nolint
+fs3 <- grep(pattern = '.*/isONclust_umapclust_meshclust_auto/umapclust/read2cluster/si.*', fs, value = TRUE) #nolint
 fs <- c(fs1, fs2, fs3)
 dt <- rbindlist(sapply(fs, function(x) fread(x, header=FALSE, sep="\t", blank.lines.skip = TRUE), simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt$benchmark <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\1", dt$file) #nolint
 dt$profile <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\2", dt$file) #nolint
 dt$clust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_(auto|95)/(.*)/read2cluster/.*", "\\5", dt$file) #nolint
 # isONclust+umapclust
-index <- grep(".*/isONclust_umapclust_meshclust_(auto|95)/umapclust/read2cluster/", dt$file) #nolint
+index <- grep(".*/isONclust_umapclust_meshclust_auto/umapclust/read2cluster/", dt$file) #nolint
 dt$clust[index] <- "isONclust+umapclust"
 
-dt$meshclust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_(auto|75|80|85|90|95)/.*", "\\4", dt$file) #nolint
+dt$meshclust <- gsub("^.*(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/clust_compare/(.*)_(auto|95)/.*", "\\4", dt$file) #nolint
 dt$id <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100).*", "\\1", dt$file)) #nolint
 dt$depth <- as.numeric(
   gsub("^.*/si(9095|9597|9798|9899|99100)([0-9]+).*", "\\2", dt$file)) #nolint

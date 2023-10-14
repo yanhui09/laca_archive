@@ -1,10 +1,10 @@
 ---
-title: "longumi comparison"
+title: "longumi1000000 comparison"
 author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 12/10/2023
+date: 13/10/2023
 output:
   html_document:
     toc: true
@@ -83,61 +83,79 @@ eps <- rds[grep("_ep.Rdata$", rds)]
 df <- data.frame(qc = qcs, ep = eps)
 df$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
 df$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
-# merge qcs into one
-qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
-  load(rds)
+
+flag_outliers <- function(rds_qc, rds_ep) {
+  load(rds_qc)
+  qc <- filter(
+    qc,
+    !is.na(length) # remove umi bins not aligned to ref.
+  )
+  # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
+  if (grepl("umiCon|isoCon", rds_qc)) {
+    breaks <- c(seq(1, 60, 3), Inf)
+  } else {
+    breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
+    }
+  outlier <- lu_artefact_plot(
+    qc,
+    breaks = breaks) %>% 
+    .$data %>%
+    filter(
+    aflag == "lightblue"
+    )
+  # contamination
+  cont <- outlier %>%
+  select(umi, ref_ssu_error, silva_ssu_error) %>%
+  filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
+  arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
+  mutate(flag = "cont") %>%
+  select(umi, flag)
+  
+  # pacbio CCS artefacts: artificial long stretches of homopolymer inserts
+  if (grepl("pb_ccs", rds_qc)) {
+  load(rds_ep)
+  art_umi <- filter(ep, grepl("a{5,}|c{5,}|t{5,}|g{5,}", type)) %>% {gsub(";.*", "", unique(.$qname))} #nolint
+  art <- outlier %>%
+  filter(umi %in% art_umi & !(umi %in% cont$umi)) %>%
+  mutate(flag = "art") %>%
+  select(umi, flag)
+  # chimera
+  chi <- outlier %>%
+  select(umi, chimera) %>%
+  filter(chimera == "Y" & !(umi %in% cont$umi) & !(umi %in% art$umi)) %>%
+  mutate(flag = "chi") %>%
+  select(umi, flag)
+  outliers_flag <- rbind(cont, art, chi)
+  } else {
+  # chimera
+  chi <- outlier %>%
+  select(umi, chimera) %>%
+  filter(chimera == "Y" & !(umi %in% cont$umi)) %>%
+  mutate(flag = "chi") %>%
+  select(umi, flag)
+  outliers_flag <- rbind(cont, chi)
+  }
+  return(outliers_flag)
+  }
+
+qc_filter <- function(rds_qc, rds_ep, filter = FALSE, size = NULL) {
+  load(rds_qc)
   if (filter) {
-    qc <- filter(
-      qc,
-      !is.na(length) # remove umi bins not aligned to ref.
-    )
-
-    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon|isoCon", rds)) {
-      breaks <- c(seq(1, 60, 3), Inf)
-    } else {
-      breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
-      }
-
-    outlier <- lu_artefact_plot(
-      qc,
-      breaks = breaks) %>% 
-      .$data %>%
-      filter(
-      aflag == "lightblue"
-      )
-    # contamination
-    cont <- outlier %>%
-    select(umi, ref_ssu_error, silva_ssu_error) %>%
-    filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
-    arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
-    mutate(flag = "cont")
-    # chimera
-    chi <- outlier %>%
-    select(umi, chimera) %>%
-    filter(chimera == "Y" & !(umi %in% cont$umi)) %>%
-    mutate(flag = "chi")
-
-    qc <- filter(
-      qc,
-    !(umi %in% cont$umi),
-    !(umi %in% chi$umi),
-    )
+  outliers_flag <- flag_outliers(rds_qc, rds_ep)
+  qc <- filter(qc, !(umi %in% outliers_flag$umi))
   }
   if (!is.null(size)) {
-    qc <- filter(
-      qc,
-      umi_cluster_size >= size
-    )
+  qc <- filter(qc, umi_cluster_size > size)
   }
   return(qc)
 }
+
 library(data.table)
-dt_qc <- rbindlist(sapply(df$qc, qc_from_rds, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
+dt_qc <- rbindlist(mapply(function(x,y) qc_filter(x, y, filter = FALSE, size = NULL), df$qc, df$ep, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_qc$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
 dt_qc$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
 
-dt_qc_f <- rbindlist(sapply(df$qc, qc_from_rds, filter = TRUE, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
+dt_qc_f <- rbindlist(mapply(function(x,y) qc_filter(x, y, filter = TRUE, size = NULL), df$qc, df$ep, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
 dt_qc_f$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
 dt_qc_f$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
 
@@ -145,15 +163,17 @@ dt_cutoff <- dt_qc_f %>%
   select(data, consensus) %>%
   distinct() %>%
   mutate(cutoff=case_when(
-    df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
-    df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
-    consensus == "kmerCon" ~ 80,
-    consensus == "miniCon" ~ 60,
-    consensus == "isoCon" ~ 20,
-    TRUE ~ 4
+    consensus == "kmerCon" ~ 400,
+    consensus == "miniCon" ~ 300,
+    data == "pb_ccs" & consensus == "isoCon" ~ 20,
+    data == "zymock_r10" & consensus == "isoCon" ~ 20,
+    data == "zymock_r9" & consensus == "isoCon" ~ 25,
+    data == "zymock_r10" & consensus == "umiCon" ~ 15,
+    data == "zymock_r9" & consensus == "umiCon" ~ 25,
+    TRUE ~ 3
   ), y= Inf) %>%
   mutate(x = case_when(
-    consensus %in% c("kmerCon", "miniCon") ~ cutoff + 20,
+    consensus %in% c("kmerCon", "miniCon") ~ cutoff + 100,
     consensus == "isoCon" ~ cutoff + 5,
     TRUE ~ cutoff + 1
   ))
@@ -177,7 +197,7 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
   scale_color_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
   scale_x_continuous(
     trans = scales::log2_trans(),
-    breaks = c(5, 25, 125, 500, 1000),
+    breaks = c(5, 10, 25, 125, 500, 1000),
     ) +
   facet_grid(
     factor(data, labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")) ~ #nolint 
@@ -216,195 +236,80 @@ df <- data.frame(qc = qcs, ep = eps)
 df$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
 df$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
+  df$consensus == "kmerCon" ~ 400,
+  df$consensus == "miniCon" ~ 300,
+  df$data == "pb_ccs" & df$consensus == "isoCon" ~ 20,
+  df$data == "zymock_r10" & df$consensus == "isoCon" ~ 20,
+  df$data == "zymock_r9" & df$consensus == "isoCon" ~ 25,
   df$data == "zymock_r10" & df$consensus == "umiCon" ~ 15,
   df$data == "zymock_r9" & df$consensus == "umiCon" ~ 25,
-  df$consensus == "kmerCon" ~ 80,
-  df$consensus == "miniCon" ~ 60,
-  df$consensus == "isoCon" ~ 20,
-  TRUE ~ 4
+  TRUE ~ 3
 )
 
 # overview stats
-nclusters_from_rds <- function(rds, filter=FALSE, size = NULL) {
-  load(rds)
-  if (filter) {
-    qc <- filter(
-      qc,
-      !is.na(length) # remove umi bins not aligned to ref.
-    )
-
-    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon|isoCon", rds)) {
-      breaks <- c(seq(1, 60, 3), Inf)
-    } else {
-      breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
-      }
-
-    outlier <- lu_artefact_plot(
-      qc,
-      breaks = breaks) %>% 
-      .$data %>%
-      filter(
-      aflag == "lightblue"
-      )
-    # contamination
-    cont <- outlier %>%
-    select(umi, ref_ssu_error, silva_ssu_error) %>%
-    filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
-    arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
-    mutate(flag = "cont")
-    qc <- filter(
-      qc,
-    !(umi %in% cont$umi)
-    )
-  }
+nclusters_from_rds <- function(rds_qc, rds_ep, filter = FALSE, size = NULL) {
+  qc <- qc_filter(rds_qc, rds_ep, filter = filter)
   if (!is.null(size)) {
-    qc <- filter(
-      qc,
-      umi_cluster_size >= size
-    )
+  qc <- filter(qc, umi_cluster_size > size)
   }
   nclusters <- length(unique(qc$umi))
   return(nclusters)
 }
 
-nrefs_from_rds <- function(rds, filter=FALSE, size = NULL) {
-  load(rds)
-  if (filter) {
-    qc <- filter(
-      qc,
-      !is.na(length) # remove umi bins not aligned to ref.
-    )
-
-    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon|isoCon", rds)) {
-      breaks <- c(seq(1, 60, 3), Inf)
-    } else {
-      breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
-      }
-
-    outlier <- lu_artefact_plot(
-      qc,
-      breaks = breaks) %>% 
-      .$data %>%
-      filter(
-      aflag == "lightblue"
-      )
-    # contamination
-    cont <- outlier %>%
-    select(umi, ref_ssu_error, silva_ssu_error) %>%
-    filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
-    arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
-    mutate(flag = "cont")
-    qc <- filter(
-      qc,
-    !(umi %in% cont$umi)
-    )
-  }
+nrefs_from_rds <- function(rds_qc, rds_ep, filter = FALSE, size = NULL) {
+  qc <- qc_filter(rds_qc, rds_ep, filter = filter) 
   if (!is.null(size)) {
-    qc <- filter(
-      qc,
-      umi_cluster_size >= size
-    )
+  qc <- filter(qc, umi_cluster_size > size)
   }
   # unique ref_tax with no NAs
   nrefs <- sum(!is.na(unique(qc$ref_tax)))
   return(nrefs)
 }
 
-#rds <- "./data/longumi1000000/pb_ccs/umiCon_qc.Rdata"
-#load(rds)
-#table(qc$chimera == "Y")
-#breaks <- c(seq(1, 60, 3), Inf)
-#lu_artefact_plot(qc, breaks = breaks)
-
-chimera_from_rds <- function(rds, filter=TRUE, size = NULL) {
-  load(rds)
-  if (filter) {
-    qc <- filter(
-      qc,
-      !is.na(length) # remove umi bins not aligned to ref.
-    )
-
-    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon|isoCon", rds)) {
-      breaks <- c(seq(1, 60, 3), Inf)
-    } else {
-      breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
-      }
-
-    outlier <- lu_artefact_plot(
-      qc,
-      breaks = breaks) %>% 
-      .$data %>%
-      filter(
-      aflag == "lightblue"
-      )
-    # contamination
-    cont <- outlier %>%
-    select(umi, ref_ssu_error, silva_ssu_error) %>%
-    filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
-    arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
-    mutate(flag = "cont")
-    # chimera
-    chi <- outlier %>%
-    select(umi, chimera) %>%
-    filter(chimera == "Y" & !(umi %in% cont$umi)) %>%
-    mutate(flag = "chi")
-    if (!is.null(size)) {
-      qc <- filter(
-        qc,
-        umi_cluster_size >= size
-        )
-      }
-    # calculate chimera rate
-    chimerate <- qc %>%
-    filter(
-      !(umi %in% cont$umi),
-      ) %>%
-      {nrow(chi)/nrow(.)*100}
+chimera_from_rds <- function(rds_qc, rds_ep, size = NULL) {
+  load(rds_qc)
+  outliers_flag <- flag_outliers(rds_qc, rds_ep)
+  chi <- outliers_flag %>%
+  filter(flag == "chi")
+  cont_art <- outliers_flag %>%
+  filter(flag != "chi")
+  # filter by size
+  if (!is.null(size)) {
+  qc <- filter(qc, umi_cluster_size > size)
   }
-  else {
-    if (!is.null(size)) {
-      qc <- filter(
-        qc,
-        umi_cluster_size >= size
-        )
-      }
-    # chimerate by uchime-ref without extra qc
-    chimerate <- qc %>%
-    filter(
-      chimera == "Y"
-      ) %>%
-      {nrow(.) / nrow(qc) * 100}
-  }
+  # calculate chimera rate
+  chimerate <- qc %>%
+  # remove cont from PCR reagents before chimera calc
+  filter(!(umi %in% cont_art$umi)) %>%
+  {nrow(chi)/nrow(.)*100}
   return(chimerate)
 }
 
-df$nclusters <- mapply(function(x, y) nclusters_from_rds(x, filter=FALSE, size=y), df$qc, df$cutoff) #nolint
-df$nclusters_f <- mapply(function(x, y) nclusters_from_rds(x, filter=TRUE, size=y), df$qc, df$cutoff) #nolint
+df$nclusters <- mapply(function(x, y, z) nclusters_from_rds(x, y, filter=FALSE, size=z), df$qc, df$ep, df$cutoff) #nolint
+df$nclusters_f <- mapply(function(x, y, z) nclusters_from_rds(x, y, filter=TRUE, size=z), df$qc, df$ep, df$cutoff) #nolint
 # in total, nrefs = 43
-df$nrefs <- mapply(function(x, y) nrefs_from_rds(x, filter=FALSE, size=y), df$qc, df$cutoff) #nolint
-df$nrefs_f <- mapply(function(x, y) nrefs_from_rds(x, filter=TRUE, size=y), df$qc, df$cutoff) #nolint
-df$chimerate <- mapply(function(x, y) chimera_from_rds(x, filter=FALSE, size=y), df$qc, df$cutoff) #nolint
-df$chimerate_f <- mapply(function(x, y) chimera_from_rds(x, filter=TRUE, size=y), df$qc, df$cutoff) #nolint
+df$nrefs <- mapply(function(x, y, z) nrefs_from_rds(x, y, filter=FALSE, size=z), df$qc, df$ep, df$cutoff) #nolint
+df$nrefs_f <- mapply(function(x, y, z) nrefs_from_rds(x, y, filter=TRUE, size=z), df$qc, df$ep, df$cutoff) #nolint
+# chimerate with size cutoff or not
+df$chimerate <- mapply(function(x, y, z) chimera_from_rds(x, y, size=z), df$qc, df$ep, df$cutoff) #nolint
+df$chimerate_all <- mapply(function(x, y) chimera_from_rds(x, y, size=NULL), df$qc, df$ep) #nolint
 # draw a simple plot
 library(ggprism)
 library(RColorBrewer)
 stat_bar <- function(df, column, y_lab, y_int=NULL) {
   p <- df %>%
   ggplot(aes(
-    y = .data[[column]], 
+    y = .data[[column]],
     x = fct_relevel(consensus, "kmerCon", "miniCon", "isoCon", "umiCon"))) +
   geom_bar(
     stat = "identity",
-    position="dodge",
+    position = "dodge",
     aes(fill = factor(
-      data, 
+      data,
       levels = c("pb_ccs", "zymock_r10", "zymock_r9"),
       labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")
       ))) +
-  {if(! is.null(y_int))geom_hline(yintercept = y_int, linetype = "dashed")} + #nolint
+  {if (! is.null(y_int)) geom_hline(yintercept = y_int, linetype = "dashed")} +
   scale_fill_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
   labs(
     x = "",
@@ -423,73 +328,23 @@ p_nclusters_f <- stat_bar(df, "nclusters_f", "# of clusters")
 p_refs <- stat_bar(df, "nrefs", "# of references", y_int = 43)
 p_refs_f <- stat_bar(df, "nrefs_f", "# of references", y_int = 43)
 p_chimerate <- stat_bar(df, "chimerate", "% of chimeras")
-p_chimerate_f <- stat_bar(df, "chimerate_f", "% of chimeras")
+p_chimerate_all <- stat_bar(df, "chimerate_all", "% of chimeras")
 library(patchwork)
 p_stat_overview <- p_nclusters + p_refs + p_chimerate + plot_layout(guides = "collect") #nolint
 #p_stat_overview
-p_stat_overview_f <- p_nclusters_f + p_refs_f + p_chimerate_f + plot_layout(guides = "collect") #nolint
+p_stat_overview_f <- p_nclusters_f + p_refs_f + p_chimerate + plot_layout(guides = "collect") #nolint
 #p_stat_overview_f
 
 # consensus stats
-# merge qcs into one
-qc_from_rds <- function(rds, filter = FALSE, size = NULL) {
-  load(rds)
-  if (filter) {
-    qc <- filter(
-      qc,
-      !is.na(length) # remove umi bins not aligned to ref.
-    )
-
-    # if rds not contains umiCon|isoCon, use quantile 0, 0.25 , 0.5, 0.75
-    if (grepl("umiCon|isoCon", rds)) {
-      breaks <- c(seq(1, 60, 3), Inf)
-    } else {
-      breaks <- c(quantile(qc$umi_cluster_size)[1:4], Inf)
-      }
-
-    outlier <- lu_artefact_plot(
-      qc,
-      breaks = breaks) %>% 
-      .$data %>%
-      filter(
-      aflag == "lightblue"
-      )
-    # contamination
-    cont <- outlier %>%
-    select(umi, ref_ssu_error, silva_ssu_error) %>%
-    filter(silva_ssu_error < ref_ssu_error &  0.1 < ref_ssu_error - silva_ssu_error) %>% #nolint
-    arrange(desc(ref_ssu_error - silva_ssu_error)) %>%
-    mutate(flag = "cont")
-    # chimera
-    chi <- outlier %>%
-    select(umi, chimera) %>%
-    filter(chimera == "Y" & !(umi %in% cont$umi)) %>%
-    mutate(flag = "chi")
-
-    qc <- filter(
-      qc,
-    !(umi %in% cont$umi),
-    !(umi %in% chi$umi),
-    )
-  }
-  if (!is.null(size)) {
-    qc <- filter(
-      qc,
-      umi_cluster_size >= size
-    )
-  }
-  return(qc)
+# use qc_filter(), dt_qc, dt_qc_f in size_cutoff section
+dt_qc_filter_by_size <- function(dt, df) {
+  dt_f <- dt %>%
+  left_join(df, by = c("data", "consensus")) %>%
+  filter(umi_cluster_size > cutoff)
+  return(dt_f)
 }
-library(data.table)
-#dt_qc <- rbindlist(sapply(df$qc, qc_from_rds, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc <- rbindlist(mapply(function(x, y) qc_from_rds(x, filter = FALSE, size = y), df$qc, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc$file) #nolint
-dt_qc$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc$file) #nolint
-
-#dt_qc_f <- rbindlist(sapply(df$qc, qc_from_rds, filter = TRUE, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc_f <- rbindlist(mapply(function(x, y) qc_from_rds(x, filter = TRUE, size = y), df$qc, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt_qc_f$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", dt_qc_f$file) #nolint
-dt_qc_f$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", dt_qc_f$file) #nolint
+dt_qcf <- dt_qc_filter_by_size(dt_qc, df)
+dt_qc_ff <- dt_qc_filter_by_size(dt_qc_f, df)
 
 stat_jitter <- function(dt, column, y_lab, y_int=NULL) {
   p <- dt %>%
@@ -503,7 +358,7 @@ stat_jitter <- function(dt, column, y_lab, y_int=NULL) {
       levels = c("pb_ccs", "zymock_r10", "zymock_r9"),
       labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")
       ))) +
-  {if(! is.null(y_int))geom_hline(yintercept = y_int, linetype = "dashed")} +
+  {if (! is.null(y_int)) geom_hline(yintercept = y_int, linetype = "dashed")} +
   scale_color_manual(values = brewer.pal(4, "Spectral")[c(4,2,1)]) +
   labs(
     x = "",
@@ -517,21 +372,23 @@ stat_jitter <- function(dt, column, y_lab, y_int=NULL) {
   )
   return(p)
 }
-p_cont <- stat_jitter(dt_qc, "contamination", "% of contamination")
-p_cont_f <- stat_jitter(dt_qc_f, "contamination", "% of contamination")
-p_len <- stat_jitter(dt_qc, "length", "Consensus length (bp)")
-p_len_f <- stat_jitter(dt_qc_f, "length", "Consensus length (bp)")
-p_error <- stat_jitter(dt_qc, "ref_error", "% of errors")
-p_error_f <- stat_jitter(dt_qc_f, "ref_error", "% of errors")
+p_cont <- stat_jitter(dt_qcf, "contamination", "% of contamination")
+p_cont_f <- stat_jitter(dt_qc_ff, "contamination", "% of contamination")
+p_len <- stat_jitter(dt_qcf, "length", "Consensus length (bp)")
+p_len_f <- stat_jitter(dt_qc_ff, "length", "Consensus length (bp)")
+p_error <- stat_jitter(dt_qcf, "ref_error", "% of errors")
+p_error_f <- stat_jitter(dt_qc_ff, "ref_error", "% of errors")
 
 p_stat_consensus <- p_len + p_cont + p_error + plot_layout(guides = "collect") #nolint
 p_stat_consensus_f <- p_len_f + p_cont_f + p_error_f + plot_layout(guides = "collect") #nolint  
 #p_stat_consensus_f
 #p_stat_consensus
+```
 
+```{r, error profile}
 # stat by error type
 errorsum_from_rds <- function(rds_qc, rds_ep, filter = FALSE, size= NULL) {
-  qcf <- qc_from_rds(rds_qc, filter = filter, size = size)
+  qcf <- qc_filter(rds_qc, rds_ep, filter = filter, size = size)
   load(rds_ep)
   epf <- filter(
     ep,
@@ -549,7 +406,7 @@ errorsum_from_rds <- function(rds_qc, rds_ep, filter = FALSE, size= NULL) {
   } 
 
 # Ref homopolymer statistics
-ref_hp <- Biostrings::readDNAStringSet("/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub100000/pb_ccs/umiCon/qc/zymo-ref-uniq_2019-10-28.fa") %>% #nobin
+ref_hp <- Biostrings::readDNAStringSet("/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub1000000/pb_ccs/umiCon/qc/zymo-ref-uniq_2019-10-28.fa") %>% #nobin
   lu_ref_hp_pos()
 
 dt_sum <- rbindlist(mapply(function(x,y,z) errorsum_from_rds(x, y, filter = FALSE, size = z), df$qc, df$ep, df$cutoff, SIMPLIFY = FALSE), idcol = "file", use.names = FALSE) #nolint
@@ -581,12 +438,12 @@ stat_col <- function(dt, column, y_lab, title, y_int=NULL) {
     aes(
       color = factor(
         type,
-        levels = c("total","mismatch", "insertion", "deletion"),
-        labels = c("Total","Mismatch", "Insertion", "Deletion")),
+        levels = c("total", "mismatch", "insertion", "deletion"),
+        labels = c("Total", "Mismatch", "Insertion", "Deletion")),
       fill = factor(
         type,
-        levels = c("total","mismatch", "insertion", "deletion"),
-        labels = c("Total","Mismatch", "Insertion", "Deletion")),
+        levels = c("total", "mismatch", "insertion", "deletion"),
+        labels = c("Total", "Mismatch", "Insertion", "Deletion")),
       )) +
   labs(
     title = title,
@@ -642,19 +499,13 @@ ggsave("./figure/longumi1000000/stat_consensus.png", p_stat_consensus, width = 1
 ggsave("./figure/longumi1000000/stat_consensus_f.png", p_stat_consensus_f, width = 12, height = 4) #nolint
 ggsave("./figure/longumi1000000/stat_err.png", p_stat_err, width = 12, height = 4) #nolint
 ggsave("./figure/longumi1000000/stat_err_f.png", p_stat_err_f, width = 12, height = 4) #nolint
-
-p_longumi <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layout(guides = "collect")) / #nolint
-  (p_errall + labs(tag="b") + p_errhp0 + p_errhp1 + plot_layout(guides = "collect"))  #nolint
-p_longumi_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate_f + plot_layout(guides = "collect")) / #nolint
-  (p_errall_f + labs(tag="b") + p_errhp0_f + p_errhp1_f + plot_layout(guides = "collect"))  #nolint
-ggsave("./figure/longumi1000000/longumi.png", p_longumi, width = 12, height = 8) #nolint
-ggsave("./figure/longumi1000000/longumi_f.png", p_longumi_f, width = 12, height = 8) #nolint
-
+# chimera all
+ggsave("./figure/longumi1000000/chimerate_all.png", p_chimerate_all, width = 8, height = 6) #nolint
 # all 3
 p_longumi3 <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layout(guides = "collect")) / #nolint
   (p_len + labs(tag="b") + p_cont + p_error + plot_layout(guides = "collect")) / #nolint
   (p_errall + labs(tag="c") + p_errhp0 + p_errhp1 + plot_layout(guides = "collect"))  #nolint
-p_longumi3_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate_f + plot_layout(guides = "collect")) / #nolint
+p_longumi3_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate + plot_layout(guides = "collect")) / #nolint
   (p_len_f + labs(tag="b") + p_cont_f + p_error_f + plot_layout(guides = "collect")) / #nolint
   (p_errall_f + labs(tag="c") + p_errhp0_f + p_errhp1_f + plot_layout(guides = "collect"))  #nolint
 ggsave("./figure/longumi1000000/longumi3.png", p_longumi3, width = 12, height = 12) #nolint
