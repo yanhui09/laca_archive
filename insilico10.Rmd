@@ -812,7 +812,7 @@ p1_cls <- df_comp %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(key == "Purity") %>%
   ggplot(aes(x = depth, y = value, color = id, shape = profile)) +
   geom_point() +
@@ -852,7 +852,7 @@ p1_cls_size_nmi <- df_comp %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(key %in% c("Size", "NMI")) %>%
   ggplot(aes(x = depth, y = value, color = id, shape = profile)) +
   geom_point() +
@@ -903,7 +903,7 @@ p1_pct_clust <- df_pct_clust %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   ggplot( 
     aes(
       x = factor(
@@ -945,7 +945,7 @@ p1_clustid <- df_merge %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   ggplot( 
     aes(
       x = factor(
@@ -1058,7 +1058,7 @@ p1 <- df23 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   ggplot( 
     aes(x = depth, y = nseqs, color = id, shape = profile)) +
   geom_point() +
@@ -1122,7 +1122,7 @@ p2 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   ggplot(
   aes(x = depth, y = tn, color = id, shape = profile)) + 
   geom_point() +
@@ -1164,7 +1164,7 @@ p2_asm5 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm5") %>%
   ggplot(
   aes(x = depth, y = tn, color = id, shape = profile)) + 
@@ -1207,7 +1207,7 @@ p3 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   ggplot(
   aes(x = depth, y = qper, color = id, shape = profile)) + 
   geom_point() +
@@ -1258,7 +1258,7 @@ p4_alnid <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1300,7 +1300,7 @@ p4_qcov <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1342,7 +1342,7 @@ p4_tcov <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1384,7 +1384,7 @@ p5 <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth != 10) %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10", id == "1~2%") %>%
   select(qseq, mapq, benchmark, profile, depth, alnid, qcov, tcov, consensus) %>% #nolint 
   gather(key = "stats", value = "value", -qseq, -mapq, -benchmark, -profile, -depth, -consensus) %>% #nolint 
