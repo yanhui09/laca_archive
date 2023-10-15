@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 13/10/2023
+date: 15/10/2023
 output:
   html_document:
     toc: true
@@ -44,6 +44,8 @@ qc_complie <- function(
 fs <- list.files(
   path = "/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub1000000",
   pattern = "*bin_map.txt", full.names = TRUE, recursive = TRUE)
+# only take .*/(pb_ccs|zymock_r9|zymock_r10)/(umiCon|isoCon|kmerCon|miniCon)/qc/bin_map.txt
+fs <- grep(pattern = ".*/(pb_ccs|zymock_r9|zymock_r10)/(umiCon|isoCon|kmerCon|miniCon)/qc/bin_map.txt", x = fs, value = TRUE) #nolint
 df <- data.frame(bin_map = fs)
 df$qc_dir <- dirname(df$bin_map)
 df$data <- gsub("^.*qc/sub1000000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint

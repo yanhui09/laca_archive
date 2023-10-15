@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 13/10/2023
+date: 15/10/2023
 output:
   html_document:
     toc: true
@@ -44,6 +44,8 @@ qc_complie <- function(
 fs <- list.files(
   path = "/mnt/md0/UMI16S/cp2/latest/longumi/qc/sub100000",
   pattern = "*bin_map.txt", full.names = TRUE, recursive = TRUE)
+# only take .*/(pb_ccs|zymock_r9|zymock_r10)/(umiCon|isoCon|kmerCon|miniCon)/qc/bin_map.txt
+fs <- grep(pattern = ".*/(pb_ccs|zymock_r9|zymock_r10)/(umiCon|isoCon|kmerCon|miniCon)/qc/bin_map.txt", x = fs, value = TRUE) #nolint
 df <- data.frame(bin_map = fs)
 df$qc_dir <- dirname(df$bin_map)
 df$data <- gsub("^.*qc/sub100000/(.*)/(.*)/qc$", "\\1", df$qc_dir) #nolint
@@ -163,7 +165,8 @@ dt_cutoff <- dt_qc_f %>%
   select(data, consensus) %>%
   distinct() %>%
   mutate(cutoff=case_when(
-    consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 15, #nobin
+    consensus %in% c("kmerCon", "miniCon") ~ 5, #nolint
+    consensus == "isoCon" ~ 15, # nolint
     TRUE ~ 3
   ), y= Inf) %>%
   mutate(x = case_when(
@@ -229,7 +232,8 @@ df <- data.frame(qc = qcs, ep = eps)
 df$data <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
 df$consensus <- gsub("^.*longumi/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
-  df$consensus %in% c("kmerCon", "miniCon", "isoCon") ~ 15, # chimera
+  df$consensus %in% c("kmerCon", "miniCon") ~ 5, #nolint
+  df$consensus == "isoCon" ~ 15, # nolint
   TRUE ~ 3
 )
 
