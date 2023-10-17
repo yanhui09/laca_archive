@@ -1449,6 +1449,38 @@ sum_table1 <- df %>%
 
 
 # umapclust_mauto 
+sum_table21 <- df %>%
+  filter(asm == "asm10" & benchmark %in% c("nanopore2020", "nanopore2023")) %>% #nolint
+  mutate(
+    benchmark = factor(
+      benchmark, 
+      levels = c("nanopore2020", "nanopore2023"), #nolint
+      labels = c("ONT 2020", "ONT 2023")
+    )) %>%  
+  group_by(benchmark, profile, id, depth, asm, consensus) %>%
+  summarise(
+    `qcov:mean` = mean(qcov),
+    `qcov:sd` = sd(qcov),
+    `tcov:mean` = mean(tcov),
+    `tcov:sd` = sd(tcov),
+    `alnid:mean` = mean(alnid),
+    `alnid:sd` = sd(alnid),
+    n = n(),
+    `pct:alnid >=99` = sum(alnid >= 99) / n() * 100,
+  ) %>%
+  arrange(`pct:alnid >=99`) %>%
+  # two digits after decimal point
+  mutate(
+    `qcov:mean` = round(`qcov:mean`, 2),
+    `qcov:sd` = round(`qcov:sd`, 2),
+    `tcov:mean` = round(`tcov:mean`, 2),
+    `tcov:sd` = round(`tcov:sd`, 2),
+    `alnid:mean` = round(`alnid:mean`, 2),
+    `alnid:sd` = round(`alnid:sd`, 2),
+    `pct:alnid >=99` = round(`pct:alnid >=99`, 2),
+  )
+
+# nanopore2023duplex pacbio2016ccs
 fs_all <- list.files(
   path = "./data/simulate/umapclust_mauto",
   pattern = "*.paf", full.names = TRUE, recursive = TRUE)
@@ -1508,9 +1540,11 @@ sum_table2 <- df2 %>%
     `pct:alnid >=99` = round(`pct:alnid >=99`, 2),
   )
 
+sum_table22 <- rbind.data.frame(sum_table2, sum_table21)
+
 dir.create("table/simulate", showWarnings = FALSE, recursive = TRUE)
 write.csv(sum_table1, "table/simulate/sum_table1.csv", row.names = FALSE, quote = FALSE) #nolint
-write.csv(sum_table2, "table/simulate/sum_table2.csv", row.names = FALSE, quote = FALSE) #nolint
+write.csv(sum_table22, "table/simulate/sum_table2.csv", row.names = FALSE, quote = FALSE) #nolint
 ```
 
 ```{r, pngs}
