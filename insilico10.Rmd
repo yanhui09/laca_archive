@@ -1417,6 +1417,7 @@ p5 <- df %>%
 # isONclust_umapclust_m5
 # sd for qcov, tcov, alnid, and pct of alnid > 99%
 sum_table1 <- df %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
   mutate(
     benchmark = factor(
@@ -1450,6 +1451,7 @@ sum_table1 <- df %>%
 
 # umapclust_mauto 
 sum_table21 <- df %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2020", "nanopore2023")) %>% #nolint
   mutate(
     benchmark = factor(
@@ -1510,6 +1512,7 @@ df2$tcov <- df2$matches / df2$tlen * 100
 df2$alnid <- df2$matches / (df2$alnlen) * 100
 
 sum_table2 <- df2 %>%
+  filter(depth !=10 & depth != 800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
   mutate(
     benchmark = factor(
