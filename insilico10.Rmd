@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 05/10/2023
+date: 17/10/2023
 output:
   html_document:
     toc: true
@@ -1411,6 +1411,106 @@ p5 <- df %>%
     strip.text = element_text(size = 8),
   )
 #p5
+```
+
+```{r, summary_table}
+# isONclust_umapclust_m5
+# sd for qcov, tcov, alnid, and pct of alnid > 99%
+sum_table1 <- df %>%
+  filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
+  mutate(
+    benchmark = factor(
+      benchmark, 
+      levels = c("nanopore2023duplex", "pacbio2016ccs"), #nolint
+      labels = c("ONT Duplex", "PacBio CCS")
+    )) %>%  
+  group_by(benchmark, profile, id, depth, asm, consensus) %>%
+  summarise(
+    `qcov:mean` = mean(qcov),
+    `qcov:sd` = sd(qcov),
+    `tcov:mean` = mean(tcov),
+    `tcov:sd` = sd(tcov),
+    `alnid:mean` = mean(alnid),
+    `alnid:sd` = sd(alnid),
+    n = n(),
+    `pct:alnid >=99` = sum(alnid >= 99) / n() * 100,
+  ) %>%
+  arrange(`pct:alnid >=99`) %>%
+  # two digits after decimal point
+  mutate(
+    `qcov:mean` = round(`qcov:mean`, 2),
+    `qcov:sd` = round(`qcov:sd`, 2),
+    `tcov:mean` = round(`tcov:mean`, 2),
+    `tcov:sd` = round(`tcov:sd`, 2),
+    `alnid:mean` = round(`alnid:mean`, 2),
+    `alnid:sd` = round(`alnid:sd`, 2),
+    `pct:alnid >=99` = round(`pct:alnid >=99`, 2),
+  )
+
+
+# umapclust_mauto 
+fs_all <- list.files(
+  path = "./data/simulate/umapclust_mauto",
+  pattern = "*.paf", full.names = TRUE, recursive = TRUE)
+fs <- grep(pattern = '.*/cut/.*.paf', fs_all, value = TRUE)
+
+dt <- rbindlist(sapply(fs, function(x) fread(x, header=FALSE), simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
+dt$benchmark <- gsub("^.*simulate/umapclust_mauto/(nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\1", dt$file) #nolint
+dt$profile <- gsub("^.*simulate/umapclust_mauto/(nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\2", dt$file) #nolint
+dt$id <- as.numeric(
+  gsub("^.*/si(9095|9597|9798|9899|99100).*", "\\1", dt$file)) #nolint
+dt$depth <- as.numeric(
+  gsub("^.*/si(9095|9597|9798|9899|99100)([0-9]+).*", #nolint
+  "\\2", dt$file))
+dt$alignment <- gsub("^.*/si[0-9]+_(asm[0-9]+).*", "\\1", dt$file)
+dt$consensus <- gsub("^.*(even10|skew10)/(.*)/repseqs_refalign/cut/.*", "\\2", dt$file) #nolint
+dt <- dt[, !"file"]
+df2 <- as.data.frame(dt)
+# https://github.com/lh3/miniasm/blob/master/PAF.md
+colnames(df2) <- c("qseq", "qlen", "qstart", "qend", "strand",
+ "tseq", "tlen", "tstart", "tend", "matches", "alnlen", "mapq",
+  "benchmark", "profile", "id", "depth", "asm", "consensus")
+# alignment accuracy
+# % of matches
+df2$qcov <- df2$matches / df2$qlen * 100
+df2$tcov <- df2$matches / df2$tlen * 100
+# % of matches, blast-like identity
+df2$alnid <- df2$matches / (df2$alnlen) * 100
+
+sum_table2 <- df2 %>%
+  filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
+  mutate(
+    benchmark = factor(
+      benchmark, 
+      levels = c("nanopore2023duplex", "pacbio2016ccs"), #nolint
+      labels = c("ONT Duplex", "PacBio CCS")
+    )) %>%  
+  group_by(benchmark, profile, id, depth, asm, consensus) %>%
+  summarise(
+    `qcov:mean` = mean(qcov),
+    `qcov:sd` = sd(qcov),
+    `tcov:mean` = mean(tcov),
+    `tcov:sd` = sd(tcov),
+    `alnid:mean` = mean(alnid),
+    `alnid:sd` = sd(alnid),
+    n = n(),
+    `pct:alnid >=99` = sum(alnid >= 99) / n() * 100, #nolint
+  ) %>%
+  arrange(`pct:alnid >=99`) %>%
+  # two digits after decimal point
+  mutate(
+    `qcov:mean` = round(`qcov:mean`, 2),
+    `qcov:sd` = round(`qcov:sd`, 2),
+    `tcov:mean` = round(`tcov:mean`, 2),
+    `tcov:sd` = round(`tcov:sd`, 2),
+    `alnid:mean` = round(`alnid:mean`, 2),
+    `alnid:sd` = round(`alnid:sd`, 2),
+    `pct:alnid >=99` = round(`pct:alnid >=99`, 2),
+  )
+
+dir.create("table/simulate", showWarnings = FALSE, recursive = TRUE)
+write.csv(sum_table1, "table/simulate/sum_table1.csv", row.names = FALSE, quote = FALSE) #nolint
+write.csv(sum_table2, "table/simulate/sum_table2.csv", row.names = FALSE, quote = FALSE) #nolint
 ```
 
 ```{r, pngs}
