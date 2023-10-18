@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 15/10/2023
+date: 18/10/2023
 output:
   html_document:
     toc: true
@@ -238,6 +238,7 @@ df <- data.frame(qc = qcs, ep = eps)
 df$data <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\1", df$qc)
 df$consensus <- gsub("^.*longumi1000000/(.*)/(.*)_qc.Rdata", "\\2", df$qc)
 df$cutoff <- case_when(
+  # 250x, 200x for kmerCon, miniCon to get more refs
   df$consensus == "kmerCon" ~ 400,
   df$consensus == "miniCon" ~ 300,
   df$data == "pb_ccs" & df$consensus == "isoCon" ~ 20,
