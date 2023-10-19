@@ -1273,7 +1273,7 @@ p4_alnid <- df %>%
   geom_hline(yintercept = 1, linetype = "dashed") +
   labs(
     x = "",
-    y = "% of error in alignment",
+    y = "% of errors in alignment",
     color = "MAPQ",
     shape = "Simulation profile"
    ) +
