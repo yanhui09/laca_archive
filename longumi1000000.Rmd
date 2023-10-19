@@ -220,13 +220,14 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
     ) +
   scale_y_continuous(
     trans = scales::sqrt_trans(),
-    breaks = c(0.1, 1, 3, 5, 10),
+    breaks = c(0, 0.1, 1, 3, 5, 10),
     ) +
   facet_grid(
     factor(data, labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")) ~ #nolint 
     fct_relevel(consensus, "kmerCon", "miniCon", "isoCon", "umiCon"), scales = "free") + #nolint
   geom_vline(data = dt_cutoff, aes(xintercept = cutoff), linetype = "dashed") + #nolint
   geom_text(data = dt_cutoff, aes(x = x, y = y, label = label), hjust=0, vjust = 1) + #nolint
+  geom_hline(yintercept = 0, linetype = "dashed") +
   geom_hline(data = dt_cutoff, aes(yintercept = y_q20), linetype = "dashed") +
   geom_text(data = dt_cutoff, aes(x = x_q, y = ylabel_q20, label = label_q20), hjust=0, vjust = 1) + #nolint
   geom_hline(data = dt_cutoff, aes(yintercept = y_q30), linetype = "dashed") +
@@ -249,8 +250,8 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
 p_size_err <- stat_jitter_xy(dt_qc, column_y = "ref_error", column_x = "umi_cluster_size") #nolint
 p_size_err_f <- stat_jitter_xy(dt_qc_f, column_y = "ref_error", column_x = "umi_cluster_size") #nolint
 dir.create("./figure/longumi1000000", showWarnings = FALSE, recursive = TRUE)
-ggsave("./figure/longumi1000000/size_err.png", p_size_err, width = 12, height = 8) #nolint
-ggsave("./figure/longumi1000000/size_err_f.png", p_size_err_f, width = 12, height = 8) #nolint
+ggsave("./figure/longumi1000000/size_err.png", p_size_err, width = 14, height = 10) #nolint
+ggsave("./figure/longumi1000000/size_err_f.png", p_size_err_f, width = 14, height = 10) #nolint
 ```
 
 ```{r, stats}
@@ -411,10 +412,11 @@ stat_jitter_scale <- function(dt, column, y_lab, y_int = NULL) {
   p <- stat_jitter(dt, column, y_lab, y_int) +
   scale_y_continuous(
     trans = scales::sqrt_trans(),
-    breaks = c(0.1, 1, 2, 3, 5),
+    breaks = c(0, 0.1, 1, 2, 3, 5),
     ) +
   geom_hline(yintercept = 1, linetype = "dashed") +
-  geom_hline(yintercept = 0.1, linetype = "dashed")
+  geom_hline(yintercept = 0.1, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed")
   return(p)
 }
 p_error_f <- stat_jitter_scale(dt_qc_ff, "ref_error", "% of errors")
