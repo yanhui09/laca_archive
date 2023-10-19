@@ -113,6 +113,23 @@ dt_cutoff <- dt_qc_f %>%
   ))
 dt_cutoff$label <- sapply(dt_cutoff$cutoff, function(x) paste0(x, "x"))
 
+dt_cutoff$x_q <- 3
+dt_cutoff$y_q20 <- 1
+dt_cutoff$y_q30 <- 0.1
+dt_cutoff$ylabel_q20 <- NA
+dt_cutoff$label_q20 <- NA
+dt_cutoff$ylabel_q30 <- NA
+dt_cutoff$label_q30 <- NA
+# label were only added to kmerCon
+dt_cutoff$ylabel_q20[dt_cutoff$consensus == "kmerCon"] <- 1.5
+dt_cutoff$label_q20[dt_cutoff$consensus == "kmerCon"] <- "Q20"
+dt_cutoff$ylabel_q30[dt_cutoff$consensus == "kmerCon"] <- 0.3
+dt_cutoff$label_q30[dt_cutoff$consensus == "kmerCon"] <- "Q30"
+# no y_q20, ylabel_q20, label_q20 for pb_ccs
+dt_cutoff$y_q20[dt_cutoff$data == "pb_ccs"] <- NA
+dt_cutoff$ylabel_q20[dt_cutoff$data == "pb_ccs"] <- NA
+dt_cutoff$label_q20[dt_cutoff$data == "pb_ccs"] <- NA
+
 # draw a simple plot
 library(ggprism)
 library(RColorBrewer)
@@ -133,9 +150,19 @@ stat_jitter_xy <- function(dt, column_x, column_y) {
     trans = scales::log2_trans(),
     breaks = c(5, 10, 25, 125, 500, 1000),
     ) +
+  scale_y_continuous(
+    trans = scales::sqrt_trans(),
+    breaks = c(0.1, 1, 3, 5),
+    ) +
   facet_grid(
     factor(data, labels = c("PacBio CCS", "ONT R10.3", "ONT R9.4.1")) ~ #nolint 
     fct_relevel(consensus, "kmerCon", "miniCon", "isoCon", "umiCon"), scales = "free") + #nolint
+  geom_vline(data = dt_cutoff, aes(xintercept = cutoff), linetype = "dashed") + #nolint
+  geom_text(data = dt_cutoff, aes(x = x, y = y, label = label), hjust=0, vjust = 1) + #nolint
+  geom_hline(data = dt_cutoff, aes(yintercept = y_q20), linetype = "dashed") +
+  geom_text(data = dt_cutoff, aes(x = x_q, y = ylabel_q20, label = label_q20), hjust=0, vjust = 1) + #nolint
+  geom_hline(data = dt_cutoff, aes(yintercept = y_q30), linetype = "dashed") +
+  geom_text(data = dt_cutoff, aes(x = x_q, y = ylabel_q30, label = label_q30), hjust=0, vjust = 1) + #nolint
   labs(
     x = "# of reads",
     y = "% of errors",
@@ -305,7 +332,17 @@ p_cont_f <- stat_jitter(dt_qc_ff, "contamination", "% of contamination")
 p_len <- stat_jitter(dt_qcf, "length", "Consensus length (bp)")
 p_len_f <- stat_jitter(dt_qc_ff, "length", "Consensus length (bp)")
 p_error <- stat_jitter(dt_qcf, "ref_error", "% of errors")
-p_error_f <- stat_jitter(dt_qc_ff, "ref_error", "% of errors")
+stat_jitter_scale <- function(dt, column, y_lab, y_int = NULL) {
+  p <- stat_jitter(dt, column, y_lab, y_int) +
+  scale_y_continuous(
+    trans = scales::sqrt_trans(),
+    breaks = c(0.1, 1, 2, 3, 5),
+    ) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  geom_hline(yintercept = 0.1, linetype = "dashed")
+  return(p)
+}
+p_error_f <- stat_jitter_scale(dt_qc_ff, "ref_error", "% of errors")
 
 p_stat_consensus <- p_len + p_cont + p_error + plot_layout(guides = "collect") #nolint
 p_stat_consensus_f <- p_len_f + p_cont_f + p_error_f + plot_layout(guides = "collect") #nolint  
@@ -313,7 +350,7 @@ p_stat_consensus_f <- p_len_f + p_cont_f + p_error_f + plot_layout(guides = "col
 #p_stat_consensus
 ```
 
-```{r, error profile}
+```{r, error profile filter, eval = FALSE}
 # stat by error type
 errorsum_from_rds <- function(rds_qc, rds_ep, filter = FALSE, size= NULL) {
   qcf <- qc_filter(rds_qc, rds_ep, filter = filter, size = size)
