@@ -494,6 +494,13 @@ stat_col <- function(dt, column, y_lab, title, y_int=NULL) {
     fill = "Error type",
     color = "Error type"
     ) +
+  scale_y_continuous(
+    trans = scales::sqrt_trans(),
+    breaks = c(0, 0.01, 0.1, 0.3, 0.5, 1, 2, 3),
+    ) +
+  geom_hline(yintercept = 0.01, linetype = "dashed") +
+  geom_hline(yintercept = 0.1, linetype = "dashed") +
+  geom_hline(yintercept = 1, linetype = "dashed") +
   facet_grid(. ~ factor(
         data, 
         levels = c("pb_ccs", "zymock_r10", "zymock_r9"),
@@ -539,8 +546,8 @@ ggsave("./figure/longumi1000000/stat_overview.png", p_stat_overview, width = 12,
 ggsave("./figure/longumi1000000/stat_overview_f.png", p_stat_overview_f, width = 12, height = 4) #nolint
 ggsave("./figure/longumi1000000/stat_consensus.png", p_stat_consensus, width = 12, height = 4) #nolint
 ggsave("./figure/longumi1000000/stat_consensus_f.png", p_stat_consensus_f, width = 12, height = 4) #nolint
-ggsave("./figure/longumi1000000/stat_err.png", p_stat_err, width = 12, height = 4) #nolint
-ggsave("./figure/longumi1000000/stat_err_f.png", p_stat_err_f, width = 12, height = 4) #nolint
+ggsave("./figure/longumi1000000/stat_err.png", p_stat_err, width = 12, height = 6) #nolint
+ggsave("./figure/longumi1000000/stat_err_f.png", p_stat_err_f, width = 12, height = 6) #nolint
 # chimera all
 ggsave("./figure/longumi1000000/chimerate_all.png", p_chimerate_all, width = 8, height = 6) #nolint
 # all 3
@@ -550,6 +557,6 @@ p_longumi3 <- (p_nclusters + labs(tag = "a") + p_refs + p_chimerate + plot_layou
 p_longumi3_f <- (p_nclusters_f + labs(tag = "a") + p_refs_f + p_chimerate + plot_layout(guides = "collect")) / #nolint
   (p_len_f + labs(tag="b") + p_cont_f + p_error_f + plot_layout(guides = "collect")) / #nolint
   (p_errall_f + labs(tag="c") + p_errhp0_f + p_errhp1_f + plot_layout(guides = "collect"))  #nolint
-ggsave("./figure/longumi1000000/longumi3.png", p_longumi3, width = 12, height = 12) #nolint
-ggsave("./figure/longumi1000000/longumi3_f.png", p_longumi3_f, width = 12, height = 12) #nolint
+ggsave("./figure/longumi1000000/longumi3.png", p_longumi3, width = 12, height = 15) #nolint
+ggsave("./figure/longumi1000000/longumi3_f.png", p_longumi3_f, width = 12, height = 15) #nolint
 ```
