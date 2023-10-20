@@ -898,6 +898,6 @@ mapply(ggsave2, pnames, ps)
 ggsave("figure/zymock/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
 
 library(patchwork)
-p_merge <- p_otus_len + p_otus_sumb + p_taxa_flow2 + p_blast + plot_layout(nrow = 2) + plot_annotation(tag_levels = "a")  #nolint
+p_merge <- p_otus_len + p_otus_sumb + p_taxa_flow2 + p_otus_count + plot_layout(nrow = 2) + plot_annotation(tag_levels = "a")  #nolint
 ggsave("figure/zymock/p_merge.png", p_merge, height = 12, width = 14) #nolint
 ```
