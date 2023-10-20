@@ -429,6 +429,8 @@ stat_jitter_scale <- function(dt, column, y_lab, y_int = NULL) {
   return(p)
 }
 p_error_f <- stat_jitter_scale(dt_qc_ff, "ref_error", "% of errors")
+# isoCon/umiCon ceiling ONTR10.3: 0.75/0.15=5
+# isoCon/umiCon ceiling ONTR9.4.1: 0.9/0.3=3
 
 p_stat_consensus <- p_len + p_cont + p_error + plot_layout(guides = "collect") #nolint
 p_stat_consensus_f <- p_len_f + p_cont_f + p_error_f + plot_layout(guides = "collect") #nolint  
