@@ -279,8 +279,17 @@ stat_bar <- function(df, column, y_lab, y_int=NULL) {
   )
   return(p)
 }
-p_nclusters <- stat_bar(df, "nclusters", "# of clusters")
-p_nclusters_f <- stat_bar(df, "nclusters_f", "# of clusters")
+stat_bar_scale <- function(df, column, y_lab, y_int = NULL) {
+  p <- stat_bar(df, column, y_lab, y_int) +
+  scale_y_continuous(
+    trans = scales::log10_trans(),
+    breaks = c(1, 10, 100, 1000, 2000, 4000),
+    )
+  return(p)
+}
+
+p_nclusters <- stat_bar_scale(df, "nclusters", "# of sequences")
+p_nclusters_f <- stat_bar_scale(df, "nclusters_f", "# of sequences")
 p_refs <- stat_bar(df, "nrefs", "# of references", y_int = 43)
 p_refs_f <- stat_bar(df, "nrefs_f", "# of references", y_int = 43)
 p_chimerate <- stat_bar(df, "chimerate", "% of chimeras")
