@@ -824,6 +824,10 @@ merge_otus_count <- function(ps_list, con_cv, subsample_cv) {
 
 otus_count <- merge_otus_count(ps_list, con_cv, subsample_cv)
 colnames(otus_count) <- c("qseqid", "count", "consensus", "subsample")
+# rel
+otus_count <- otus_count %>%
+  group_by(consensus, subsample) %>%
+  mutate(pct_rel = count / sum(count) * 100)
 df_otus_count <- otus_count %>%
   left_join(df2, by = c("qseqid", "consensus", "subsample"))
 
@@ -833,7 +837,7 @@ p_otus_count <- df_otus_count %>%
   filter(tax != "Unassigned") %>%
   ggplot(aes(
     y = pident, 
-    x = count
+    x = pct_rel
   )) +
   geom_point(
     aes(
@@ -841,20 +845,20 @@ p_otus_count <- df_otus_count %>%
       consensus, "kmerCon", "miniCon", "isoCon"
       )
     )) +
-  # add segment yline = 97, xline=50,500
-  geom_segment(data = data.frame(xs=0,xe=50,ys=97,ye=97,subsample="Subsample10000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=50,xe=50,ys=-Inf,ye=97,subsample="Subsample10000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=0,xe=500,ys=97,ye=97,subsample="Subsample100000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=500,xe=500,ys=-Inf,ye=97,subsample="Subsample100000"), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  # add segment yline = 97,99, xline=0.12,0.25
+  geom_segment(data = data.frame(xs=0,xe=0.12,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0.12,xe=0.12,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=0.25,ys=99,ye=99), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0.25,xe=0.25,ys=-Inf,ye=99), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
   scale_y_continuous(breaks = c(95, 96, 97, 98, 99, 100)) +
   scale_x_continuous(
-    trans = scales::log2_trans(),
-    breaks = c(10,50,100,500,1000,5000,10000,50000,100000),
+    trans = scales::log10_trans(),
+    breaks = c(0.01, 0.05, 0.12, 0.25, 0.5, 1, 5),
     ) +
   facet_grid(subsample ~ ., scales = "free", space = "free_x") +
   labs(
-    x = "# of read counts per OTU",
+    x = "%",
     y = "% of identical matches",
     color = "Consensus mode",
   ) +
@@ -877,7 +881,9 @@ pct_otu <- df_otus_count %>%
     `% of unclassified OTU in counts` = sum(count[tax == "Unassigned"]) / sum(count) * 100, #nolint
     `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
     `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
-  )
+  ) %>%
+  # two digits after decimal point
+  mutate_if(is.numeric, round, 2)
 #pct_otu
 write.csv(pct_otu, "table/pct_otu.csv", quote = FALSE, row.names = FALSE)
 ```
