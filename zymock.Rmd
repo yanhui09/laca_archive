@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 06/10/2023
+date: 20/10/2023
 output:
   html_document:
     toc: true
@@ -102,13 +102,13 @@ ps_construct <- function(taxf, count, metadata, tree_nwk=NULL, rep_fasta=NULL, s
 filter_taxa_laca <- function(tax_tsv, hits_tsv, min_id) {
   tax_table <- read.table(tax_tsv, header = FALSE, sep = "\t")
   hits_table <- read.table(hits_tsv, header = FALSE, sep = "\t")
-  tax_mean_id <- hits_table %>%
+  tax_max_id <- hits_table %>%
     filter(V3 != "*") %>%
     group_by(V1) %>%
-    summarise(mean_id = min(as.numeric(V3))) %>%
-    filter(mean_id >= min_id)
+    summarise(max_id = max(as.numeric(V3))) %>%
+    filter(max_id >= min_id)
   tax_table <- tax_table %>%
-    filter(V1 %in% tax_mean_id$V1)
+    filter(V1 %in% tax_max_id$V1)
   return(tax_table)
 }
 
@@ -693,12 +693,11 @@ df2 <- df %>%
     # take max hit identity per OTU
     pident = max(pident),
     # gapopen% per OTU
-    cov = max((qend - qstart+1) / length * 100),
-    min_pident = min(pident)) %>%
+    cov = max((qend - qstart+1) / length * 100)) %>%
   left_join(df_tax, by = c("qseqid", "consensus", "subsample"))
 library(ggprism)
 p_blast <- df2 %>%
-  filter(min_pident >= 97) %>%
+  filter(pident >= 97) %>%
   ggplot(aes(
     y = pident, 
     x = fct_relevel(
@@ -875,12 +874,12 @@ pct_otu <- df_otus_count %>%
   summarise(
     n = n(),
     `% of unclassified OTUs` = sum(tax == "Unassigned") / n * 100,
-    `% of OTUs with min identity > 97%` = sum(min_pident >= 97) / n * 100,
-    `% of OTUs min identity > 99%` = sum(min_pident >= 99) / n * 100,
+    `% of OTUs with min identity > 97%` = sum(pident >= 97) / n * 100,
+    `% of OTUs min identity > 99%` = sum(pident >= 99) / n * 100,
     `sum of OTU counts` = sum(count),
     `% of unclassified OTU in counts` = sum(count[tax == "Unassigned"]) / sum(count) * 100, #nolint
-    `% of OTU with min identity > 97% in counts` = sum(count[min_pident >= 97]) / sum(count) * 100, #nolint
-    `% of OTU with min identity > 99% in counts` = sum(count[min_pident >= 99]) / sum(count) * 100 #nolint
+    `% of OTU with min identity > 97% in counts` = sum(count[pident >= 97]) / sum(count) * 100, #nolint
+    `% of OTU with min identity > 99% in counts` = sum(count[pident >= 99]) / sum(count) * 100 #nolint
   ) %>%
   # two digits after decimal point
   mutate_if(is.numeric, round, 2)
