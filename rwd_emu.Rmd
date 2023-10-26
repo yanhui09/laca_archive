@@ -488,11 +488,14 @@ plot_taxa_flow <- function(ps_melt, taxon_l, rel = FALSE, merge_unclassified = T
       y = Abundance, fill = taxon_l)) +
     geom_bar(stat = "summary", aes(fill = taxon_l), fun = "sum") +
     labs(x = "", y = ytitle) +
-    facet_grid(Group + Sample ~ bin, scales = "free", space = "free_x") +
-    guides(fill = guide_legend(ncol = 1)) +
+    facet_wrap(Group ~ Sample, scales = "free", nrow = 2) +
     scale_fill_manual(values = my_palette_c) +
+    guides(fill = guide_legend(ncol = 5)) +
     theme_prism() +
-    theme(axis.text.x.bottom = element_text(angle = 90))
+    theme(
+      axis.text.x.bottom = element_text(angle = 90),
+      legend.position = "bottom",
+      )
   return(p_taxa)
 }
 
@@ -1031,15 +1034,15 @@ ggsave2 <- function(x, y, h=8, w=10) {
     )
 }
 mapply(ggsave2, pnames, ps)
-mapply(ggsave2, pnames_l, ps_l, h = 20, w = 12)
-ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
+mapply(ggsave2, pnames_l, ps_l, h = 12, w = 16)
+ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 10, width = 10) #nolint
 png("figure/emu/p_upset.png", height = 6, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()
-ggsave("figure/emu/p_cor.png", p_cor, height = 6, width = 12) #nolint
+ggsave("figure/emu/p_cor.png", p_cor, height = 4, width = 12) #nolint
 
 # combine p_upset and p_cor
 library(patchwork)
 p_upset_cor <- (p_upset + theme_prism()) / p_cor + plot_layout(heights = c(2, 1)) + plot_annotation(tag_levels = "a") #nolint
-ggsave("figure/emu/p_upset_cor.png", p_upset_cor, height = 12, width = 12) #nolint
+ggsave("figure/emu/p_upset_cor.png", p_upset_cor, height = 10, width = 12) #nolint
 ```
