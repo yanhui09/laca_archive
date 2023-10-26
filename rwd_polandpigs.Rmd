@@ -724,6 +724,10 @@ merge_otus_count <- function(ps_list, con_cv) {
 
 otus_count <- merge_otus_count(ps_list, con_cv)
 colnames(otus_count) <- c("qseqid", "count", "consensus")
+# rel
+otus_count <- otus_count %>%
+  group_by(consensus) %>%
+  mutate(pct_rel = count / sum(count) * 100)
 df_otus_count <- otus_count %>%
   left_join(df2, by = c("qseqid", "consensus"))
 
@@ -733,7 +737,7 @@ p_otus_count <- df_otus_count %>%
   filter(tax != "Unassigned") %>%
   ggplot(aes(
     y = pident, 
-    x = count
+    x = pct_rel,
   )) +
   geom_point(
     aes(
@@ -741,16 +745,16 @@ p_otus_count <- df_otus_count %>%
       consensus, "kmerCon", "miniCon", "isoCon"
       )
     )) +
-  # add segment yline = 97, xline=50,500
-  geom_segment(data = data.frame(xs=0,xe=1500,ys=95,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=0,xe=1500,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
-  geom_segment(data = data.frame(xs=1500,xe=1500,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  # add segment yline = 95,97, xline=1
+  geom_segment(data = data.frame(xs=0,xe=1,ys=95,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=1,xe=1,ys=-Inf,ye=95), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=0,xe=1,ys=97,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
+  geom_segment(data = data.frame(xs=1,xe=1,ys=-Inf,ye=97), aes(x=xs, xend=xe, y=ys, yend=ye), linetype = "dashed") + #nolint
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,4,9)]) +
   scale_y_continuous(breaks = c(100, 97, 95, 90, 85)) +
   scale_x_continuous(
-    trans = scales::log2_trans(),
-    breaks = c(10,50,100,500,1000,1500,5000,10000,50000,100000),
+    trans = scales::log10_trans(),
+    breaks = c(0.001, 0.01, 0.05, 0.12, 0.25, 0.5, 1, 5),
     ) +
   labs(
     x = "# of read counts per OTU",
