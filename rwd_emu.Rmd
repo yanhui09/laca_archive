@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 25/10/2022
+date: 27/10/2022
 output:
   html_document:
     toc: true
@@ -126,7 +126,7 @@ ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits
 
 ```{r load_all_ps, include=FALSE, message=FALSE}
 ps_kmerCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/kmerCon_out/tree.nwk",
@@ -135,7 +135,7 @@ ps_kmerCon <- ps_from_laca( # nolint
   min_id = 97
   )
 ps_miniCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/miniCon_out/tree.nwk",
@@ -144,7 +144,7 @@ ps_miniCon <- ps_from_laca( # nolint
   min_id = 97
   )
 ps_isoCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
+  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/isoCon_out/tree.nwk",
@@ -154,7 +154,7 @@ ps_isoCon <- ps_from_laca( # nolint
   )
 
 # load emu profiles manually
-countab <- read.table("data/emu/emu_demultiplexed_b0.tsv", header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
+countab <- read.table("data/emu/emu_demultiplexed_b0_estimated.tsv", header = T, sep = "\t", row.names = 1, comment.char = "") # nolint
 metab <- read.table("data/emu/mapping.tsv", header = T, sep = "\t", row.names = 1) # nolint
 taxtab <- countab[,1, drop = FALSE] 
 countab <- countab[, -1]
@@ -339,12 +339,16 @@ p_otus_sumb <- dt_sumb %>%
 ```{r, multi-betas, include=FALSE, message=FALSE, eval}
 library(vegan)
 library(ggprism)
-plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
+plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL, hellinger = FALSE) { #nolint
   # exclude "Unassigned" OTU at phylum level
   ps <- subset_taxa(ps, Phylum != "Unassigned")
   # rm shallow sequenced samples
   if(!is.null(min_depth)) {
     ps <- prune_samples(sample_sums(ps) >= min_depth, ps)
+  }
+  #Hellinger transformation
+  if(hellinger == TRUE) {
+    ps <- transform_sample_counts(ps, function(x) sqrt(x/sum(x)*100))
   }
   metadata <- data.frame(sample_data(ps))
   # distance and pca
@@ -354,7 +358,7 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
   else {
     dist <- phyloseq::distance(ps, method = method_c)
   } 
-  pcoa <- cmdscale(dist, k = 3, eig = T)
+  pcoa <- cmdscale(dist, k = 5, eig = T)
   pcs <- as.data.frame(pcoa$points)
   colnames(pcs) <- c("x", "y", "z")
   eig <- pcoa$eig
@@ -362,7 +366,8 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
   var_color <- eval(substitute(get(color_c)), points)
   # adonis
   myfor <- as.formula(paste0("dist ~ as.factor(", color_c, ")"))
-  adonis_sub <- adonis2(myfor, data = points, permutations = 999)
+  set.seed(123)
+  adonis_sub <- adonis2(myfor, data = points, permutations = 9999)
   adonis_R2 <- adonis_sub$R2
   adonis_p <- adonis_sub$`Pr(>F)`
   p_ordi <- ggplot(
@@ -371,17 +376,16 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL) {
     ) +
     geom_point(size = 3) +
     scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,9)]) +
-    #scale_color_brewer(palette = "Spectral") +
     # only 3 breaks
     scale_x_continuous(n.breaks = 3) +
     scale_y_continuous(n.breaks = 3) +
     labs(
-      x = paste0("PCoA 1 (", round(100 * eig[1] / sum(eig), 1), " %)"),
-      y = paste0("PCoA 2 (", round(100 * eig[2] / sum(eig), 1), " %)"),
+      x = paste0("PCoA 1 (", round(100 * eig[1] / sum(eig[eig>0]), 1), " %)"),
+      y = paste0("PCoA 2 (", round(100 * eig[2] / sum(eig[eig>0]), 1), " %)"),
       title = paste0(
         title_cs, "\n",
         method_c, "\nR2=", round(adonis_R2[1], 2),
-        ", P=", format(adonis_p[1], digits = 1)),
+        ", P=", format(adonis_p[1], digits = 2)),
       color = "Sample type"
       ) +
     theme_prism() +
@@ -404,7 +408,7 @@ title_csv <- c(
   "isoCon"
   )
 
-get_multi_betas <- function(ps_list, title_csv, method_c, color_c, min_depth=5000) { #nolint
+get_multi_betas <- function(ps_list, title_csv, method_c, color_c, min_depth=NULL) { #nolint
   p_ordi_list <- lapply(
     seq_along(ps_list), 
     function(i) {
@@ -416,7 +420,6 @@ get_multi_betas <- function(ps_list, title_csv, method_c, color_c, min_depth=500
 multi_wunifrac <- get_multi_betas(ps_list, title_csv, "wunifrac", "Group") #nolint
 multi_bray <- get_multi_betas(append(ps_list, ps_emu), c(title_csv, "emu"), "bray", "Group") #nolint
 p_multi_betas <- patchwork::wrap_plots(c(multi_wunifrac, multi_bray), guides = "collect", ncol = 3) #nolint
-
 ```
 
 ```{r, multi-bins, include=FALSE, message=FALSE}

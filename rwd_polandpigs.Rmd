@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 10/10/2023
+date: 27/10/2023
 output:
   html_document:
     toc: true
@@ -395,12 +395,20 @@ p_otus_sumb <- dt_sumb %>%
 #p_otus_sumb
 ```
 
-```{r, multi-betas, include=FALSE, message=FALSE, eval}
+```{r, multi-betas, include=FALSE, message=FALSE}
 library(vegan)
 library(ggprism)
-plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs) {
+plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = 500, hellinger = TRUE) { # nolint
   # exclude "Unassigned" OTU at phylum level
   ps <- subset_taxa(ps, Phylum != "Unassigned")
+  # rm shallow sequenced samples
+  if(!is.null(min_depth)) {
+    ps <- prune_samples(sample_sums(ps) >= min_depth, ps)
+  }
+  #Hellinger transformation
+  if(hellinger == TRUE) {
+    ps <- transform_sample_counts(ps, function(x) sqrt(x/sum(x)*100))
+  }
   metadata <- data.frame(sample_data(ps))
   # distance and pca
   if (method_c == "jaccard") {
@@ -416,7 +424,8 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs) {
   var_color <- eval(substitute(get(color_c)), points)
   # adonis
   myfor <- as.formula(paste0("dist ~ as.factor(", color_c, ")"))
-  adonis_sub <- adonis2(myfor, data = points, permutations = 999)
+  set.seed(123)
+  adonis_sub <- adonis2(myfor, data = points, permutations = 9999)
   adonis_R2 <- adonis_sub$R2
   adonis_p <- adonis_sub$`Pr(>F)`
   p_ordi <- ggplot(
@@ -429,8 +438,8 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs) {
     scale_x_continuous(n.breaks = 3) +
     scale_y_continuous(n.breaks = 3) +
     labs(
-      x = paste0("PCoA 1 (", round(100 * eig[1] / sum(eig), 1), " %)"),
-      y = paste0("PCoA 2 (", round(100 * eig[2] / sum(eig), 1), " %)"),
+      x = paste0("PCoA 1 (", round(100 * eig[1] / sum(eig[eig>0]), 1), " %)"),
+      y = paste0("PCoA 2 (", round(100 * eig[2] / sum(eig[eig>0]), 1), " %)"),
       title = paste0(
         title_cs, "\n",
         method_c, "\nR2=", round(adonis_R2[1], 2),
@@ -474,11 +483,11 @@ multi_wunifrac <- get_multi_betas(
 multi_bray <- get_multi_betas(
   append(ps_list,list(ps_emu)), c(title_csv, "Emu"), "bray", "Group" # nolint
   )
-p_multi_beatas <- patchwork::wrap_plots(
+p_multi_betas <- patchwork::wrap_plots(
   c(multi_wunifrac, multi_bray),
   guides = "collect", ncol = 3
   )
-#p_multi_beatas
+#p_multi_betas
 ```
 
 ```{r, multi-bins, include=FALSE, message=FALSE}
@@ -1026,7 +1035,7 @@ ggsave2 <- function(x, y, h=8, w=10) {
 }
 mapply(ggsave2, pnames, ps)
 mapply(ggsave2, pnames_l, ps_l, h = 12, w = 12)
-ggsave("figure/polandpigs/p2_betas.png", p_multi_beatas, height = 12, width = 12) #nolint
+ggsave("figure/polandpigs/p2_betas.png", p_multi_betas, height = 12, width = 12) #nolint
 png("figure/polandpigs/p_upset01.png", height = 8, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()
