@@ -87,6 +87,8 @@ ps_construct <- function(taxf, count, metadata, tree_nwk=NULL, rep_fasta=NULL, s
     ps <- phyloseq(otu, tax, metadata)
   } else {
     tree <- read_tree_greengenes(tree_nwk)
+    #https://github.com/joey711/phyloseq/issues/936
+    tree <- ape::multi2di(tree)
     ps <- phyloseq(otu, tax, metadata, tree)
   }
   if (!is.null(rep_fasta)) {  
@@ -269,7 +271,10 @@ p_otus_len <- otus_len %>%
 
 ```{r, yield, include=FALSE, message=FALSE}
 get_otus_sum <- function(ps, n = 0, taxal = "Species", binary = FALSE,
- con_c, bin_c) {
+ con_c, bin_c, rarefy_size = NULL) {
+  if (!is.null(rarefy_size)) {
+    ps <- rarefy_even_depth(ps, rngseed = 1, sample.size = rarefy_size)
+  }
   # prune otus
   ps <- prune_taxa(taxa_sums(ps) > n, ps)
   taxa <- as.data.frame(tax_table(ps))[taxal]
@@ -315,10 +320,10 @@ bin_cv <- c(
 )
 
 merge_otus_sum <- function(ps_list, n = 0, taxal = "Species", binary = FALSE,
- con_cv, bin_cv) {
+ con_cv, bin_cv, rarefy_size = NULL) {
   otus_sum_list <- lapply(seq_along(ps_list), function(i) {
     get_otus_sum(ps_list[[i]], n = n, taxal = taxal, binary = binary,
-    con_c = con_cv[i], bin_c = bin_cv[i])
+    con_c = con_cv[i], bin_c = bin_cv[i], rarefy_size = rarefy_size[i])
   })
   otus_sum_list <- do.call(rbind, otus_sum_list)
   return(otus_sum_list)
@@ -398,6 +403,7 @@ p_otus_sumb <- dt_sumb %>%
 ```{r, multi-betas, include=FALSE, message=FALSE}
 library(vegan)
 library(ggprism)
+set.seed(123)
 plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = 500, hellinger = TRUE) { # nolint
   # exclude "Unassigned" OTU at phylum level
   ps <- subset_taxa(ps, Phylum != "Unassigned")
@@ -424,7 +430,6 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = 500, hel
   var_color <- eval(substitute(get(color_c)), points)
   # adonis
   myfor <- as.formula(paste0("dist ~ as.factor(", color_c, ")"))
-  set.seed(123)
   adonis_sub <- adonis2(myfor, data = points, permutations = 9999)
   adonis_R2 <- adonis_sub$R2
   adonis_p <- adonis_sub$`Pr(>F)`

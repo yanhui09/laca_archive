@@ -4,7 +4,7 @@ author:
   - name: Yan Hui
     affiliation: Department of Food Science, University of Copenhagen
     email: huiyan@food.ku.dk
-date: 27/10/2022
+date: 28/10/2022
 output:
   html_document:
     toc: true
@@ -87,6 +87,8 @@ ps_construct <- function(taxf, count, metadata, tree_nwk=NULL, rep_fasta=NULL, s
     ps <- phyloseq(otu, tax, metadata)
   } else {
     tree <- read_tree_greengenes(tree_nwk)
+    #https://github.com/joey711/phyloseq/issues/936
+    tree <- ape::multi2di(tree)
     ps <- phyloseq(otu, tax, metadata, tree)
   }
   if (!is.null(rep_fasta)) {  
@@ -126,7 +128,7 @@ ps_from_laca <- function(count_tsv, meta_tsv, tax_tsv, tree_nwk, rep_fasta, hits
 
 ```{r load_all_ps, include=FALSE, message=FALSE}
 ps_kmerCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/kmerCon_out/tree.nwk",
@@ -135,7 +137,7 @@ ps_kmerCon <- ps_from_laca( # nolint
   min_id = 97
   )
 ps_miniCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/miniCon_out/tree.nwk",
@@ -144,7 +146,7 @@ ps_miniCon <- ps_from_laca( # nolint
   min_id = 97
   )
 ps_isoCon <- ps_from_laca( # nolint
-  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/isoCon_out/tree.nwk",
@@ -214,7 +216,10 @@ p_otus_len <- otus_len %>%
 
 ```{r, yield, include=FALSE, message=FALSE}
 get_otus_sum <- function(ps, n = 0, taxal = "Species", binary = FALSE,
- con_c, bin_c) {
+ con_c, bin_c, rarefy_size = NULL) {
+  if (!is.null(rarefy_size)) {
+    ps <- rarefy_even_depth(ps, rngseed = 1, sample.size = rarefy_size)
+  }
   # prune otus
   ps <- prune_taxa(taxa_sums(ps) > n, ps)
   taxa <- as.data.frame(tax_table(ps))[taxal]
@@ -258,10 +263,10 @@ bin_cv <- c(
 )
 
 merge_otus_sum <- function(ps_list, n = 0, taxal = "Species", binary = FALSE,
- con_cv, bin_cv) {
+ con_cv, bin_cv, rarefy_size = NULL) {
   otus_sum_list <- lapply(seq_along(ps_list), function(i) {
     get_otus_sum(ps_list[[i]], n = n, taxal = taxal, binary = binary,
-    con_c = con_cv[i], bin_c = bin_cv[i])
+    con_c = con_cv[i], bin_c = bin_cv[i], rarefy_size = rarefy_size)
   })
   otus_sum_list <- do.call(rbind, otus_sum_list)
   return(otus_sum_list)
@@ -270,7 +275,7 @@ merge_otus_sum <- function(ps_list, n = 0, taxal = "Species", binary = FALSE,
 otus_sum <- merge_otus_sum(ps_list, n = 0, taxal = "Species", binary = FALSE,
  con_cv, bin_cv)
 otus_sumb <- merge_otus_sum(ps_list, n = 0, taxal = "Species", binary = TRUE,
- con_cv, bin_cv)
+ con_cv, bin_cv, rarefy_size = 20000)
 
 # merge for plot
 metas <- data.frame(sample_data(ps_kmerCon)) %>%
@@ -339,7 +344,8 @@ p_otus_sumb <- dt_sumb %>%
 ```{r, multi-betas, include=FALSE, message=FALSE, eval}
 library(vegan)
 library(ggprism)
-plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL, hellinger = FALSE) { #nolint
+set.seed(123)
+plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL, hellinger = TRUE) { #nolint
   # exclude "Unassigned" OTU at phylum level
   ps <- subset_taxa(ps, Phylum != "Unassigned")
   # rm shallow sequenced samples
@@ -366,7 +372,6 @@ plot_sub_ordi2 <- function(ps, method_c, color_c, title_cs, min_depth = NULL, he
   var_color <- eval(substitute(get(color_c)), points)
   # adonis
   myfor <- as.formula(paste0("dist ~ as.factor(", color_c, ")"))
-  set.seed(123)
   adonis_sub <- adonis2(myfor, data = points, permutations = 9999)
   adonis_R2 <- adonis_sub$R2
   adonis_p <- adonis_sub$`Pr(>F)`
@@ -607,7 +612,7 @@ p_blast <- df2 %>%
 ##############################################
 # reload all otus
 ps_kmerCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/kmerCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/kmerCon_out/tree.nwk",
@@ -616,7 +621,7 @@ ps_kmerCon0 <- ps_from_laca( # nolint
   min_id = 0
   )
 ps_miniCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/miniCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/miniCon_out/tree.nwk",
@@ -625,7 +630,7 @@ ps_miniCon0 <- ps_from_laca( # nolint
   min_id = 0
   )
 ps_isoCon0 <- ps_from_laca( # nolint
-  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
+  count_tsv = "data/emu/isoCon_out/count_matrix.tsv",
   meta_tsv = "data/emu/mapping.tsv",
   tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
   tree_nwk = "data/emu/isoCon_out/tree.nwk",
@@ -992,7 +997,7 @@ emuonly$taxonomy_hit <- gsub("Burkholderia-Caballeronia-Paraburkholderia ", "Par
 emuonly_last <- gsub("^.*;", "", emuonly$taxonomy_hit)
 emuonly$hitin <- sapply(emuonly_last, function(x) any(grepl(x, unique(df_hitax$Taxon)))) #nolint
 
-#in hits species #FALSE 13, TRUE 45
+#in hits species #FALSE 14, TRUE 45
 table(emuonly$hitin[emuonly$`Species: emu` == 1])
 #in hits genus #FALSE 8, TRUE 6
 table(emuonly$hitin[emuonly$`Genus: emu` == 1])
@@ -1010,11 +1015,12 @@ write.csv(emuonly_abund, "table/emu/taxa_emuonly_abun_hit.csv", quote = FALSE, r
 # species #FALSE 1 (Criibacterium bergeronii) TRUE 14
 # not in filtered QIIME SILVA database
 # NCBI BLAST, cover,pid,accession:
-# kmerCon: OTU_7, 99%,98.69%,NR_164617.1
-# miniCon: OTU_91, 98%,98.49%,NR_164617.1
-# isoCon: 
-# OTU_22, 99%,98.63%,MN153816.1; 98%,98.55%,NR_164617.1
-# OTU_117, 98%,98.42%,NR_164617.1
+# kmerCon: OTU_41, 99%,98.69%,NR_164617.1
+# miniCon: OTU_249, 98%,98.49%,NR_164617.1
+# isoCon:
+# OTU_195, 98%,98.42%,NR_164617.1
+# OTU_791, 98%,98.55%,NR_164617.1
+# OTU_866: 99%,98.48%,NR_164617.1
 table(emuonly_abund$hit_cover[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Species"]) #nolint
 emuonly_abund$taxonomy[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Species" & emuonly_abund$hit_cover == FALSE] #nolint
 # genus # FALSE 1 (Criibacterium)
