@@ -1,0 +1,136 @@
+taxonomy,SRR14307903,SRR14307904,SRR14307905,SRR14307906,SRR14307907,SRR14307908,SRR14307909,SRR14307914,SRR14307923,SRR14307924,SRR14307925,SRR14307926,mean
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus crispatus,0.020481699222454,0.0106230340488935,95.0090989839468,0.0338230917011662,98.4962482981707,99.8044328552803,0.0506098486765525,97.7638900525883,0.0121821498820411,0.0113764615592975,50.0422355669549,0.0159275757715883,36.7725774681502
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus iners,6.01251659396928,15.8367363832018,0.00920730518425442,34.2925562139784,0.0102365670648691,NA,0.0140150350181222,0.0123215227430667,54.0673524325673,0.00884835899056476,46.3439357405047,99.0088937527938,23.2378745369106
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Aerococcus;Aerococcus christensenii,15.5342309880523,0.978836708790906,NA,29.7318505289932,NA,NA,NA,NA,2.86102246863839,0.422193128978376,NA,NA,9.90562676469063
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gasseri,NA,0.00386292147232493,NA,0.261114267933003,0.0522064920308325,0.0351017952060977,97.08954439457,0.00936435728473068,0.0998342039113615,0.00433389011782764,0.0967578442966626,0.00616551320190514,9.76582856800247
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus coxii,NA,NA,NA,7.69948859485348,NA,NA,NA,NA,NA,0.00523678389237506,NA,NA,3.85236268937293
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella amnii,NA,NA,NA,NA,NA,NA,NA,NA,2.72583031750842,NA,NA,NA,2.72583031750842
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus lacrimalis,NA,3.61293526847304,NA,NA,NA,NA,NA,NA,0.186892006726924,3.73057649767505,NA,NA,2.51013459095834
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus jensenii,NA,NA,NA,4.87458397597208,1.16389767527562,NA,NA,1.85217129873778,NA,NA,2.12304116559926,NA,2.50342352889618
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus lactolyticus,NA,NA,NA,NA,NA,NA,NA,NA,NA,2.38959866371721,NA,NA,2.38959866371721
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister;Dialister micraerophilus,0.402806751374929,2.07231940842117,0.43166013128534,3.44724950618286,NA,NA,NA,NA,0.73657437945317,3.38476818202339,NA,NA,1.74589639312348
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia;Sneathia amnii,0.0136544661483027,6.37395839081728,NA,NA,NA,NA,NA,NA,0.0499171019556807,1.8296239447429,0.00819114025791853,NA,1.65506900878442
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Gemellaceae;Gemella;Gemella asaccharolytica,0.020481699222454,3.4803542850836,NA,NA,NA,NA,NA,NA,0.547602493478093,2.20667238499391,NA,NA,1.56377771569451
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter;Campylobacter ureolyticus,NA,0.00620826665195078,NA,NA,NA,NA,NA,NA,0.0074281401719763,6.05209697079139,NA,0.0292861877090494,1.52375489133109
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Fusobacteriaceae;Fusobacterium;Fusobacterium nucleatum,NA,0.001793499255008,NA,NA,NA,NA,NA,NA,NA,2.96022752923119,NA,NA,1.4810105142431
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Criibacterium;Criibacterium bergeronii,NA,NA,NA,NA,NA,NA,NA,NA,NA,1.43217010518712,NA,NA,1.43217010518712
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella disiens,NA,0.0645659731802881,NA,NA,NA,NA,NA,NA,NA,2.73612929438852,NA,NA,1.4003476337844
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella timonensis,NA,3.65735886540478,NA,0.0689991070703791,NA,NA,NA,NA,0.340505945483394,1.25375829533655,NA,NA,1.33015555332378
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia;Finegoldia magna,0.0356533282761236,0.0220738369847139,0.0828657466582898,7.7116649078659,NA,NA,NA,NA,0.221655702731773,0.113042300573338,NA,0.106355102732864,1.184758703689
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus urinimassiliensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,1.0318270055528,NA,NA,1.0318270055528
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella corporis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.856846192045506,NA,NA,0.856846192045506
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella bivia,0.312535558505595,1.24206721483362,0.47877986958123,1.95226885299131,NA,NA,NA,NA,NA,0.10509683535732,NA,NA,0.818149666253815
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus koenoeneniae,NA,0.360355388775454,NA,NA,NA,NA,NA,NA,NA,1.02008938648368,NA,NA,0.690222387629567
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium;Atopobium vaginae,0.886023136734307,2.25484244798852,NA,0.119057282788105,NA,NA,0.0393199593563984,NA,0.728254862460557,0.0870389598663717,NA,NA,0.685756108199043
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella 7 veroralis,NA,NA,NA,0.653462131666531,NA,NA,NA,NA,NA,NA,NA,NA,0.653462131666531
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus harei,0.00986155888488527,1.65305446719276,0.206351957364761,1.50039234786373,NA,NA,NA,NA,0.534528966775415,0.59934088754458,NA,0.0210655034398426,0.646370812723711
+Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus;Peptococcus niger,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.472755180353031,NA,NA,0.472755180353031
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus hydrogenalis,NA,NA,0.187395740808943,1.48956895851936,NA,NA,NA,NA,NA,0.00252810256873279,NA,0.0688482307546074,0.437085258162911
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella buccalis,0.226057272899678,0.408503945698361,NA,NA,NA,NA,NA,NA,0.0273355558328728,0.180217597399666,NA,NA,0.210528592957644
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia;Sneathia sanguinegens,NA,0.0131063407096739,NA,NA,NA,NA,NA,NA,0.387748916977163,NA,NA,NA,0.200427628843418
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus obesi,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.169924608369825,NA,NA,0.169924608369825
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella bergensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.120265450769717,NA,NA,0.120265450769717
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus tetradius,0.236677413237246,0.0555984769052481,NA,NA,NA,NA,NA,NA,0.0632877542652381,NA,NA,NA,0.118521214802578
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus epidermidis,0.0144130476009862,NA,NA,NA,NA,NA,NA,NA,0.00623963774446009,0.00505620513746558,NA,0.363251486145578,0.0972400941571225
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium;Atopobium deltae,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0895670624351045,NA,NA,0.0895670624351045
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus johnsonii,NA,NA,NA,NA,NA,NA,0.087983275391545,NA,NA,NA,NA,NA,0.087983275391545
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Peptostreptococcus;Peptostreptococcus anaerobius,NA,NA,0.0806993219090535,NA,NA,NA,NA,NA,NA,0.0677170330910568,NA,NA,0.0742081775000552
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella 7 melaninogenica,NA,0.0721538546437834,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0721538546437834
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus helveticus,NA,NA,0.0812409280963626,NA,0.0731914545138142,0.0702035904121954,NA,0.0842792155625761,NA,NA,0.0394198624912329,NA,0.0696670102152362
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Mobiluncus;Mobiluncus curtisii,NA,0.0208321836543237,NA,NA,NA,NA,NA,NA,0.00534826092382294,0.127308022211187,NA,NA,0.0511628222631112
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella;Prevotella colorans,NA,0.0326968710336074,NA,0.0581757177260059,NA,NA,NA,NA,NA,NA,NA,NA,0.0454362943798067
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus duerdenii,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0395467473251772,NA,NA,0.0395467473251772
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus asaccharolyticus,NA,0.0332487169582253,NA,0.0811754200827989,NA,NA,NA,NA,0.0124792754889202,0.0308789670895219,NA,NA,0.0394455949048666
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Bulleidia;Bulleidia extructa,NA,0.0326968710336074,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0326968710336074
+Bacteria;Actinobacteriota;Actinobacteria;Bifidobacteriales;Bifidobacteriaceae;Gardnerella;Gardnerella vaginalis,0.0326190024653897,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0326190024653897
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus anginosus,NA,NA,0.00649927424770901,NA,NA,NA,NA,NA,NA,0.0579657803259446,NA,NA,0.0322325272868268
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia;Facklamia hominis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0267172238749223,0.0267172238749223
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Enterococcaceae;Enterococcus;Enterococcus faecalis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0267172238749223,0.0267172238749223
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Helcococcus;Helcococcus sueciensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0231206745071443,0.0231206745071443
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Fenollaria;Fenollaria massiliensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0211277143244097,NA,NA,0.0211277143244097
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus aureus,0.0371704911814906,NA,NA,NA,NA,NA,NA,NA,NA,0.0023475238138233,NA,NA,0.019759007497657
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinomyces;Actinomyces neuii,NA,NA,NA,0.0162350840165598,NA,NA,NA,NA,NA,NA,NA,NA,0.0162350840165598
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus pasteuri,NA,0.00137961481154462,0.0297883403019996,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0155839775567721
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia;Facklamia ignava,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0154137830047629,0.0154137830047629
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Murdochiella;Murdochiella asaccharolytica,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0139045641280303,NA,NA,0.0139045641280303
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Hungateiclostridiaceae;Fastidiosipila;Fastidiosipila sanguinis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0133586119374611,0.0133586119374611
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus;Peptoniphilus grossensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0126405128436639,NA,NA,0.0126405128436639
+Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Ureaplasma;Ureaplasma parvum,NA,0.00331107554770708,NA,0.027058473360933,NA,NA,NA,NA,0.00297125606879052,NA,NA,NA,0.0111136016591435
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus vaginalis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0102758553365086,0.0102758553365086
+Bacteria;Actinobacteriota;Actinobacteria;Corynebacteriales;Corynebacteriaceae;Corynebacterium;Corynebacterium sundsvallense,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00924826980285772,0.00924826980285772
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas;Porphyromonas uenonis,NA,0.00372495999117047,NA,NA,NA,NA,NA,NA,NA,0.012279355333845,NA,NA,0.00800215766250772
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus capitis,NA,NA,NA,NA,NA,NA,0.00739682403734228,0.00837863546528534,NA,NA,NA,NA,0.00788772975131381
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus hominis,NA,0.00510457480271508,0.012998548495418,NA,NA,NA,NA,NA,NA,0.00505620513746558,NA,NA,0.00771977614519956
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus gallinarum,NA,NA,0.00758248662232717,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00758248662232717
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter;Acinetobacter junii,NA,NA,NA,NA,NA,NA,0.00700751750906111,0.00788577455556268,NA,NA,NA,NA,0.00744664603231189
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus mediterraneensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00740372895128888,NA,NA,0.00740372895128888
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus amylovorus,NA,NA,NA,NA,NA,NA,NA,0.00739291364584001,NA,NA,NA,NA,0.00739291364584001
+Bacteria;Actinobacteriota;Actinobacteria;Propionibacteriales;Propionibacteriaceae;Cutibacterium;Cutibacterium acnes,NA,NA,0.00541606187309084,NA,NA,NA,NA,0.00837863546528534,NA,NA,NA,NA,0.00689734866918809
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus;Anaerococcus provencensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00667930596873057,0.00667930596873057
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus parasanguinis,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00487562638255609,NA,NA,0.00487562638255609
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas;Porphyromonas asaccharolytica,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00397273260800867,NA,NA,0.00397273260800867
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Neisseriaceae;Neisseria;Neisseria subflava,NA,NA,NA,NA,NA,NA,0.00389306528281173,NA,NA,NA,NA,NA,0.00389306528281173
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinotignum;Actinotignum timonense,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0036115750981897,NA,NA,0.0036115750981897
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus;Staphylococcus warneri,NA,0.00317311406655262,NA,NA,NA,NA,NA,NA,NA,0.00288926007855176,NA,NA,0.00303118707255219
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Varibaculum;Varibaculum cambriense,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00270868132364227,NA,NA,0.00270868132364227
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhodobacterales;Rhodobacteraceae;Paracoccus;Paracoccus yeei,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0023475238138233,NA,NA,0.0023475238138233
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus oralis,NA,0.00151757629269908,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00151757629269908
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus;Streptococcus sanguinis,NA,0.00137961481154462,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00137961481154462
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,6.03299829319173,15.8542574913084,95.1721224463268,39.4796655572693,99.9749204106911,99.9724200180523,97.3733488536869,99.8526345879929,54.1971963227735,0.0245587106676899,98.7380524540144,99.0561626873417,67.1440281527764
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Fenollaria,NA,0.00758788146349539,NA,NA,NA,NA,NA,NA,NA,36.1063608866417,NA,NA,18.0569743840526
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Aerococcus,15.5342309880523,0.978836708790906,NA,29.7318505289932,NA,NA,NA,NA,2.86102246863839,0.422193128978376,NA,NA,9.90562676469063
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera,50.5776597762185,22.7774405386016,0.00812409280963626,0.0216467786887464,0.0107483954181126,0.0275799819476482,0.00661821098077994,NA,33.9489775907867,0.391133583133944,0.0552901967409501,0.0148999902379374,9.80364719414223
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Peptoniphilus,0.0212402806751375,7.12446884829756,0.39591412292294,12.4225451200043,NA,NA,NA,NA,1.0155753243126,13.9786014175432,NA,0.0565172043507971,5.00212318830094
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Hungateiclostridiaceae;Fastidiosipila,17.0771856628105,12.2533248716958,NA,NA,NA,NA,NA,0.00492860909722667,0.481343483144064,0.752291092952914,0.0189420118464366,0.0205517106730171,4.37265249174572
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister,5.62867437891144,14.9082556150323,1.7233908880175,5.33863679411208,0.00563011188567802,NA,NA,NA,1.64637298771683,9.97029479481739,0.0296928834349547,0.0113034408701594,4.36247243275537
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Parvimonas,3.18907642708136,7.22559461398378,NA,NA,NA,NA,NA,NA,NA,6.04794365942847,0.00819114025791853,NA,4.11770146018788
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,0.538592831405272,5.41485017383147,0.47877986958123,2.0794436777877,NA,NA,NA,NA,3.09367181882469,5.3707733285179,NA,NA,2.82935194999138
+Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 1,NA,NA,NA,NA,NA,NA,1.96171559600883,NA,NA,NA,NA,NA,1.96171559600883
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Ezakiella,NA,NA,NA,NA,NA,NA,NA,NA,NA,3.90898830752562,NA,0.014386197471112,1.96168725249837
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Leptotrichiaceae;Sneathia,0.0136544661483027,6.38706473152696,NA,NA,NA,NA,NA,NA,0.437666018932844,1.8296239447429,0.00819114025791853,NA,1.73524006032178
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Gemellaceae;Gemella,0.020481699222454,3.48325147618785,NA,NA,NA,NA,NA,NA,0.547602493478093,2.20667238499391,NA,NA,1.56450201347058
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter,NA,0.00620826665195078,NA,NA,NA,NA,NA,NA,0.0074281401719763,6.05209697079139,NA,0.0292861877090494,1.52375489133109
+Bacteria;Fusobacteriota;Fusobacteriia;Fusobacteriales;Fusobacteriaceae;Fusobacterium,NA,0.001793499255008,NA,NA,NA,NA,NA,NA,NA,2.96022752923119,NA,NA,1.4810105142431
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Criibacterium,NA,NA,NA,NA,NA,NA,NA,NA,NA,1.43217010518712,NA,NA,1.43217010518712
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Finegoldia,0.0356533282761236,0.0220738369847139,0.0828657466582898,7.7116649078659,NA,NA,NA,NA,0.221655702731773,0.113042300573338,NA,0.106355102732864,1.184758703689
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Anaerococcus,0.236677413237246,0.0590475139341096,0.187395740808943,1.5139215845442,NA,NA,NA,NA,0.0632877542652381,4.33551532662182,NA,0.182396432223027,0.939748823662084
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Peptostreptococcus,NA,0.00193146073616246,1.39409432613358,NA,NA,NA,NA,NA,NA,0.75373572299219,NA,NA,0.716587169953978
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Atopobiaceae;Atopobium,0.895884695619192,2.3439655648143,0.0693255919755627,0.132586519468572,NA,NA,0.0393199593563984,NA,0.906233100981109,0.176606022301476,NA,NA,0.651988779216659
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Moryella,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.569003656719787,NA,NA,0.569003656719787
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,NA,NA,NA,0.474876207484374,NA,NA,0.572280596573324,0.0990650428542561,0.513730174293881,NA,1.1365207107862,NA,0.559294546398406
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7,NA,0.0721538546437834,NA,0.876694536894228,NA,NA,NA,NA,NA,NA,NA,NA,0.474424195769006
+Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.472755180353031,NA,NA,0.472755180353031
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Porphyromonadaceae;Porphyromonas,NA,0.0811213509188235,NA,NA,NA,NA,NA,NA,NA,0.646110785066137,NA,NA,0.36361606799248
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Murdochiella,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.265811927226762,NA,NA,0.265811927226762
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.240530901539434,NA,NA,0.240530901539434
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lacticaseibacillus,NA,NA,0.197686258367816,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.197686258367816
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Howardella,NA,0.102091496054302,0.210143200675925,0.131233595800525,NA,NA,NA,NA,NA,0.0263644982167848,NA,NA,0.117458197686884
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Arcanobacterium,NA,0.0896749627504001,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0896749627504001
+Bacteria;Actinobacteriota;Actinobacteria;Bifidobacteriales;Bifidobacteriaceae;Gardnerella,0.0766167267210317,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0766167267210317
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Sutterellaceae;Sutterella,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0751207620423457,NA,NA,0.0751207620423457
+Bacteria;Firmicutes;Bacilli;Staphylococcales;Staphylococcaceae;Staphylococcus,0.0515835387824768,0.0140720710777551,0.0427868887974176,0.0284113970289796,NA,NA,0.00739682403734228,0.00837863546528534,0.00623963774446009,0.0187801905105864,NA,0.384830782352246,0.0624977739773944
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Mobiluncus,NA,0.0208321836543237,NA,NA,NA,NA,NA,NA,0.00534826092382294,0.127308022211187,NA,NA,0.0511628222631112
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Aerococcaceae;Facklamia,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0421310068796851,0.0421310068796851
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Bulleidia,NA,0.0326968710336074,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0326968710336074
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Enterococcaceae;Enterococcus,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0267172238749223,0.0267172238749223
+Bacteria;Actinobacteriota;Coriobacteriia;Coriobacteriales;Eggerthellaceae;DNF00809,0.0144130476009862,0.052011478395232,NA,NA,NA,NA,NA,NA,0.0332780679704538,0.00523678389237506,NA,NA,0.0262348444647618
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus,NA,0.014347994040064,0.00649927424770901,NA,NA,NA,0.0085647436221858,NA,NA,0.0733149744932509,NA,NA,0.0256817466008024
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;Helcococcus,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0231206745071443,0.0231206745071443
+Bacteria;Actinobacteriota;Actinobacteria;Corynebacteriales;Corynebacteriaceae;Corynebacterium,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0154137830047629,0.0154137830047629
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Comamonas,0.0144130476009862,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0144130476009862
+Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Ureaplasma,NA,0.00331107554770708,NA,0.027058473360933,NA,NA,NA,NA,0.00297125606879052,NA,NA,NA,0.0111136016591435
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Aquabacterium,0.018964536317087,0.00593234368964185,0.0200394289304361,0.0135292366804665,0.00870108200513876,NA,0.00739682403734228,0.0187287145694614,0.00594251213758104,0.005959098912013,0.00511946266119908,NA,0.0110313239940367
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinomyces,NA,0.00137961481154462,NA,0.0162350840165598,NA,NA,NA,NA,NA,0.0149880366574872,NA,NA,0.0108675784951972
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter,NA,NA,NA,NA,NA,NA,0.00700751750906111,0.00788577455556268,NA,NA,NA,NA,0.00744664603231189
+Bacteria;Actinobacteriota;Actinobacteria;Propionibacteriales;Propionibacteriaceae;Cutibacterium,NA,NA,0.00541606187309084,NA,NA,NA,NA,0.00837863546528534,NA,NA,NA,NA,0.00689734866918809
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter,NA,0.00165553777385354,NA,NA,NA,NA,0.0124578089049975,NA,NA,0.00252810256873279,NA,0.0102758553365086,0.00672932614602311
+Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00565172043507972,0.00565172043507972
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Acidovorax,NA,NA,0.00541606187309084,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00541606187309084
+Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Mycoplasma,NA,NA,NA,NA,NA,NA,NA,NA,0.00445688410318578,NA,NA,NA,0.00445688410318578
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Neisseriaceae;Neisseria,NA,NA,NA,NA,NA,NA,0.00389306528281173,NA,NA,NA,NA,NA,0.00389306528281173
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhizobiales;Rhizobiaceae;Ochrobactrum,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00379215385309918,NA,NA,0.00379215385309918
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Actinotignum,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0036115750981897,NA,NA,0.0036115750981897
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Varibaculum,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00270868132364227,NA,NA,0.00270868132364227
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Family XI;W5053,NA,0.00248330666078031,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00248330666078031
+Bacteria;Proteobacteria;Alphaproteobacteria;Rhodobacterales;Rhodobacteraceae;Paracoccus,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.0023475238138233,NA,NA,0.0023475238138233
+Bacteria;Proteobacteria;Alphaproteobacteria;Acetobacterales;Acetobacteraceae;Roseomonas,NA,0.00151757629269908,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.00151757629269908

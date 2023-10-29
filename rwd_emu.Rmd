@@ -790,10 +790,9 @@ p_upset <- upset(tag_merge,
   name = "Profiles", width_ratio = 0.1, wrap = TRUE)
 
 #p_upset
-tag_merge1 <- tag_merge[rowSums(tag_merge[,-1]) == 1,]
-tag_merge_emuonly <- tag_merge1[tag_merge1$`Species: emu`==1 | tag_merge1$`Genus: emu`==1,] #nolint
+tag_merge_emu <- tag_merge[tag_merge$`Species: emu`==1 | tag_merge$`Genus: emu`==1,] #nolint
 dir.create("table/emu", showWarnings = FALSE)
-write.csv(tag_merge_emuonly, "table/emu/taxa_emuonly.csv", quote=FALSE, row.names=FALSE) #nolint
+write.csv(tag_merge_emu, "table/emu/taxa_emu.csv", quote=FALSE, row.names=FALSE) #nolint
 
 # get the reltive abundance in emu profiles
 get_taxa_abun <- function(ps, taxon_l, taxa, rel = TRUE) {
@@ -814,15 +813,36 @@ get_taxa_abun <- function(ps, taxon_l, taxa, rel = TRUE) {
     # wide format
     select(Sample, taxonomy, Abundance) %>%
     spread(Sample, Abundance) %>%
-    # mean
-    mutate(mean = rowMeans(.[, -1])) %>%
+    # row mean of non-zero values
+    mutate_all(~replace(., . == 0, NA)) %>%
+    mutate(mean= rowMeans(select_if(., is.numeric), na.rm = TRUE)) %>%
+    #mutate(mean = rowMeans(.[, -1])) %>%
     arrange(desc(mean))
   return(table_wide)
 }
-emu_abun_s <- get_taxa_abun(ps_emu, taxon_l = "Species", taxa = tag_merge_emuonly$taxonomy[tag_merge_emuonly$`Species: emu`==1])#nolint
-emu_abun_g <- get_taxa_abun(ps_emu, taxon_l = "Genus", taxa = tag_merge_emuonly$taxonomy[tag_merge_emuonly$`Genus: emu`==1])#nolint
+emu_abun_s <- get_taxa_abun(ps_emu, taxon_l = "Species", taxa = tag_merge_emu$taxonomy[tag_merge_emu$`Species: emu`==1])#nolint
+emu_abun_g <- get_taxa_abun(ps_emu, taxon_l = "Genus", taxa = tag_merge_emu$taxonomy[tag_merge_emu$`Genus: emu`==1])#nolint
 emu_abun <- rbind.data.frame(emu_abun_s, emu_abun_g)
-write.csv(emu_abun, "table/emu/taxa_emuonly_abun.csv", quote=FALSE, row.names=FALSE) #nolint
+write.csv(emu_abun, "table/emu/taxa_emu_abun.csv", quote=FALSE, row.names=FALSE) #nolint
+# min BLAST identity > 97
+tag_merge_emu_no <- tag_merge[tag_merge$`Species: emu`==0 & tag_merge$`Genus: emu`==0,] #nolint
+emu_abun_s_no_kmerCon <- get_taxa_abun(ps_kmerCon, taxon_l = "Species", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Species: kmerCon`==1])#nolint
+emu_abun_s_no_miniCon <- get_taxa_abun(ps_miniCon, taxon_l = "Species", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Species: miniCon`==1])#nolint
+emu_abun_s_no_isoCon <- get_taxa_abun(ps_isoCon, taxon_l = "Species", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Species: isoCon`==1])#nolint
+emu_abun_g_no_kmerCon <- get_taxa_abun(ps_kmerCon, taxon_l = "Genus", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Genus: kmerCon`==1])#nolint
+emu_abun_g_no_miniCon <- get_taxa_abun(ps_miniCon, taxon_l = "Genus", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Genus: miniCon`==1])#nolint
+emu_abun_g_no_isoCon <- get_taxa_abun(ps_isoCon, taxon_l = "Genus", taxa = tag_merge_emu_no$taxonomy[tag_merge_emu_no$`Genus: isoCon`==1])#nolint
+emu_abun_no_kmerCon <- rbind.data.frame(emu_abun_s_no_kmerCon, emu_abun_g_no_kmerCon) #nolint
+emu_abun_no_miniCon <- rbind.data.frame(emu_abun_s_no_miniCon, emu_abun_g_no_miniCon) #nolint
+emu_abun_no_isoCon <- rbind.data.frame(emu_abun_s_no_isoCon, emu_abun_g_no_isoCon) #nolint
+# add mean abundance for taxa_emu_no
+idx <- match(tag_merge_emu_no$taxonomy, emu_abun_no_kmerCon$taxonomy)
+tag_merge_emu_no$mean_kmerCon <- emu_abun_no_kmerCon$mean[idx]
+idx <- match(tag_merge_emu_no$taxonomy, emu_abun_no_miniCon$taxonomy)
+tag_merge_emu_no$mean_miniCon <- emu_abun_no_miniCon$mean[idx]
+idx <- match(tag_merge_emu_no$taxonomy, emu_abun_no_isoCon$taxonomy)
+tag_merge_emu_no$mean_isoCon <- emu_abun_no_isoCon$mean[idx]
+write.csv(tag_merge_emu_no, "table/emu/taxa_emu_no_abun.csv", quote=FALSE, row.names=FALSE) #nolint
 ```
 
 ```{r, correlation, include=FALSE, message=FALSE}
@@ -977,6 +997,9 @@ silva_tax <- fread('data/silva_taxonomy.tsv.gz', sep = "\t") #nolint
 # df in q2blast
 df_hitax <- df %>%
   filter(sseqid != "*") %>%
+  mutate(qcov = (qend - qstart + 1) / length * 100) %>%
+  #pident > 97, qcov > 99
+  filter(pident >= 97 & qcov >= 99) %>%
   left_join(silva_tax, by = c("sseqid" = "Feature ID"))
 # cleanup Taxon
 df_hitax$Taxon <- gsub("; ", ";", df_hitax$Taxon)
@@ -989,31 +1012,49 @@ df_hitax$Taxon <- gsub("[a-z]__", "", df_hitax$Taxon)
 df_hitax$Taxon <- gsub("_", " ", df_hitax$Taxon) 
 write.csv(df_hitax, "table/emu/taxa_hitax.csv", quote = FALSE, row.names = FALSE) #nolint
 
-# load all emu only features
-emuonly <- fread("table/emu/taxa_emuonly.csv", sep = ",") #nolint
+# load all emu features
+emu <- fread("table/emu/taxa_emu.csv", sep = ",") #nolint
 # Prevotalla 7 to Prevotalla
-emuonly$taxonomy_hit <- gsub("Prevotella 7 ", "Prevotella ", emuonly$taxonomy)
-emuonly$taxonomy_hit <- gsub("Burkholderia-Caballeronia-Paraburkholderia ", "Paraburkholderia ", emuonly$taxonomy) #nolint
+emu$taxonomy_hit <- gsub("Prevotella\\s7\\s", "Prevotella ", emu$taxonomy, perl=TRUE) #nolint
+emu$taxonomy_hit <- gsub("Burkholderia-Caballeronia-Paraburkholderia\\s", "Paraburkholderia ", emu$taxonomy_hit, perl=TRUE) #nolint
+# RC9
 
-emuonly_last <- gsub("^.*;", "", emuonly$taxonomy_hit)
-emuonly$hitin <- sapply(emuonly_last, function(x) any(grepl(x, unique(df_hitax$Taxon)))) #nolint
 
-#in hits species #FALSE 14, TRUE 45
-table(emuonly$hitin[emuonly$`Species: emu` == 1])
-#in hits genus #FALSE 8, TRUE 6
-table(emuonly$hitin[emuonly$`Genus: emu` == 1])
+emu_last <- gsub("^.*;", "", emu$taxonomy_hit)
+emu$hitin_kmerCon <- sapply(emu_last, function(x) any(grepl(x, unique(df_hitax$Taxon[df_hitax$consensus == "kmerCon"])))) #nolint
+emu$hitin_miniCon <- sapply(emu_last, function(x) any(grepl(x, unique(df_hitax$Taxon[df_hitax$consensus == "miniCon"])))) #nolint
+emu$hitin_isoCon <- sapply(emu_last, function(x) any(grepl(x, unique(df_hitax$Taxon[df_hitax$consensus == "isoCon"])))) #nolint
+
+#in hits species 
+#id97: FALSE 16, TRUE 61; id99: FALSE 25, TRUE 52
+table(emu$hitin_kmerCon[emu$`Species: emu` == 1])
+#id:97: FALSE 16, TRUE 61; id99: FALSE 24, TRUE 53
+table(emu$hitin_miniCon[emu$`Species: emu` == 1])
+#id97: FALSE 18, TRUE 59; id99: FALSE 25, TRUE 52
+table(emu$hitin_isoCon[emu$`Species: emu` == 1])
+#in hits genus 
+#id97: FALSE 11, TRUE 47; id99: FALSE 15, TRUE 43
+table(emu$hitin_kmerCon[emu$`Genus: emu` == 1])
+#id97: FALSE 12, TRUE 46; id99: FALSE 15, TRUE 43
+table(emu$hitin_miniCon[emu$`Genus: emu` == 1])
+#id97: FALSE 16, TRUE 42; id99: FALSE 19, TRUE 39
+table(emu$hitin_isoCon[emu$`Genus: emu` == 1])
 
 # get the relative abundance in emu profile
-emuonly_abund <- read.csv("table/emu/taxa_emuonly_abun.csv", header = TRUE, stringsAsFactors = FALSE) #nolint
+emu_abund <- read.csv("table/emu/taxa_emu_abun.csv", header = TRUE, stringsAsFactors = FALSE) #nolint
 # add if covered in blast hit 
-idx <- match(emuonly_abund$taxonomy, emuonly$taxonomy)
-emuonly_abund$hit_cover <- emuonly$hitin[idx]
-emuonly$tax_level <- ifelse(emuonly$`Species: emu` == 1, "Species", "Genus")
-emuonly_abund$taxonomy_level <- emuonly$tax_level[idx]
-write.csv(emuonly_abund, "table/emu/taxa_emuonly_abun_hit.csv", quote = FALSE, row.names = FALSE) #nolint
+idx <- match(emu_abund$taxonomy, emu$taxonomy)
+emu_abund$hit_cover_kmerCon <- emu$hitin_kmerCon[idx]
+emu_abund$hit_cover_miniCon <- emu$hitin_miniCon[idx]
+emu_abund$hit_cover_isoCon <- emu$hitin_isoCon[idx]
+emu$tax_level <- ifelse(emu$`Species: emu` == 1, "Species", "Genus")
+emu_abund$taxonomy_level <- emu$tax_level[idx]
+# use cleand taxonomy
+emu_abund$taxonomy <- emu$taxonomy_hit[idx]
+write.csv(emu_abund, "table/emu/taxa_emu_abun_hit.csv", quote = FALSE, row.names = FALSE) #nolint
 
 # >0.1%
-# species #FALSE 1 (Criibacterium bergeronii) TRUE 14
+# species: FALSE 1, TRUE 31; Criibacterium bergeronii
 # not in filtered QIIME SILVA database
 # NCBI BLAST, cover,pid,accession:
 # kmerCon: OTU_41, 99%,98.69%,NR_164617.1
@@ -1022,11 +1063,28 @@ write.csv(emuonly_abund, "table/emu/taxa_emuonly_abun_hit.csv", quote = FALSE, r
 # OTU_195, 98%,98.42%,NR_164617.1
 # OTU_791, 98%,98.55%,NR_164617.1
 # OTU_866: 99%,98.48%,NR_164617.1
-table(emuonly_abund$hit_cover[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Species"]) #nolint
-emuonly_abund$taxonomy[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Species" & emuonly_abund$hit_cover == FALSE] #nolint
+# genus:  FALSE 2, TRUE 27
+# Criibacterium, see above
+# Rikenellaceae RC9 gut group, rejected by identity ~90%
+# kmerCon: OTU_17
+# miniCon: OTU_303
+# isoCon: OTU92, OTU_266
+# kmerCon
+table(emu_abund$hit_cover_kmerCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species" & emu_abund$hit_cover_kmerCon == FALSE] #nolint
 # genus # FALSE 1 (Criibacterium)
-table(emuonly_abund$hit_cover[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Genus"]) #nolint
-emuonly_abund$taxonomy[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Genus" & emuonly_abund$hit_cover == FALSE] #nolint
+table(emu_abund$hit_cover_kmerCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus" & emu_abund$hit_cover_kmerCon == FALSE] #nolint
+# miniCon
+table(emu_abund$hit_cover_miniCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species" & emu_abund$hit_cover_miniCon == FALSE] #nolint
+table(emu_abund$hit_cover_miniCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus" & emu_abund$hit_cover_miniCon == FALSE] #nolint
+# isoCon
+table(emu_abund$hit_cover_isoCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Species" & emu_abund$hit_cover_isoCon == FALSE] #nolint
+table(emu_abund$hit_cover_isoCon[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus"]) #nolint
+emu_abund$taxonomy[emu_abund$mean > 0.1 & emu_abund$taxonomy_level == "Genus" & emu_abund$hit_cover_isoCon == FALSE] #nolint
 ```
 
 ```{r, cor-mapping-clustering, include=FALSE, message=FALSE}
