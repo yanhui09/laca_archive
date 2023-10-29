@@ -1,73 +1,73 @@
 taxonomy,mean,cor_pearson,p_pearson,taxon_l,tag,cor_spearman,p_spearman
-Bacteria;Actinobacteriota;Actinobacteria;Bifidobacteriales;Bifidobacteriaceae;Bifidobacterium,0.148590046618329,0.852470620601568,0.0000000000215195816540425,Genus,kmerCon,0.906827880512091,0
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides,0.0983323221793749,0.71362941430106,0.000000711928782445438,Genus,kmerCon,0.603610786380678,0.0000765295715411653
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Alloprevotella,1.49950867555161,0.300471995094252,0.0707652277689619,Genus,kmerCon,0.294991405292135,0.0763190375704228
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,7.39859866616363,0.419573412871605,0.00973537070852649,Genus,kmerCon,0.351963699223426,0.032653643005453
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 9,5.05719746670362,0.540521038134885,0.000553144419729943,Genus,kmerCon,0.70293978188715,0.00000277274517938924
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae NK3B31 group,0.17106700257527,0.48108926773478,0.00257600364167087,Genus,kmerCon,0.378519353400394,0.0208815228861625
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae UCG-003,0.318596660575145,0.303894247622477,0.0674613497332643,Genus,kmerCon,0.608038273085112,0.0000655587217699015
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,0.765968407674196,0.78235729066531,0.0000000106947185344056,Genus,kmerCon,0.755334281650071,0.000000482381472032593
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Tannerellaceae;Parabacteroides,0.122717385435232,0.767351312863207,0.000000030155098951983,Genus,kmerCon,0.737543911062523,0.000000191434935138519
-Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter,0.124606334225657,0.694681797292151,0.00000184251460801783,Genus,kmerCon,0.598172844107346,0.0000922596749147013
-Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Helicobacteraceae;Helicobacter,0.0385763022145704,0.808377502049475,0.00000000144057492177323,Genus,kmerCon,0.700883187513297,0.00000136061148451201
-Bacteria;Deferribacterota;Deferribacteres;Deferribacterales;Deferribacteraceae;Mucispirillum,0.00642630561951642,0.695861539517287,0.00000174025247172384,Genus,kmerCon,0.685443276291388,0.00000285533538988744
-Bacteria;Desulfobacterota;Desulfovibrionia;Desulfovibrionales;Desulfovibrionaceae;Desulfovibrio,0.0511362595683693,0.812660263362052,0.00000000100601888317056,Genus,kmerCon,0.846715866691929,0.0000000000400631883988755
-Bacteria;Elusimicrobiota;Elusimicrobia;Elusimicrobiales;Elusimicrobiaceae;Elusimicrobium,0.00609683297303834,0.642261125195233,0.0000182524986893154,Genus,kmerCon,0.615097012190613,0.0000509794163431401
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;Asteroleplasma,0.00692162848143598,0.518891938360799,0.00100016109118338,Genus,kmerCon,0.519141405042073,0.000993572193216357
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;UCG-004,0.0300865362014671,0.70849922573983,0.000000927750449728975,Genus,kmerCon,0.533902323376008,0.000796933665066857
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;[Anaerorhabdus] furcosa group,0.00732258158688069,0.60831153003265,0.0000649307124377696,Genus,kmerCon,0.683511648963189,0.00000312299530931073
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Catenisphaera,0.00213472226504737,0.396760023515747,0.0150451688101566,Genus,kmerCon,0.533980879591924,0.000664411379896771
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Erysipelotrichaceae UCG-006,0.00548977178963429,0.334257243804781,0.0431765591647828,Genus,kmerCon,0.454773504367722,0.00468587176203912
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Holdemanella,0.11788019998594,0.956816636575297,0.000000000000000000023177359467257,Genus,kmerCon,0.746739409186431,0.000000111218724729682
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0.0912593019643447,0.763632198941645,0.0000000385315409862866,Genus,kmerCon,0.674016121384542,0.0000085805924589384
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Turicibacter,0.0156832529213823,0.765146163755872,0.0000000348910750157009,Genus,kmerCon,0.510855412591171,0.00123420139357765
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.612215813040752,0.0000565325153396588,Genus,kmerCon,0.651019440493125,0.0000205339245427138
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.97164934279733,0.0000000000000000000000165187276560268,Genus,kmerCon,0.809910498725804,0.00000000126814956135348
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,4.03259022754788,0.62031955994691,0.0000421567247662704,Genus,kmerCon,0.767662399241347,0.000000352074970030887
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus,0.14310126396617,0.864572085535827,0.00000000000532290334839667,Genus,kmerCon,0.628966019239797,0.0000305440615256385
-Bacteria;Firmicutes;Clostridia;Christensenellales;Christensenellaceae;Christensenellaceae R-7 group,0.995581071099328,0.431563347054069,0.00765309537388682,Genus,kmerCon,0.682947070134566,0.00000320545884605756
-Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 1,6.17212782321363,0.808374943261286,0.00000000144088012336314,Genus,kmerCon,0.787577050734945,0.000000216273361045093
-Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;[Ruminococcus] torques group,0.546531618422308,0.337381318725508,0.0411433891855005,Genus,kmerCon,0.184111391973574,0.275349516555832
-Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Agathobacter,1.47706821739981,0.239184588753311,0.153938273567323,Genus,kmerCon,0.317683988180683,0.0553603578574253
-Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Coprococcus,1.79019218534199,-0.0660813930208847,0.697582089791037,Genus,kmerCon,0.0320471011879857,0.850647400248697
-Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Lachnospiraceae UCG-004,0.102111615688025,0.295850465787074,0.0754267234640026,Genus,kmerCon,0.195399578650244,0.24646088349347
-Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Roseburia,1.55999677706237,0.334189156745245,0.043221758275368,Genus,kmerCon,0.228070175438596,0.174042357384564
-Bacteria;Firmicutes;Clostridia;Monoglobales;Monoglobaceae;Monoglobus,0.119571998790815,-0.0227024290789467,0.893900132968398,Genus,kmerCon,0.126160317705784,0.456849466445465
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;Butyricicoccus,0.0531352147890446,0.398949514006958,0.0144475470518527,Genus,kmerCon,0.25653497170469,0.125359452443006
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;UCG-008,0.10228474197951,-0.0200904952776601,0.906049375635,Genus,kmerCon,-0.0273842689118356,0.87218409988593
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;UCG-009,0.0939124561231573,0.568825793675084,0.000239281815492542,Genus,kmerCon,0.531095007470477,0.000719533783467806
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;NK4A214 group,0.876072554396566,0.644096521925148,0.0000169674816440144,Genus,kmerCon,0.771401491928694,0.0000000229714196493858
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;UCG-002,0.83234647243536,0.583341647783098,0.000151055039717907,Genus,kmerCon,0.782835467045993,0.000000243250632815507
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;UCG-005,1.81555294843097,0.701504127266644,0.00000131937289104088,Genus,kmerCon,0.590564248458985,0.000159355768109085
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;[Eubacterium] siraeum group,0.104466889490761,0.0868346914595317,0.609328030472472,Genus,kmerCon,0.287510465230614,0.0844417095776129
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Candidatus Soleaferrea,0.0858973368435544,0.620758061044512,0.000041482990356701,Genus,kmerCon,0.688767764343905,0.00000244338619474643
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Faecalibacterium,1.07460207901604,0.748645336927969,0.0000000990934711462099,Genus,kmerCon,0.675122993302613,0.00000457341318411663
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Incertae Sedis,0.0615022386286587,0.714511477911999,0.000000679855071755886,Genus,kmerCon,0.732666038924861,0.000000253064692296153
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Negativibacillus,0.161729549884136,0.0154147291708225,0.927849227107335,Genus,kmerCon,-0.028928683609969,0.865039931477743
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Ruminococcus,0.745297577928803,0.0540500862739888,0.750695940386889,Genus,kmerCon,0.253911806543385,0.129234609191598
-Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Subdoligranulum,0.794072128586971,0.732597143768274,0.000000254053315012104,Genus,kmerCon,0.734471313418682,0.000000890505584328552
-Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus,0.0138458975480951,0.547722092631512,0.000450093545577546,Genus,kmerCon,0.746593750644876,0.000000112199570330964
-Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;[Eubacterium] nodatum group,0.12809578244474,0.616360036987527,0.0000487047395438726,Genus,kmerCon,0.637009578871014,0.0000224337450027796
-Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;Family XIII AD3011 group,0.331781183333722,0.294392906902495,0.0769455535456302,Genus,kmerCon,0.554415633078307,0.0003700387286539
-Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;Family XIII UCG-001,0.0198855817332554,0.075092905867328,0.658692310931017,Genus,kmerCon,-0.00472571967385979,0.977854422172025
-Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Romboutsia,0.0413021770142453,0.600857387286509,0.0000841625320776254,Genus,kmerCon,0.57656278671874,0.000187757132255115
-Bacteria;Firmicutes;Negativicutes;Acidaminococcales;Acidaminococcaceae;Phascolarctobacterium,0.271493839192748,0.660267574256368,0.00000872968567120886,Genus,kmerCon,0.719696521921012,0.000000516676985040507
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Anaerovibrio,0.960991799919399,0.581008012372747,0.00016288786141421,Genus,kmerCon,0.381934566145092,0.0202837368985458
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Mitsuokella,0.342672695627047,0.971450673195359,0.0000000000000000000000186366337175614,Genus,kmerCon,0.644754318324827,0.0000165273690254091
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister,0.0640835501972541,0.44176894272601,0.00619359854366492,Genus,kmerCon,0.540244043806063,0.000557497115115651
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera,0.399366429984605,0.89112656101314,0.000000000000145416800025703,Genus,kmerCon,0.681567587899706,0.00000341540856515642
-Bacteria;Patescibacteria;Saccharimonadia;Saccharimonadales;Saccharimonadaceae;Candidatus Saccharimonas,0.00662195239048967,0.230933216439015,0.169078837112367,Genus,kmerCon,0.71755241004601,0.000000579196111098271
-Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Sutterellaceae;Sutterella,0.025007755303981,0.664246710500843,0.00000736747459064709,Genus,kmerCon,0.302275960170697,0.0693726205574269
-Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia-Shigella,0.205042336414361,0.379767714575554,0.0204295333500829,Genus,kmerCon,0.427630556119368,0.00828940184917694
-Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Succinivibrionaceae;Succinivibrio,0.111749123941992,0.898874515148587,0.0000000000000425698418167644,Genus,kmerCon,0.72550354718269,0.000000377197862499517
-Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Sphaerochaeta,0.0741930455017948,0.550205432017746,0.000418750360091667,Genus,kmerCon,0.632290184921764,0.000040312081575054
-Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Treponema,0.135172791350086,0.324434791702911,0.0501032275927579,Genus,kmerCon,0.802679154987181,0.00000000229136822006964
-Bacteria;Verrucomicrobiota;Verrucomicrobiae;Verrucomicrobiales;Akkermansiaceae;Akkermansia,0.0720814452341113,0.981307867884612,0.0000000000000000000000000121685227088192,Genus,kmerCon,0.652213895378623,0.0000122140780506876
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus delbrueckii,0.0589269191422576,0.822872988854315,0.000000000411392059956674,Species,kmerCon,0.335510803282859,0.0423511951508644
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus;Lactobacillus salivarius,1.34452875811623,0.975423967050233,0.00000000000000000000000139645092747567,Species,kmerCon,0.787505187797938,0.00000000735438422005597
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus mucosae,0.469412581580633,0.918092238384821,0.0000000000000012449734962732,Species,kmerCon,0.637743006164059,0.0000332457993775626
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus reuteri,2.034864331667,0.592330702713272,0.000112359109190702,Species,kmerCon,0.836415362731152,0.0000000355406669530318
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0.2618830542607,0.866474779239366,0.00000000000422159019508194,Species,kmerCon,0.625244587855802,0.0000351294212972559
+Bacteria;Actinobacteriota;Actinobacteria;Bifidobacteriales;Bifidobacteriaceae;Bifidobacterium,0.148590046618329,0.85247356061832,0.0000000000215126065783231,Genus,kmerCon,0.906827880512091,0
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides,0.0983323221793749,0.713530363863234,0.0000007156160864764,Genus,kmerCon,0.603610786380678,0.0000765295715411653
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Alloprevotella,1.49950867555161,0.300518530159764,0.0707194669903535,Genus,kmerCon,0.294991405292135,0.0763190375704228
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,7.39859866616363,0.419505109383024,0.00974849269478414,Genus,kmerCon,0.351963699223426,0.032653643005453
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 9,5.05719746670362,0.540573114888294,0.000552329471122464,Genus,kmerCon,0.70293978188715,0.00000277274517938924
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae NK3B31 group,0.17106700257527,0.481072130134824,0.00257704720408121,Genus,kmerCon,0.378519353400394,0.0208815228861625
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae UCG-003,0.318596660575145,0.303901982248109,0.0674540226114712,Genus,kmerCon,0.608038273085112,0.0000655587217699015
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,0.765968407674196,0.782340960424428,0.0000000107072583950261,Genus,kmerCon,0.755334281650071,0.000000482381472032593
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Tannerellaceae;Parabacteroides,0.122717385435232,0.767386239924271,0.0000000300851219962983,Genus,kmerCon,0.737543911062523,0.000000191434935138519
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Campylobacteraceae;Campylobacter,0.124606334225657,0.69468162872484,0.00000184252960561227,Genus,kmerCon,0.598172844107346,0.0000922596749147013
+Bacteria;Campylobacterota;Campylobacteria;Campylobacterales;Helicobacteraceae;Helicobacter,0.0385763022145704,0.80837115747779,0.00000000144133178612546,Genus,kmerCon,0.700883187513297,0.00000136061148451201
+Bacteria;Deferribacterota;Deferribacteres;Deferribacterales;Deferribacteraceae;Mucispirillum,0.00642630561951642,0.695872544141423,0.00000173932359123346,Genus,kmerCon,0.685443276291388,0.00000285533538988744
+Bacteria;Desulfobacterota;Desulfovibrionia;Desulfovibrionales;Desulfovibrionaceae;Desulfovibrio,0.0511362595683693,0.81266946208409,0.00000000100523354549284,Genus,kmerCon,0.846715866691929,0.0000000000400631883988755
+Bacteria;Elusimicrobiota;Elusimicrobia;Elusimicrobiales;Elusimicrobiaceae;Elusimicrobium,0.00609683297303834,0.642256818608589,0.0000182556152607882,Genus,kmerCon,0.615097012190613,0.0000509794163431401
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;Asteroleplasma,0.00692162848143598,0.518875606914106,0.00100059378142021,Genus,kmerCon,0.519141405042073,0.000993572193216357
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;UCG-004,0.0300865362014671,0.708476291553832,0.000000928837597986192,Genus,kmerCon,0.533902323376008,0.000796933665066857
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;[Anaerorhabdus] furcosa group,0.00732258158688069,0.608334967129613,0.0000648771025452385,Genus,kmerCon,0.683511648963189,0.00000312299530931073
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Catenisphaera,0.00213472226504737,0.396786399690633,0.0150378474504264,Genus,kmerCon,0.533980879591924,0.000664411379896771
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Erysipelotrichaceae UCG-006,0.00548977178963429,0.334271978104439,0.0431667829331799,Genus,kmerCon,0.454773504367722,0.00468587176203912
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Holdemanella,0.11788019998594,0.956816055847851,0.0000000000000000000231827074590041,Genus,kmerCon,0.746739409186431,0.000000111218724729682
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0.0912593019643447,0.763605476388973,0.0000000385988449541498,Genus,kmerCon,0.674016121384542,0.0000085805924589384
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Turicibacter,0.0156832529213823,0.765145378197712,0.000000034892878463642,Genus,kmerCon,0.510855412591171,0.00123420139357765
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.612146503413916,0.0000566725937985929,Genus,kmerCon,0.651256519677572,0.0000203547819503058
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.971688646737533,0.0000000000000000000000161275257284536,Genus,kmerCon,0.809910498725804,0.00000000126814956135348
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,4.03259022754788,0.620380080219188,0.0000420631523460733,Genus,kmerCon,0.767662399241347,0.000000352074970030887
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus,0.14310126396617,0.864425171006412,0.00000000000541824591008455,Genus,kmerCon,0.628966019239797,0.0000305440615256385
+Bacteria;Firmicutes;Clostridia;Christensenellales;Christensenellaceae;Christensenellaceae R-7 group,0.995581071099328,0.431569933553983,0.00765206586360638,Genus,kmerCon,0.682947070134566,0.00000320545884605756
+Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 1,6.17212782321363,0.808366981822338,0.0000000014418301152294,Genus,kmerCon,0.787577050734945,0.000000216273361045093
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;[Ruminococcus] torques group,0.546531618422308,0.337497809081017,0.0410691032020796,Genus,kmerCon,0.184111391973574,0.275349516555832
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Agathobacter,1.47706821739981,0.239196972647043,0.15391631724315,Genus,kmerCon,0.315252466653165,0.057358149064069
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Coprococcus,1.79019218534199,-0.0660938009014834,0.697527988943723,Genus,kmerCon,0.0320471011879857,0.850647400248697
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Lachnospiraceae UCG-004,0.102111615688025,0.295895684646713,0.0753799808059014,Genus,kmerCon,0.195399578650244,0.24646088349347
+Bacteria;Firmicutes;Clostridia;Lachnospirales;Lachnospiraceae;Roseburia,1.55999677706237,0.334115934268654,0.0432704091519804,Genus,kmerCon,0.228070175438596,0.174042357384564
+Bacteria;Firmicutes;Clostridia;Monoglobales;Monoglobaceae;Monoglobus,0.119571998790815,-0.0227040125678645,0.893892774406718,Genus,kmerCon,0.126160317705784,0.456849466445465
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;Butyricicoccus,0.0531352147890446,0.398925236196083,0.0144540622687285,Genus,kmerCon,0.25653497170469,0.125359452443006
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;UCG-008,0.10228474197951,-0.0201524908474338,0.905760752463591,Genus,kmerCon,-0.0273842689118356,0.87218409988593
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Butyricicoccaceae;UCG-009,0.0939124561231573,0.568760762846105,0.00023976391560867,Genus,kmerCon,0.531095007470477,0.000719533783467806
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;NK4A214 group,0.876072554396566,0.644093593238309,0.0000169694647726904,Genus,kmerCon,0.771401491928694,0.0000000229714196493858
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;UCG-002,0.83234647243536,0.583401574964558,0.00015076163332724,Genus,kmerCon,0.782835467045993,0.000000243250632815507
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Oscillospiraceae;UCG-005,1.81555294843097,0.701484538956868,0.00000132065607912619,Genus,kmerCon,0.590564248458985,0.000159355768109085
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;[Eubacterium] siraeum group,0.104466889490761,0.0867660080296802,0.609612169063813,Genus,kmerCon,0.28611962183304,0.086022975374168
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Candidatus Soleaferrea,0.0858973368435544,0.620774816606919,0.0000414574409859869,Genus,kmerCon,0.688767764343905,0.00000244338619474643
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Faecalibacterium,1.07460207901604,0.748676900686538,0.0000000989033680755632,Genus,kmerCon,0.675122993302613,0.00000457341318411663
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Incertae Sedis,0.0615022386286587,0.714542443716082,0.000000678753633423025,Genus,kmerCon,0.732666038924861,0.000000253064692296153
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Negativibacillus,0.161729549884136,0.0154047620276229,0.927895757989996,Genus,kmerCon,-0.028928683609969,0.865039931477743
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Ruminococcus,0.745297577928803,0.054098831167596,0.750478260890347,Genus,kmerCon,0.253911806543385,0.129234609191598
+Bacteria;Firmicutes;Clostridia;Oscillospirales;Ruminococcaceae;Subdoligranulum,0.794072128586971,0.732605771351665,0.000000253929317262494,Genus,kmerCon,0.734471313418682,0.000000890505584328552
+Bacteria;Firmicutes;Clostridia;Peptococcales;Peptococcaceae;Peptococcus,0.0138458975480951,0.547718191082532,0.000450144391275656,Genus,kmerCon,0.746593750644876,0.000000112199570330964
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;[Eubacterium] nodatum group,0.12809578244474,0.616365572923837,0.0000486949751307369,Genus,kmerCon,0.637009578871014,0.0000224337450027796
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;Family XIII AD3011 group,0.331781183333722,0.294382449192731,0.0769565363353536,Genus,kmerCon,0.55604327178306,0.000352608107871664
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracaceae;Family XIII UCG-001,0.0198855817332554,0.0751154154536254,0.658596214890716,Genus,kmerCon,-0.00472571967385979,0.977854422172025
+Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Romboutsia,0.0413021770142453,0.600888621460645,0.0000840722245021295,Genus,kmerCon,0.57656278671874,0.000187757132255115
+Bacteria;Firmicutes;Negativicutes;Acidaminococcales;Acidaminococcaceae;Phascolarctobacterium,0.271493839192748,0.660176926599831,0.0000087632353537348,Genus,kmerCon,0.719696521921012,0.000000516676985040507
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Anaerovibrio,0.960991799919399,0.580992318310313,0.000162970182849843,Genus,kmerCon,0.381934566145092,0.0202837368985458
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Mitsuokella,0.342672695627047,0.971451417233527,0.0000000000000000000000186282453957327,Genus,kmerCon,0.644754318324827,0.0000165273690254091
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister,0.0640835501972541,0.441812169038072,0.00618796657831043,Genus,kmerCon,0.540244043806063,0.000557497115115651
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera,0.399366429984605,0.891139902118143,0.000000000000145121167427057,Genus,kmerCon,0.681052900344055,0.00000349691409714455
+Bacteria;Patescibacteria;Saccharimonadia;Saccharimonadales;Saccharimonadaceae;Candidatus Saccharimonas,0.00662195239048967,0.230909722309703,0.169123418011749,Genus,kmerCon,0.71755241004601,0.000000579196111098271
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Sutterellaceae;Sutterella,0.025007755303981,0.664231803833662,0.00000737219312009965,Genus,kmerCon,0.302275960170697,0.0693726205574269
+Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia-Shigella,0.205042336414361,0.381769752883057,0.019721710226905,Genus,kmerCon,0.418061562725708,0.0100293624115822
+Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Succinivibrionaceae;Succinivibrio,0.111749123941992,0.898847575774125,0.000000000000042759317005112,Genus,kmerCon,0.72550354718269,0.000000377197862499517
+Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Sphaerochaeta,0.0741930455017948,0.550140940712435,0.000419539030155923,Genus,kmerCon,0.632290184921764,0.000040312081575054
+Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Treponema,0.135172791350086,0.324415320314491,0.0501177933993631,Genus,kmerCon,0.802679154987181,0.00000000229136822006964
+Bacteria;Verrucomicrobiota;Verrucomicrobiae;Verrucomicrobiales;Akkermansiaceae;Akkermansia,0.0720814452341113,0.981309705718377,0.0000000000000000000000000121477779681863,Genus,kmerCon,0.652213895378623,0.0000122140780506876
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus delbrueckii,0.0589269191422576,0.82277404731744,0.000000000415083864625951,Species,kmerCon,0.335510803282859,0.0423511951508644
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus;Lactobacillus salivarius,1.34452875811623,0.975461276788313,0.00000000000000000000000136021237229037,Species,kmerCon,0.787505187797938,0.00000000735438422005597
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus mucosae,0.469412581580633,0.918110184300017,0.00000000000000124038894662218,Species,kmerCon,0.637743006164059,0.0000332457993775626
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus reuteri,2.034864331667,0.592406684009645,0.000112074195478583,Species,kmerCon,0.836415362731152,0.0000000355406669530318
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0.2618830542607,0.866492914309658,0.0000000000042122016241153,Species,kmerCon,0.625088943351995,0.0000353341369345875
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Alloprevotella,1.49950867555161,0.142275951397229,0.400901365547983,Genus,miniCon,0.110171216287042,0.516257683139165
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,7.39859866616363,0.448046857580345,0.00542043933085982,Genus,miniCon,0.353236972972556,0.0319861598694812
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 9,5.05719746670362,0.53887584165881,0.000579447455189599,Genus,miniCon,0.583451872925557,0.000198037828632683
@@ -76,11 +76,11 @@ Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae UC
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,0.765968407674196,0.654735692055126,0.0000110065041651467,Genus,miniCon,0.711474632527264,0.00000200201836079968
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Tannerellaceae;Parabacteroides,0.122717385435232,0.633176854138465,0.0000260157554447681,Genus,miniCon,0.640273659319684,0.0000197433455796152
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Catenisphaera,0.00213472226504737,0.412630032398922,0.0111487432825949,Genus,miniCon,0.0669785645572565,0.693674047349895
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Holdemanella,0.11788019998594,0.918689934795945,0.00000000000000110052517793639,Genus,miniCon,0.657957114410583,0.00000962244836534748
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Holdemanella,0.11788019998594,0.918689934795945,0.00000000000000110052517793637,Genus,miniCon,0.657957114410583,0.00000962244836534748
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0.0912593019643447,0.674345050379835,0.00000473517671828141,Genus,miniCon,0.560369866433969,0.000309786705789505
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Turicibacter,0.0156832529213823,0.592804815034615,0.000110591905713227,Genus,miniCon,0.441402278334604,0.00624154902140774
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.468760964680256,0.00342924287463018,Genus,miniCon,0.427216690374585,0.00885978800543409
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.923223569803642,0.00000000000000041830734166988,Genus,miniCon,0.773658818193795,0.0000000196916484277143
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.476287111691192,0.00288328002159439,Genus,miniCon,0.444997629208155,0.00621804530346686
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.923223569803642,0.000000000000000418307341669856,Genus,miniCon,0.773658818193795,0.0000000196916484277143
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,4.03259022754788,0.506725426284427,0.00137231481367754,Genus,miniCon,0.675438596491228,0.00000811952161297994
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus,0.14310126396617,0.547646839931817,0.000451075156391103,Genus,miniCon,0.463215598863455,0.00388709162157506
 Bacteria;Firmicutes;Clostridia;Christensenellales;Christensenellaceae;Christensenellaceae R-7 group,0.995581071099328,0.457910842014707,0.00437383451591187,Genus,miniCon,0.741107498972311,0.000000155520130623613
@@ -108,20 +108,20 @@ Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Anaerovoracac
 Bacteria;Firmicutes;Clostridia;Peptostreptococcales-Tissierellales;Peptostreptococcaceae;Romboutsia,0.0413021770142453,0.490740761231613,0.00204381182632717,Genus,miniCon,0.379808129987161,0.0204150377357584
 Bacteria;Firmicutes;Negativicutes;Acidaminococcales;Acidaminococcaceae;Phascolarctobacterium,0.271493839192748,0.517841320372674,0.00102833614365838,Genus,miniCon,0.625172105640531,0.0000352246212443897
 Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Anaerovibrio,0.960991799919399,0.301510194415287,0.0697498079029568,Genus,miniCon,0.388796855818503,0.0173972306744553
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Mitsuokella,0.342672695627047,0.973528167094568,0.00000000000000000000000504997881044266,Genus,miniCon,0.735996604798541,0.00000020929309178739
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Selenomonadaceae;Mitsuokella,0.342672695627047,0.973528167094568,0.00000000000000000000000504997881044226,Genus,miniCon,0.735996604798541,0.00000020929309178739
 Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Dialister,0.0640835501972541,0.488054958836821,0.00218122756272382,Genus,miniCon,0.597431549867967,0.0000946161128197606
 Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera,0.399366429984605,0.87040298344656,0.0000000000025863078415196,Genus,miniCon,0.637253771443419,0.0000222214962557402
 Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia-Shigella,0.205042336414361,0.359738884953063,0.028749750211727,Genus,miniCon,0.416282218923187,0.0103850221822457
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus;Lactobacillus delbrueckii,0.0589269191422576,0.714054037925093,0.000000696318734723287,Species,miniCon,0.425306188467811,0.0086863397090765
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus;Lactobacillus salivarius,1.34452875811623,0.928360381041855,0.000000000000000129777906407201,Species,miniCon,0.747153840163082,0.000000108471161671167
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus;Lactobacillus salivarius,1.34452875811623,0.928360381041855,0.000000000000000129777906407197,Species,miniCon,0.747153840163082,0.000000108471161671167
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus mucosae,0.469412581580633,0.434185580771694,0.00725249064708411,Species,miniCon,0.405914009018034,0.012677939235685
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus reuteri,2.034864331667,0.546517439102685,0.000466038385739225,Species,miniCon,0.752252252252252,0.000000524279339084323
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0.2618830542607,0.871537734332833,0.00000000000223832285993578,Species,miniCon,0.586111718117426,0.000138016561011158
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0.2618830542607,0.871537734332833,0.00000000000223832285993576,Species,miniCon,0.586111718117426,0.000138016561011158
 Bacteria;Actinobacteriota;Actinobacteria;Bifidobacteriales;Bifidobacteriaceae;Bifidobacterium,0.148590046618329,0.860520832489343,0.00000000000862055666609467,Genus,isoCon,0.912280701754386,0
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides,0.0983323221793749,0.496768483150822,0.00176271942882127,Genus,isoCon,0.405582880669453,0.0127577120940616
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella,7.39859866616363,0.463792952542897,0.00383706968072397,Genus,isoCon,0.350144400553094,0.0336271175490395
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7,1.27684894744831,0.0618481000283598,0.71612432892315,Genus,isoCon,0.431704970794923,0.00763098485678841
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 9,5.05719746670362,0.596799767809909,0.0000966671434829197,Genus,isoCon,0.739212897107634,0.000000766434899444242
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 9,5.05719746670362,0.596799767809909,0.000096667143482919,Genus,isoCon,0.739212897107634,0.000000766434899444242
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae NK3B31 group,0.17106700257527,0.440644138461481,0.00634170869755531,Genus,isoCon,0.273352299668089,0.101701132058983
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotellaceae UCG-003,0.318596660575145,0.653200293382912,0.0000117280496836043,Genus,isoCon,0.65164826479964,0.0000125009947762742
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Rikenellaceae;Rikenellaceae RC9 gut group,0.765968407674196,0.666247396102779,0.00000675863436061871,Genus,isoCon,0.491764517941247,0.00199346669484161
@@ -132,16 +132,16 @@ Bacteria;Desulfobacterota;Desulfovibrionia;Desulfovibrionales;Desulfovibrionacea
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;Asteroleplasma,0.00692162848143598,0.564525637445674,0.000273099911347747,Genus,isoCon,0.49836352079953,0.001694275604461
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;Catenibacterium,0.0227179696689235,0.175404788415492,0.299082317100884,Genus,isoCon,0.661652608981818,0.00000823143800386419
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;Sharpea,0.0186709979659168,0.871213712690998,0.00000000000233293711542889,Genus,isoCon,0.479878309562918,0.00265065823692514
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;UCG-004,0.0300865362014671,0.597008490412266,0.0000959851484278017,Genus,isoCon,0.412852750521936,0.0111008419976171
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelatoclostridiaceae;UCG-004,0.0300865362014671,0.597008490412266,0.0000959851484278014,Genus,isoCon,0.412852750521936,0.0111008419976171
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;[Anaerorhabdus] furcosa group,0.00732258158688069,0.52565565776074,0.000834567955619872,Genus,isoCon,0.651570738427507,0.0000125407951942182
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Catenisphaera,0.00213472226504737,0.906620877121473,0.0000000000000112426226805758,Genus,isoCon,0.511382466698219,0.00121749008125786
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Erysipelotrichaceae UCG-006,0.00548977178963429,0.33998575961696,0.0395083038083682,Genus,isoCon,0.455618546494141,0.00459998549254675
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Holdemanella,0.11788019998594,0.930631923946326,0.0000000000000000752079359769769,Genus,isoCon,0.720032536826886,0.000000507462647515489
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0.0912593019643447,0.631560130321343,0.0000276767556642462,Genus,isoCon,0.567804646752015,0.000314324251337552
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0.0912593019643447,0.631560130321343,0.0000276767556642461,Genus,isoCon,0.567804646752015,0.000314324251337552
 Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Turicibacter,0.0156832529213823,0.729203165692298,0.000000307405439474205,Genus,isoCon,0.539689828921033,0.000566297687958593
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.594230850705194,0.000105426475011697,Genus,isoCon,0.639165481270744,0.000031599798054571
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.976801717750564,0.000000000000000000000000514359686718855,Genus,isoCon,0.77827841884721,0.0000000142875360466569
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,4.03259022754788,0.609147661967861,0.0000630427233244348,Genus,isoCon,0.652204836415363,0.0000196526502281615
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lactobacillus,21.2577930380353,0.593812694805757,0.000106918113440844,Genus,isoCon,0.639165481270744,0.000031599798054571
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus,1.4740062220211,0.976801717750564,0.000000000000000000000000514359686718767,Genus,isoCon,0.77827841884721,0.0000000142875360466569
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus,4.03259022754788,0.613943149919727,0.000053141114696774,Genus,isoCon,0.661213845424372,0.000014021595235337
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Streptococcaceae;Streptococcus,0.14310126396617,0.894846539180034,0.0000000000000815902251085077,Genus,isoCon,0.626984349748487,0.0000329132673861437
 Bacteria;Firmicutes;Clostridia;Christensenellales;Christensenellaceae;Christensenellaceae R-7 group,0.995581071099328,0.411573951741678,0.0113782770956808,Genus,isoCon,0.552488406209195,0.00039167011604368
 Bacteria;Firmicutes;Clostridia;Clostridiales;Clostridiaceae;Clostridium sensu stricto 1,6.17212782321363,0.795439229355107,0.00000000404573565754325,Genus,isoCon,0.796040544341887,0.00000000386248278106405
@@ -173,7 +173,7 @@ Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Sphaerochaeta
 Bacteria;Spirochaetota;Spirochaetia;Spirochaetales;Spirochaetaceae;Treponema,0.135172791350086,0.31218714854096,0.0599579032996795,Genus,isoCon,0.797937290240542,0.00000000333371087197103
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Ligilactobacillus;Lactobacillus salivarius,1.34452875811623,0.981004894955235,0.0000000000000000000000000160843015916132,Species,isoCon,0.751482117406097,0.0000000832920156037196
 Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus mucosae,0.469412581580633,0.915582564077427,0.00000000000000206870115572131,Species,isoCon,0.680654338549075,0.00000662549804956252
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus reuteri,2.034864331667,0.629554735411744,0.0000298706714228966,Species,isoCon,0.813181602655287,0.000000103934677189227
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus reuteri,2.034864331667,0.63314081977053,0.0000260517673724534,Species,isoCon,0.809151256519678,0.000000118690223417908
 Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0.2618830542607,0.914470735594741,0.0000000000000025776553372231,Species,isoCon,0.53635526415822,0.000621907021186161
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides,0.0983323221793749,0.87206753828818,0.00000000000209131131587168,Genus,Emu,0.79990561911377,0.00000000285667680216757
 Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Alloprevotella,1.49950867555161,0.847713521959408,0.0000000000360369481387952,Genus,Emu,0.769559032716927,0.000000336039598894259

@@ -920,10 +920,9 @@ for (i in 1:length(ps_list)) {
 cors_pearson <- cors %>% filter(method == "pearson") %>% select(-method) %>% dplyr::rename(cor_pearson = cor, p_pearson = p) #nolint
 cors_spearman <- cors %>% filter(method == "spearman") %>% select(-method) %>% dplyr::rename(cor_spearman = cor, p_spearman = p) #nolint
 cors_wide <- cors_pearson %>% left_join(cors_spearman, by = c("taxonomy", "taxon_l", "tag", "mean")) #nolint
-write.table(cors_wide, file = "table/emu/cor.tsv", sep = "\t", quote = FALSE, row.names = FALSE) #nolint
+write.table(cors_wide, file = "table/emu/cor.csv", sep = ",", quote = FALSE, row.names = FALSE) #nolint
 # pearson|spearman cor scatter plot
 # color: profile method
-# shape: taxon level, i.e., Genus, Species
 # size: abundance, i.e., < 0.1%, 0.1%-1%, > 1%
 p_cor <- cors_wide %>% 
   mutate(abundance = case_when(
@@ -934,12 +933,14 @@ p_cor <- cors_wide %>%
   mutate(abundance = factor(abundance, levels = c("< 0.1%", "0.1%-1%", "> 1%"))) %>% #nolint
   #factorize tag
   mutate(tag = factor(tag, levels=c("kmerCon", "miniCon", "isoCon"))) %>% #nolint
-  ggplot(aes(x=cor_pearson, y=cor_spearman, shape=taxon_l, color=abundance)) + #nolint
+  ggplot(aes(x=cor_pearson, y=cor_spearman, color=abundance)) + #nolint
   geom_jitter(size = 3) +
   scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,3,9)]) +
   scale_x_continuous(limits=c(0,NA)) + scale_y_continuous(limits = c(0,NA)) +
-  labs(x="Pearson r", y="Spearman r", color = "Abundance", shape="Taxonomy") + #nolint
-  facet_wrap(. ~ tag, ncol=4, scale="free") +
+  labs(x="Pearson r", y="Spearman r", color = "Abundance") + #nolint
+  facet_grid(
+    factor(taxon_l, levels=c("Genus", "Species"))
+    ~ tag, scale="free", space = "free") +
   theme_prism() + 
   theme(
     legend.title = element_text(),
@@ -1028,6 +1029,134 @@ table(emuonly_abund$hit_cover[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_
 emuonly_abund$taxonomy[emuonly_abund$mean > 0.1 & emuonly_abund$taxonomy_level == "Genus" & emuonly_abund$hit_cover == FALSE] #nolint
 ```
 
+```{r, cor-mapping-clustering, include=FALSE, message=FALSE}
+ps_kmerCon2 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/kmerCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/kmerCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/kmerCon_out/tree.nwk",
+  rep_fasta = "data/emu/kmerCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/kmerCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 97
+  )
+ps_miniCon2 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/miniCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/miniCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/miniCon_out/tree.nwk",
+  rep_fasta = "data/emu/miniCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/miniCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 97
+  )
+ps_isoCon2 <- ps_from_laca( # nolint
+  count_tsv = "data/emu/isoCon_out/quant/matrix_minimap2.tsv",
+  meta_tsv = "data/emu/mapping.tsv",
+  tax_tsv = "data/emu/isoCon_out/taxonomy.tsv",
+  tree_nwk = "data/emu/isoCon_out/tree.nwk",
+  rep_fasta = "data/emu/isoCon_out/rep_seqs.fasta",
+  hits_tsv = "data/emu/isoCon_out/taxonomy/q2blast/hits.tsv",
+  min_id = 97
+  )
+# reuse ps_melt_abundance, dt_cor
+ps_otu_abundance <- function(ps, rel = TRUE) {
+  if (rel == TRUE) {
+    ps <- transform_sample_counts(ps, function(x) x / sum(x) * 100)
+  }
+  otutable <- data.frame(otu_table(ps))
+  otutable$taxonomy <- rownames(otutable)
+  #make taxonomy as the first column
+  otutable <- otutable[, c(ncol(otutable), 1:(ncol(otutable)-1))]
+  return(otutable)
+}
+#get_otu_abundance(ps_kmerCon)
+#ps_melt_abundance(ps_kmerCon, taxon_l = "Species", rel = TRUE)
+ps_cor_ext <- function(ps1, ps2, tag, taxon_l = "Species", rel = TRUE, nzeros_pct = 0.3) { #nolint
+  if (taxon_l == "OTU"){
+    widetab1 <- ps_otu_abundance(ps1, rel = rel)
+    widetab2 <- ps_otu_abundance(ps2, rel = rel) 
+  } else {
+    widetab1 <- ps_melt_abundance(ps1, taxon_l = taxon_l, rel = rel)
+    widetab2 <- ps_melt_abundance(ps2, taxon_l = taxon_l, rel = rel)
+  }
+  # pearson
+  cors_pearson <- dt_cor(widetab1, widetab2, method="pearson", nzeros_pct = nzeros_pct) #nolint
+  cors_pearson$method <- "pearson"
+  # spearman
+  cors_spearman <- dt_cor(widetab1, widetab2, method="spearman", nzeros_pct = nzeros_pct) #nolint
+  cors_spearman$method <- "spearman"
+  cors <- rbind(cors_pearson, cors_spearman)
+  cors$taxon_l <- taxon_l
+  cors$tag <- tag
+  return(cors)
+}
+
+ps_cor_ext2 <- function(ps1, ps2, tag, taxon_l = c("OTU", "Genus", "Species"), rel = TRUE, nzeros_pct = 0.3) { #nolint
+  cors <- data.frame()
+  for (taxon in taxon_l) {
+    cors_taxon <- ps_cor_ext(ps1, ps2, tag, taxon_l = taxon, rel = rel, nzeros_pct = nzeros_pct) #nolint
+    cors <- rbind(cors, cors_taxon)
+  }
+  return(cors)
+}
+
+# relative to the minimap2 mapping profile
+ps_list <- list(
+  ps_kmerCon,
+  ps_miniCon,
+  ps_isoCon
+  )
+ps_list2 <- list(
+  ps_kmerCon2,
+  ps_miniCon2,
+  ps_isoCon2
+  )
+methods <- c(
+  "kmerCon",
+  "miniCon",
+  "isoCon"
+  )
+cors2 <- data.frame()
+for (i in 1:length(ps_list)) {
+  ps <- ps_list[[i]]
+  ps2 <- ps_list2[[i]]
+  tag <- methods[i]
+  cors2_ps <- ps_cor_ext2(ps, ps2, tag = tag)
+  cors2 <- rbind(cors2, cors2_ps)
+}
+# split cor and p by method into 4 columns, and keep other columns
+cors2_pearson <- cors2 %>% filter(method == "pearson") %>% select(-method) %>% dplyr::rename(cor_pearson = cor, p_pearson = p) #nolint
+cors2_spearman <- cors2 %>% filter(method == "spearman") %>% select(-method) %>% dplyr::rename(cor_spearman = cor, p_spearman = p) #nolint
+cors2_wide <- cors2_pearson %>% left_join(cors2_spearman, by = c("taxonomy", "taxon_l", "tag", "mean")) #nolint
+write.table(cors2_wide, file = "table/emu/cor_mapping_clustering.csv", sep = ",", quote = FALSE, row.names = FALSE) #nolint
+# pearson|spearman cor scatter plot
+# color: profile method
+# shape: taxon level, i.e., Genus, Species
+# size: abundance, i.e., < 0.1%, 0.1%-1%, > 1%
+p_cor2 <- cors2_wide %>% 
+  mutate(abundance = case_when(
+    mean <= 0.1 ~ "< 0.1%",
+    mean <= 1 ~ "0.1%-1%",
+    TRUE ~ "> 1%"
+  )) %>%
+  mutate(abundance = factor(abundance, levels = c("< 0.1%", "0.1%-1%", "> 1%"))) %>% #nolint
+  #factorize tag
+  mutate(tag = factor(tag, levels=c("kmerCon", "miniCon", "isoCon"))) %>% #nolint
+  ggplot(aes(x=cor_pearson, y=cor_spearman, color=abundance)) + #nolint
+  geom_jitter(size = 3) +
+  scale_color_manual(values = brewer.pal(9, "Spectral")[c(1,3,9)]) +
+  scale_x_continuous(limits=c(0,NA)) + scale_y_continuous(limits = c(0,NA)) +
+  labs(x="Pearson r", y="Spearman r", color = "Abundance", shape="Taxonomy") + #nolint
+  facet_grid(
+    factor(taxon_l, levels = c("Genus", "Species", "OTU")) 
+    ~ tag, scale="free", space="free") +
+  theme_prism() + 
+  theme(
+    legend.title = element_text(),
+    axis.text = element_text(size=10),
+  )
+#p_cor2
+```
+
 ```{r, pngs}
 dir.create("figure/emu", showWarnings = FALSE, recursive = TRUE)
 ps <- list(p_otus_len, p_otus_sum, p_otus_sumb, p_blast, p_otus_count) #nolint
@@ -1048,8 +1177,8 @@ ggsave("figure/emu/p2_betas.png", p_multi_betas, height = 10, width = 10) #nolin
 png("figure/emu/p_upset.png", height = 6, width = 12, units = "in", res = 300) #nolint
 p_upset
 dev.off()
-ggsave("figure/emu/p_cor.png", p_cor, height = 4, width = 12) #nolint
-
+ggsave("figure/emu/p_cor.png", p_cor, height = 6, width = 12) #nolint
+ggsave("figure/emu/p_cor_mapping_clustering.png", p_cor2, height = 8, width = 12) #nolint
 # combine p_upset and p_cor
 library(patchwork)
 p_upset_cor <- (p_upset + theme_prism()) / p_cor + plot_layout(heights = c(2, 1)) + plot_annotation(tag_levels = "a") #nolint
