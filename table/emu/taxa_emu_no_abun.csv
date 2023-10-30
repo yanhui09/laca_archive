@@ -1,13 +1,13 @@
-taxonomy,Species: kmerCon,Species: miniCon,Species: isoCon,Species: emu,Genus: kmerCon,Genus: miniCon,Genus: isoCon,Genus: emu,mean_kmerCon,mean_miniCon,mean_isoCon
-Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Arcanobacterium;Arcanobacterium phocae,1,0,1,0,0,0,0,0,0.0985742428085609,NA,0.0985420670575706
-Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella melaninogenica,1,1,1,0,0,0,0,0,0.0777658125084487,0.0724134809763751,0.0766608316705635
-Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0,0,0,0,1,1,1,0,0.0355414064980019,0.0336659165942797,0.0358056579060117
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lacticaseibacillus;Lactobacillus rhamnosus,1,1,1,0,0,0,0,0,0.241518497514761,0.223630264629146,0.242454363506924
-Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus fermentum,1,1,1,0,0,0,0,0,0.745185527091828,0.673191742320348,0.743241150785048
-Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Mycoplasma;Metamycoplasma hominis,1,1,1,0,0,0,0,0,0.00486382900074254,0.0051053575622258,0.00490365943758295
-Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0,0,1,0,0,0,0,0,NA,NA,0.0516518794092071
-Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Burkholderiaceae;Burkholderia-Caballeronia-Paraburkholderia,0,0,0,0,1,1,0,0,0.00276449831266871,0.00293920053745381,NA
-Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Burkholderiaceae;Burkholderia-Caballeronia-Paraburkholderia;Paraburkholderia fungorum,1,1,0,0,0,0,0,0,0.00276449831266871,0.00293920053745381,NA
-Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Variovorax,0,0,0,0,0,1,0,0,NA,0.0027292576419214,NA
-Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter;Acinetobacter johnsonii,1,1,0,0,0,0,0,0,0.00276449831266871,0.00251931474638898,NA
-Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter;Moraxella osloensis,1,1,0,0,0,0,0,0,0.0121975161334046,0.00805572770206843,NA
+taxonomy,Species: kmerCon,Species: miniCon,Species: isoCon,Species: emu,Genus: kmerCon,Genus: miniCon,Genus: isoCon,Genus: emu,mean_kmerCon,mean_miniCon,mean_isoCon,taxonomy_level
+Bacteria;Actinobacteriota;Actinobacteria;Actinomycetales;Actinomycetaceae;Arcanobacterium;Arcanobacterium phocae,1,0,1,0,0,0,0,0,0.0985742428085609,NA,0.0985420670575706,Species
+Bacteria;Bacteroidota;Bacteroidia;Bacteroidales;Prevotellaceae;Prevotella 7;Prevotella melaninogenica,1,1,1,0,0,0,0,0,0.0777658125084487,0.0724134809763751,0.0766608316705635,Species
+Bacteria;Firmicutes;Bacilli;Erysipelotrichales;Erysipelotrichaceae;Solobacterium,0,0,0,0,1,1,1,0,0.0355414064980019,0.0336659165942797,0.0358056579060117,Genus
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Lacticaseibacillus;Lactobacillus rhamnosus,1,1,1,0,0,0,0,0,0.241518497514761,0.223630264629146,0.242454363506924,Species
+Bacteria;Firmicutes;Bacilli;Lactobacillales;Lactobacillaceae;Limosilactobacillus;Lactobacillus fermentum,1,1,1,0,0,0,0,0,0.745185527091828,0.673191742320348,0.743241150785048,Species
+Bacteria;Firmicutes;Bacilli;Mycoplasmatales;Mycoplasmataceae;Mycoplasma;Metamycoplasma hominis,1,1,1,0,0,0,0,0,0.00486382900074254,0.0051053575622258,0.00490365943758295,Species
+Bacteria;Firmicutes;Negativicutes;Veillonellales-Selenomonadales;Veillonellaceae;Megasphaera;Megasphaera elsdenii,0,0,1,0,0,0,0,0,NA,NA,0.0516518794092071,Species
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Burkholderiaceae;Burkholderia-Caballeronia-Paraburkholderia,0,0,0,0,1,1,0,0,0.00276449831266871,0.00293920053745381,NA,Genus
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Burkholderiaceae;Burkholderia-Caballeronia-Paraburkholderia;Paraburkholderia fungorum,1,1,0,0,0,0,0,0,0.00276449831266871,0.00293920053745381,NA,Species
+Bacteria;Proteobacteria;Gammaproteobacteria;Burkholderiales;Comamonadaceae;Variovorax,0,0,0,0,0,1,0,0,NA,0.0027292576419214,NA,Genus
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Acinetobacter;Acinetobacter johnsonii,1,1,0,0,0,0,0,0,0.00276449831266871,0.00251931474638898,NA,Species
+Bacteria;Proteobacteria;Gammaproteobacteria;Pseudomonadales;Moraxellaceae;Enhydrobacter;Moraxella osloensis,1,1,0,0,0,0,0,0,0.0121975161334046,0.00805572770206843,NA,Species

@@ -842,6 +842,8 @@ idx <- match(tag_merge_emu_no$taxonomy, emu_abun_no_miniCon$taxonomy)
 tag_merge_emu_no$mean_miniCon <- emu_abun_no_miniCon$mean[idx]
 idx <- match(tag_merge_emu_no$taxonomy, emu_abun_no_isoCon$taxonomy)
 tag_merge_emu_no$mean_isoCon <- emu_abun_no_isoCon$mean[idx]
+# taxa_level by number of `;`: species 6, genus 5
+tag_merge_emu_no$taxonomy_level <- ifelse(str_count(tag_merge_emu_no$taxonomy, ";") == 5, "Genus", "Species") #nolint
 write.csv(tag_merge_emu_no, "table/emu/taxa_emu_no_abun.csv", quote=FALSE, row.names=FALSE) #nolint
 ```
 
