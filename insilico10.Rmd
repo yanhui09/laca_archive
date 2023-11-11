@@ -1388,6 +1388,34 @@ p4_tcov <- df %>%
     strip.text = element_text(size = 8),
   )
 #p4_tcov 
+# mean alnid, tov, qcov
+summ_err <- df %>%
+  mutate(
+    benchmark = factor(
+      benchmark, 
+      levels = c("nanopore2020", "nanopore2023", "nanopore2023duplex", "pacbio2016ccs"), #nolint
+      labels = c("ONT 2020", "ONT 2023", "ONT Duplex", "PacBio CCS")
+    ),
+    id = factor(
+      id, 
+      levels = c(9095,9597,9798,9899,99100),
+      labels = c("5~10%", "3~5%", "2~3%", "1~2%", "0~1%") #nolint
+      ),
+    consensus = factor(
+      consensus,
+      levels = c("kmerCon", "miniCon", "isoCon"))) %>%
+  filter(depth !=10 & depth != 800) %>%
+  filter(asm == "asm10") %>%
+  group_by(benchmark, profile, id, depth, asm, consensus) %>%
+  summarise(alnerr = mean(100 - alnid),
+            qcov_un = mean(100 - qcov),
+            tcov_un = mean(100 - tcov),
+            total_err = alnerr + qcov_un,
+            n = n(),
+            ) %>%
+  # sort by benchmark, profile, id, total_err in descending order
+  arrange(benchmark, depth, desc(total_err))
+write.csv(summ_err, "./table/simulate/summ_err.csv", row.names = FALSE, quote = FALSE) #nolint 
 ```
 
 ```{r, summary_table}
