@@ -80,9 +80,9 @@ df_merge <- df_cls %>%
   arrange(desc(snreads2), ref_strand, .by_group = TRUE) %>%
   ungroup()
 
-# snreads >= 10
+# snreads >= 20
 df_merge <- df_merge %>%
-  filter(snreads >= 10)
+  filter(snreads >= 20)
 
 #https://stackoverflow.com/questions/9253843/r-clustering-purity-metric
 purity <- function(clusters, classes) {
@@ -399,9 +399,9 @@ df_merge <- df_cls %>%
   ungroup()
 
 #########################
-# snreads >= 10
+# snreads >= 20
 df_merge <- df_merge %>%
-  filter(snreads >= 10)
+  filter(snreads >= 20)
 
 #https://stackoverflow.com/questions/9253843/r-clustering-purity-metric
 purity <- function(clusters, classes) {
@@ -739,6 +739,10 @@ df_merge <- df_cls %>%
   arrange(desc(snreads2), ref_strand, .by_group = TRUE) %>%
   ungroup()
 
+# snreads >= 20
+df_merge <- df_merge %>%
+  filter(snreads >= 20)
+
 #https://stackoverflow.com/questions/9253843/r-clustering-purity-metric
 purity <- function(clusters, classes) {
   sum(apply(table(classes, clusters), 2, max)) / length(clusters)
@@ -812,7 +816,7 @@ p1_cls <- df_comp %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10  & depth !=20 & depth !=800) %>%
   filter(key == "Purity") %>%
   ggplot(aes(x = depth, y = value, color = id, shape = profile)) +
   geom_point() +
@@ -852,7 +856,7 @@ p1_cls_size_nmi <- df_comp %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10  & depth !=20 & depth !=800) %>%
   filter(key %in% c("Size", "NMI")) %>%
   ggplot(aes(x = depth, y = value, color = id, shape = profile)) +
   geom_point() +
@@ -903,7 +907,7 @@ p1_pct_clust <- df_pct_clust %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   ggplot( 
     aes(
       x = factor(
@@ -945,7 +949,7 @@ p1_clustid <- df_merge %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   ggplot( 
     aes(
       x = factor(
@@ -1000,42 +1004,21 @@ df <- as.data.frame(dt)
 colnames(df) <- c("qseq", "qlen", "qstart", "qend", "strand",
  "tseq", "tlen", "tstart", "tend", "matches", "alnlen", "mapq",
   "benchmark", "profile", "id", "depth", "asm", "consensus")
+# add snreads from df_merge
+df_merge_cls <- df_merge %>%
+  filter(! is.na(cls)) %>%
+  select(benchmark, profile, id, depth, consensus, cls, snreads) %>%
+  distinct() %>%
+  mutate(qseq = paste0("si", id, depth, "_", cls)) %>% #nolint
+  # snreads >= 20
+  filter(snreads >= 20) %>%
+  group_by(benchmark, profile, id, depth, consensus) %>% #nolint
+  mutate(ncls = length(unique(cls))) %>% #nolint
+  ungroup() %>%
+  select(benchmark, profile, consensus, snreads, qseq, ncls)
 
-# df2: number of representative sequences
-fs2 <-
- list.files(
-  path = "./data/simulate/consensus",
-  pattern = "*repfasta_lines.txt", full.names = TRUE, recursive = TRUE)
-dt2 <- rbindlist(sapply(fs2, fread, simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt2$benchmark <- gsub("^.*simulate/consensus/(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\1", dt2$file) #nolint
-dt2$profile <- gsub("^.*simulate/consensus/(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\2", dt2$file) #nolint
-dt2$id <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100).*", "\\1", dt2$V2)) #nolint
-dt2$depth <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100)([0-9]+).*", "\\2", dt2$V2)) #nolint
-dt2$consensus <- gsub("^.*10/(.*Con.*)/repseqs_split.*", "\\1", dt2$V2)
-dt2 <- dt2[, !c("file", "V2")]
-df2 <- as.data.frame(dt2)
-# fasta: two lines per read
-df2$V1 <- df2$V1 / 2
-colnames(df2) <- c("nseqs", "benchmark", "profile", "id", "depth", "consensus")
-
-# df3: number of simulated reads
-fs3 <- list.files(
-  path = "./data/simulate/consensus",
-  pattern = "*sifastq_lines.txt", full.names = TRUE, recursive = TRUE)
-dt3 <- rbindlist(sapply(fs3, function(x) fread(x, header=FALSE), simplify = FALSE), idcol = "file", use.names = FALSE) #nolint
-dt3$benchmark <- gsub("^.*simulate/consensus/(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\1", dt3$file) #nolint
-dt3$profile <- gsub("^.*simulate/consensus/(nanopore2020|nanopore2023|nanopore2023duplex|pacbio2016ccs)/(even10|skew10)/.*", "\\2", dt3$file) #nolint
-dt3$id <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100).*", "\\1", dt3$V2)) #nolint
-dt3$depth <- as.numeric(gsub("^.*/si(9095|9597|9798|9899|99100)([0-9]+).*", "\\2", dt3$V2)) #nolint
-dt3$consensus <- gsub("^.*10/(.*Con.*)/sifastq_lines.txt", "\\1", dt3$file)
-dt3 <- dt3[, !c("file","V2")]
-df3 <- as.data.frame(dt3)
-# fastq: four lines per read
-df3$V1 <- df3$V1 / 4
-colnames(df3) <- c("reads", "benchmark", "profile", "id", "depth", "consensus")
-#left_join
-df23 <- df2 %>%
-  left_join(df3, by = c("benchmark", "profile", "id", "depth", "consensus")) 
+df <- df %>%
+  right_join(df_merge_cls, by = c("benchmark", "profile", "consensus", "qseq")) #nolint
 ```
 
 ```{r, visual-dt1}
@@ -1048,14 +1031,10 @@ df123 <- df %>%
   # https://github.com/lh3/minimap2/issues/447
   # http://www.acgt.me/blog/2014/12/16/understanding-mapq-scores-in-sam-files-does-37-42#:~:text=MAPQ%3A%20MAPping%20Quality.,mapping%20quality%20is%20not%20available.
   #filter(mapq >= 60) %>%
-  summarise(
+  reframe(
     tn = n_distinct(tseq),
     qn = n_distinct(qseq),
-  ) %>%
-  # join df2
-  left_join(df23, by = c("benchmark", "profile","id", "depth", "consensus")) %>% #nolint
-  mutate(
-    qper = qn / nseqs * 100,
+    qper = qn / ncls * 100,
     tper = tn / 10 * 100,
   )
 
@@ -1074,7 +1053,7 @@ p2 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   ggplot(
   aes(x = depth, y = tn, color = id, shape = profile)) + 
   geom_point() +
@@ -1116,7 +1095,7 @@ p2_asm5 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm5") %>%
   ggplot(
   aes(x = depth, y = tn, color = id, shape = profile)) + 
@@ -1159,7 +1138,7 @@ p3 <- df123 %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   ggplot(
   aes(x = depth, y = qper, color = id, shape = profile)) + 
   geom_point() +
@@ -1210,7 +1189,7 @@ p4_alnid <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1259,7 +1238,7 @@ p4_qcov <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1308,7 +1287,7 @@ p4_tcov <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10") %>%
   ggplot(aes(
     x = factor(
@@ -1356,7 +1335,7 @@ summ_err <- df %>%
     consensus = factor(
       consensus,
       levels = c("kmerCon", "miniCon", "isoCon"))) %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10") %>%
   group_by(benchmark, profile, id, depth, asm, consensus) %>%
   summarise(alnerr = mean(100 - alnid),
@@ -1374,7 +1353,7 @@ write.csv(summ_err, "./table/simulate/summ_err.csv", row.names = FALSE, quote = 
 # umapclust_mauto 
 # sd for qcov, tcov, alnid, and pct of alnid > 99%
 sum_table1 <- df %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
   mutate(
     benchmark = factor(
@@ -1406,7 +1385,7 @@ sum_table1 <- df %>%
   )
 
 sum_table11 <- df %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2020", "nanopore2023")) %>% #nolint
   mutate(
     benchmark = factor(
@@ -1469,7 +1448,7 @@ df2$tcov <- df2$matches / df2$tlen * 100
 df2$alnid <- df2$matches / (df2$alnlen) * 100
 
 sum_table2 <- df2 %>%
-  filter(depth !=10 & depth != 800) %>%
+  filter(depth !=10 & depth !=20 & depth !=800) %>%
   filter(asm == "asm10" & benchmark %in% c("nanopore2023duplex", "pacbio2016ccs")) %>% #nolint
   mutate(
     benchmark = factor(
